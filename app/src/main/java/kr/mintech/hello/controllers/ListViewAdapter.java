@@ -36,12 +36,10 @@ public class ListViewAdapter extends BaseAdapter {
         int pos = position;
         final Context context = parent.getContext();
 
-
         // "listview_item" Layout을 inflate하여 convertView 참조 획득.
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_item, parent, false);
-
         }
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
@@ -54,13 +52,18 @@ public class ListViewAdapter extends BaseAdapter {
         // 아이템 내 각 위젯에 데이터 반영
         titleTextView.setText(listViewItem.getTitle());
 
+
         // 리스트 아이템을 터치 했을 때 이벤트 발생
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button.setVisibility(View.VISIBLE);
+                if (button.getVisibility()==v.GONE){
+                    button.setVisibility(v.VISIBLE);
+                }
+                else {
+                    button.setVisibility(v.GONE);
+                }
             }
-
         });
 
         button.setOnClickListener((new View.OnClickListener() {

@@ -36,7 +36,10 @@ public class MainActivity extends Activity {
                 "Circle", "Account Circle Black 36dp");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.ic_face),
                 "Ind", "Assignment Ind Black 36dp");
+
+
     }
+
 };
 
 
