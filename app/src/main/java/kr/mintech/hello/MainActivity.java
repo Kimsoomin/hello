@@ -1,52 +1,52 @@
 package kr.mintech.hello;
 
+
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.content.ContextCompat;
+import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+import kr.mintech.hello.controllers.ListViewAdapter;
 
+// TODO : Custom ListAdapter (BaseListAdapter를 상속받아야 함 getView 에 Layout) 
+// TODO : Custom ListAdapter getView 안에서 어떤 동작을 통해 펼쳐지고 닫혀진다. 
+
+
+public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ListView listview;
+        ListViewAdapter adapter;
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        // Adapter 생성
+        adapter = new ListViewAdapter();
+
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) findViewById(R.id.listview1);
+        listview.setAdapter(adapter);
+
+
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.ic_account_box_black_24dp),
+                "Box", "Account Box Black 36dp");
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.ic_account_circle_black_24dp),
+                "Circle", "Account Circle Black 36dp");
+        adapter.addItem(ContextCompat.getDrawable(this, R.drawable.ic_face),
+                "Ind", "Assignment Ind Black 36dp");
     }
+};
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
-}
+
+
+
+
+
+
+
+
+
