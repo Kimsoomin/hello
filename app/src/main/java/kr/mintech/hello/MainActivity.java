@@ -16,6 +16,7 @@ import kr.mintech.hello.controllers.ListViewAdapter;
 
 public class MainActivity extends Activity {
     ArrayList<ListViewItem> listViewItem = new ArrayList<ListViewItem>();
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
