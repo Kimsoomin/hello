@@ -2,14 +2,10 @@ package kr.mintech.hello;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,53 +26,43 @@ import kr.mintech.hello.controllers.ListViewAdapter;
 
 
 public class MainActivity extends Activity {
-    ArrayList<ListViewItem> listViewItem = new ArrayList<ListViewItem>();
-
+    private final static String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/37.517365,127.026112";
+    private ListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        String url = "http://www.word.pe.kr/keyword/testJson.php";
-        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Seoul&mode=json&units=metric&cnt=7&APPID=20bca9bd534d04520d1a51a054f86e50";
-        // call data from web URL
-        try {
-            ConnectivityManager conManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-
-            if (netInfo != null && netInfo.isConnected()) {
-                new DownloadJson().execute(url);
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "네트워크를 확인하세요", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         ListView listview = (ListView) findViewById(R.id.listview);
-        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), listViewItem);
-
+        adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
         listview.setAdapter(adapter);
 
-        adapter.addAll(generateModels());
+        new DownloadJson().execute(API_URL);
     }
 
-    private ArrayList<ListViewItem> generateModels() {
+    private ArrayList<ListViewItem> generateModels(JSONArray jsonArray) {
         ArrayList<ListViewItem> items = new ArrayList<>();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEE");
 
-        for (int i = 0; i < 7; i++) {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, i);
-            String day = dayFormat.format(new Date(cal.getTimeInMillis()));
-            String date = dateFormat.format(new Date(cal.getTimeInMillis()));
+        try {
+            for (int i = 0; i < 7; i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                String summary = obj.getString("summary");
+                String icon = obj.getString("icon");
 
-            ListViewItem item = new ListViewItem(day, date, "맑음");
-            items.add(item);
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, i);
+                String day = dayFormat.format(new Date(cal.getTimeInMillis()));
+                String date = dateFormat.format(new Date(cal.getTimeInMillis()));
+
+                ListViewItem item = new ListViewItem(day, date, summary, icon);
+                items.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return items;
@@ -93,18 +79,16 @@ public class MainActivity extends Activity {
         }
 
         protected void onPostExecute(String result) {
+            //백그라운드 작업이 완료되었을 때
 
             try {
                 Log.e("try", "진입은 하니?");
 
-                JSONObject jsonresult = new JSONObject(result.toString());
-                JSONObject city = jsonresult.getJSONObject("city");
-
-                for (int i = 0; i < city.length(); i++) {
-                    JSONArray name = city.getJSONArray("name");
-                    String test = name.getString(i);
-                    Log.e("mini", "test:" + test);
-                }
+                JSONObject jsonResult = new JSONObject(result.toString());
+                JSONObject dailyObject = jsonResult.getJSONObject("daily");
+                JSONArray dataArray = dailyObject.getJSONArray("data");
+                
+                adapter.addAll(generateModels(dataArray));
 
             } catch (JSONException e) {
                 Log.e("catch", "catch진입");

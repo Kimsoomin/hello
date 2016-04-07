@@ -58,7 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
         TextView day = (TextView) convertView.findViewById(R.id.day);
         TextView status = (TextView) convertView.findViewById(R.id.status);
         TextView date = (TextView) convertView.findViewById(R.id.date);
-        ImageView weatherImage = (ImageView) convertView.findViewById(R.id.weather_image);
+        ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
         LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
         //===================
         final Button button = (Button) convertView.findViewById(R.id.button);
@@ -66,7 +66,12 @@ public class ListViewAdapter extends BaseAdapter {
         day.setText(item.getTitle());
         status.setText(item.getStatus());
         date.setText(item.getDate());
-//        weatherImage.setImageResource(item.getWeatherImage());
+        if (item.getIcon().contains("rain"))
+            icon.setImageResource(R.drawable.ic_weather_rain);
+        else if (item.getIcon().contains("cloud"))
+            icon.setImageResource(R.drawable.ic_weather_cloud);
+        else
+            icon.setImageResource(R.drawable.ic_weather_clear);
 
         topContainer.setOnClickListener(new View.OnClickListener() {
             @Override
