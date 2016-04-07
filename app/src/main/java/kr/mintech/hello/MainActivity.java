@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 //        String url = "http://www.word.pe.kr/keyword/testJson.php";
-        String url = "https://api.forecast.io/forecast/33edacd677aacf2ec509a82f12ff327d/37.514236,127.03159299999993";
+        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Seoul&mode=json&units=metric&cnt=7&APPID=20bca9bd534d04520d1a51a054f86e50";
         // call data from web URL
         try {
             ConnectivityManager conManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -93,28 +93,21 @@ public class MainActivity extends Activity {
         }
 
         protected void onPostExecute(String result) {
+
             try {
-                JSONArray jArray = new JSONArray(result);
+                Log.e("try", "진입은 하니?");
 
-                String[] jsonWeather = {"time", "summary"};
-                String[][] parsedData = new String[jArray.length()][jsonWeather.length];
+                JSONObject jsonresult = new JSONObject(result.toString());
+                JSONObject city = jsonresult.getJSONObject("city");
 
-                JSONObject json = null;
-                for (int i = 0; i < jArray.length(); i++) {
-                    json = jArray.getJSONObject(i);
-                    if (json != null) {
-                        for (int j = 0; j < jsonWeather.length; j++) {
-                            parsedData[i][j] = json.getString(jsonWeather[j]);
-                        }
-                    }
+                for (int i = 0; i < city.length(); i++) {
+                    JSONArray name = city.getJSONArray("name");
+                    String test = name.getString(i);
+                    Log.e("mini", "test:" + test);
                 }
 
-                for (int i = 0; i < parsedData.length; i++) {
-                    Log.e("mini", "time" + i + ":" + parsedData[i][0]);
-                    Log.e("mini", "summary" + i + ":" + parsedData[i][1]);
-                    Log.e("mini", "----------------------------------");
-                }
             } catch (JSONException e) {
+                Log.e("catch", "catch진입");
                 e.printStackTrace();
             }
         }
