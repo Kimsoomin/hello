@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/weather_image"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
+            android:layout_width="@dimen/margin64"
+            android:layout_height="@dimen/margin64"
             android:src="@drawable/ico_wg1" />
 
 
@@ -23,7 +23,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:paddingTop="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="0dp"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,16 +57,18 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:layout_alignParentLeft="true"/>
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="toast"
+        android:background="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:visibility="gone" />
 </LinearLayout>
 

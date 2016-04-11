@@ -1,20 +1,18 @@
-package kr.mintech.hello.controllers;
+package kr.mintech.weather.controllers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import kr.mintech.hello.R;
-import kr.mintech.hello.beans.ListViewItem;
+import kr.mintech.weather.R;
+import kr.mintech.weather.beans.ListViewItem;
 
 public class ListViewAdapter extends BaseAdapter {
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
@@ -58,14 +56,17 @@ public class ListViewAdapter extends BaseAdapter {
         TextView day = (TextView) convertView.findViewById(R.id.day);
         TextView status = (TextView) convertView.findViewById(R.id.status);
         TextView date = (TextView) convertView.findViewById(R.id.date);
+        final TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
         ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
         LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
         //===================
-        final Button button = (Button) convertView.findViewById(R.id.button);
+
 
         day.setText(item.getTitle());
         status.setText(item.getStatus());
         date.setText(item.getDate());
+        temperature.setText("평균 온도: "+item.getTemperature());
+
         if (item.getIcon().contains("rain"))
             icon.setImageResource(R.drawable.ic_weather_rain);
         else if (item.getIcon().contains("cloud"))
@@ -76,16 +77,10 @@ public class ListViewAdapter extends BaseAdapter {
         topContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button.setVisibility(button.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                temperature.setVisibility(temperature.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             }
         });
 
-        button.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(parent.getContext(), "Toast", Toast.LENGTH_LONG).show();
-            }
-        }));
         return convertView;
     }
 }
