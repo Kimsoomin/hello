@@ -351,21 +351,24 @@ public class MainActivity extends AppCompatActivity
 
         if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) && PackageManager.PERMISSION_GRANTED == ContextCompat
             .checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION))
+        {
+          pb.ProgressStart();
           requestLocation();
+        }
         else
         {
           requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
         }
       }
       else
-        requestLocation();
+        pb.ProgressStart();
+      requestLocation();
     }
   }
 
 
   private void requestLocation()
   {
-    pb.ProgressStart();
     handler.postDelayed(timeOutFindStationCallBack, LCOATION_TIME_OUT_SECOND);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
@@ -430,6 +433,7 @@ public class MainActivity extends AppCompatActivity
       //      progressbar.setVisibility(View.VISIBLE);
       //      progressbar.bringToFront();
       //      DialogProgress();
+
       pb.ProgressStop();
       viewClear();
       start();
