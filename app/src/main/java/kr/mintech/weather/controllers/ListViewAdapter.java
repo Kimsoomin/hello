@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import kr.mintech.weather.R;
 import kr.mintech.weather.beans.ListViewItem;
 
 public class ListViewAdapter extends BaseAdapter {
+    public static ProgressBar progressBar;
+    public static View view;
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
     LayoutInflater inflater;
 
@@ -56,15 +59,20 @@ public class ListViewAdapter extends BaseAdapter {
         TextView day = (TextView) convertView.findViewById(R.id.day);
         TextView status = (TextView) convertView.findViewById(R.id.status);
         TextView date = (TextView) convertView.findViewById(R.id.date);
+        TextView sunriseTime = (TextView) convertView.findViewById(R.id.sunrise);
+        TextView sunsetTime = (TextView) convertView.findViewById(R.id.sunset);
+
         final TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
         ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
         LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
-        //===================
 
+        //===================
 
         day.setText(item.getTitle());
         status.setText(item.getStatus());
         date.setText(item.getDate());
+        sunriseTime.setText("일출시간: "+item.getSunriseTime());
+        sunsetTime.setText("일몰시간: "+item.getSunsetTime());
         temperature.setText("평균 온도: "+item.getTemperature());
 
         if (item.getIcon().contains("rain"))
@@ -74,12 +82,12 @@ public class ListViewAdapter extends BaseAdapter {
         else
             icon.setImageResource(R.drawable.ic_weather_clear);
 
-        topContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                temperature.setVisibility(temperature.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-            }
-        });
+//        topContainer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                temperature.setVisibility(temperature.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+//            }
+//        });
 
         return convertView;
     }

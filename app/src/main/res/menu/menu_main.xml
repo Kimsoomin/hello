@@ -1,10 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="kr.mintech.weather.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+
+
+    <item android:id="@+id/item1"
+          android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
+          android:title="share"
+          app:showAsAction="ifRoom|withText"/>
+
+    <item android:id="@+id/btn_my_location"
+          android:icon="@drawable/btn_my_location"
+          android:title="write"
+          app:showAsAction="always"/>
+
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
+
 </menu>
