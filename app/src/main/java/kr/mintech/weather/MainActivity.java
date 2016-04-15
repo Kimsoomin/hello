@@ -4,7 +4,6 @@ package kr.mintech.weather;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity
   private LocationListener locationListener;
   private ProgressBar progressbar;
   private String address;
+  private Progressbar pb;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
+    pb.ProgressStop();
     setContentView(R.layout.activity_main);
     ListView listview = (ListView) findViewById(R.id.listview);
     adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
@@ -345,7 +346,7 @@ public class MainActivity extends AppCompatActivity
     else
     {
 
-//      CLoading.showLoading(context);
+//      Progressbar.showLoading(context);
 
       if (android.os.Build.VERSION.SDK_INT >= 23)
       {
@@ -430,7 +431,8 @@ public class MainActivity extends AppCompatActivity
       locationManager.removeUpdates(locationListener);
 //      progressbar.setVisibility(View.VISIBLE);
 //      progressbar.bringToFront();
-      DialogProgress();
+//      DialogProgress();
+      pb.ProgressStart();
       viewClear();
       start();
     }
@@ -460,13 +462,6 @@ public class MainActivity extends AppCompatActivity
   public static void viewClear()
   {
     view = null;
-  }
-
-  private void DialogProgress(){
-    ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "",
-        "잠시만 기다려 주세요 ...", true);
-    // 창을 내린다.
-    // dialog.dismiss();
   }
 
 };
