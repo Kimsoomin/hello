@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
-    pb.ProgressStop();
     setContentView(R.layout.activity_main);
     ListView listview = (ListView) findViewById(R.id.listview);
     adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
@@ -345,9 +344,7 @@ public class MainActivity extends AppCompatActivity
       buildAlertMessageNoGps();
     else
     {
-
-//      Progressbar.showLoading(context);
-
+      //      Progressbar.showLoading(context);
       if (android.os.Build.VERSION.SDK_INT >= 23)
       {
         Log.d("어디", "sdk버전 " + android.os.Build.VERSION.SDK_INT);
@@ -368,6 +365,7 @@ public class MainActivity extends AppCompatActivity
 
   private void requestLocation()
   {
+    pb.ProgressStart();
     handler.postDelayed(timeOutFindStationCallBack, LCOATION_TIME_OUT_SECOND);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
@@ -429,10 +427,10 @@ public class MainActivity extends AppCompatActivity
 
       handler.removeCallbacks(timeOutFindStationCallBack);
       locationManager.removeUpdates(locationListener);
-//      progressbar.setVisibility(View.VISIBLE);
-//      progressbar.bringToFront();
-//      DialogProgress();
-      pb.ProgressStart();
+      //      progressbar.setVisibility(View.VISIBLE);
+      //      progressbar.bringToFront();
+      //      DialogProgress();
+      pb.ProgressStop();
       viewClear();
       start();
     }
