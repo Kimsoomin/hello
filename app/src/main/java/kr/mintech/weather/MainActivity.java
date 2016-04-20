@@ -4,6 +4,8 @@ package kr.mintech.weather;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +27,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,9 +65,10 @@ public class MainActivity extends AppCompatActivity
 
   private LocationManager locationManager;
   private LocationListener locationListener;
-  private ProgressBar progressbar;
   private String address;
-  private Progressbar pb;
+  private ProgressBar progressbar;
+  private TextView text;
+  private Dialog dialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -82,6 +84,8 @@ public class MainActivity extends AppCompatActivity
     ListView listview = (ListView) findViewById(R.id.listview);
     adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
     listview.setAdapter(adapter);
+
+    //====
 
     locationListener = new WeatherLocationListener();
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -102,6 +106,9 @@ public class MainActivity extends AppCompatActivity
 
     new DownloadJson().execute(API_URL);
     new MapJson().execute(MAP_API);
+
+    // =====================
+    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
   }
 
@@ -128,12 +135,12 @@ public class MainActivity extends AppCompatActivity
         txt = "Item1 click";
         break;
       case R.id.btn_my_location:
-        txt = "item2 click";
-
+        //        txt = "위치를 찾는 중입니다";
         findNearByStation();
         break;
     }
-    Toast.makeText(this, txt, Toast.LENGTH_LONG).show();
+//    Toast toast = Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_LONG);
+//    toast.show();
     return super.onOptionsItemSelected(item);
   }
 
@@ -154,13 +161,14 @@ public class MainActivity extends AppCompatActivity
         String icon = obj.getString("icon");
         String sunrise = obj.getString("sunriseTime");
         String sunset = obj.getString("sunsetTime");
+        Log.d("어디","sunset: "+sunset);
         Double temperatureMin = obj.getDouble("temperatureMin");
         Double temperatureMax = obj.getDouble("temperatureMax");
 
-        long unixSunRise = Long.parseLong(sunrise) * 1000;
-        long unixSunSet = Long.parseLong(sunset) * 1000;
-        String sunriseTime = dateFormatHour.format(unixSunRise);
-        String sunsetTime = dateFormatHour.format(unixSunSet);
+        long unixSunrise = Long.parseLong(sunrise) * 1000;
+        long unixSunset = Long.parseLong(sunset) * 1000;
+        String sunriseTime = dateFormatHour.format(unixSunrise);
+        String sunsetTime = dateFormatHour.format(unixSunset);
 
         Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
         Double temperatureChange = (temperatureAvg - 32) + 1.8;
@@ -213,7 +221,7 @@ public class MainActivity extends AppCompatActivity
           Log.d("어디", "MAP/onPost/address: " + address);
         }
 
-        TextView text = (TextView) findViewById(R.id.address);
+        text = (TextView) findViewById(R.id.address);
         text.setText(address);
       } catch (JSONException e)
       {
@@ -344,7 +352,6 @@ public class MainActivity extends AppCompatActivity
       buildAlertMessageNoGps();
     else
     {
-      //      Progressbar.showLoading(context);
       if (android.os.Build.VERSION.SDK_INT >= 23)
       {
         Log.d("어디", "sdk버전 " + android.os.Build.VERSION.SDK_INT);
@@ -352,7 +359,6 @@ public class MainActivity extends AppCompatActivity
         if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) && PackageManager.PERMISSION_GRANTED == ContextCompat
             .checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION))
         {
-          pb.ProgressStart();
           requestLocation();
         }
         else
@@ -361,19 +367,27 @@ public class MainActivity extends AppCompatActivity
         }
       }
       else
-        pb.ProgressStart();
-      requestLocation();
+        requestLocation();
     }
   }
 
-
+  @SuppressWarnings({"MissingPermission"})
   private void requestLocation()
   {
+    dialog = ProgressDialog.show(MainActivity.this, "", "위치를 찾는 중입니다. 잠시 기다려 주세요", false);
+    //    progressbar.setVisibility(View.VISIBLE);
+    //    progressbar.bringToFront();
+    //    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+    //    builder.setTitle(getString(R.string.app_name));
+    //    builder.setMessage("위치를 찾는 중입니다");
+    //    builder.setPositiveButton(android.R.string.ok, null);
+    //    builder.create().show();
     handler.postDelayed(timeOutFindStationCallBack, LCOATION_TIME_OUT_SECOND);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
   }
 
+  @SuppressWarnings({"MissingPermission"})
   private Runnable timeOutFindStationCallBack = new Runnable()
   {
     public void run()
@@ -410,13 +424,12 @@ public class MainActivity extends AppCompatActivity
 
   private class WeatherLocationListener implements LocationListener
   {
-
+    @SuppressWarnings({"MissingPermission"})
     @Override
     public void onLocationChanged(Location loc)
     {
       //      preferenceManager.getInstance(MainActivity.this).setLat(loc.getLatitude());
       //      preferenceManager.getInstance(MainActivity.this).setLon(loc.getLongitude());
-
       Log.d("어디", "리스너 lat" + loc.getLatitude());
       Log.d("어디", "리스너 lon" + loc.getLongitude());
 
@@ -430,12 +443,8 @@ public class MainActivity extends AppCompatActivity
 
       handler.removeCallbacks(timeOutFindStationCallBack);
       locationManager.removeUpdates(locationListener);
-      //      progressbar.setVisibility(View.VISIBLE);
-      //      progressbar.bringToFront();
-      //      DialogProgress();
-
-      pb.ProgressStop();
-      viewClear();
+      dialog.dismiss();
+//      viewClear();
       start();
     }
 
@@ -465,7 +474,6 @@ public class MainActivity extends AppCompatActivity
   {
     view = null;
   }
-
 };
 
 
