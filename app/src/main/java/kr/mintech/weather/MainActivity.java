@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.DataSetObservable;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,10 +21,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.beans.MyData;
 import kr.mintech.weather.controllers.ListViewAdapter;
 import kr.mintech.weather.fragments.WeatherFragment;
 import kr.mintech.weather.managers.PreferenceManager;
@@ -54,7 +60,6 @@ public class MainActivity extends AppCompatActivity
   private final DataSetObservable mDataSetObservable = new DataSetObservable();
   private Context context;
   private PreferenceManager preferenceManager;
-  //  private final static String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/37.517365,127.026112";
 
   private ListViewAdapter adapter;
   private WeatherFragment weatherFragment;
@@ -70,6 +75,20 @@ public class MainActivity extends AppCompatActivity
   private TextView text;
   private Dialog dialog;
 
+//  ============== card view ==================
+
+  private RecyclerView mRecyclerView;
+  private RecyclerView.Adapter mAdapter;
+  private RecyclerView.LayoutManager mLayoutManager;
+  private ArrayList<MyData> myDataset;
+
+  // ============== navi draw =================
+
+  private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green",
+      "Dark Orange", "Golden Rod"};
+  private ListView lvNavList;
+  private FrameLayout flContainer;
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -80,37 +99,91 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
-    setContentView(R.layout.activity_main);
-    ListView listview = (ListView) findViewById(R.id.listview);
-    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
-    listview.setAdapter(adapter);
+//    ====================== 기존 리스트 뷰 ==========================
+//    setContentView(R.layout.activity_main);
+//    ListView listview = (ListView) findViewById(R.id.listview);
+//    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
+//    listview.setAdapter(adapter);
+//
+//    locationListener = new WeatherLocationListener();
+//    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//
+//    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+//
+//    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+//    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+//
+//    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+//    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
+//
+//    new DownloadJson().execute(API_URL);
+//    new MapJson().execute(MAP_API);
+//
+//    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
-    //====
+//    ========================= CardView ===========================
+//
+//    setContentView(R.layout.my_activity);
+//    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+//
+//    // use this setting to improve performance if you know that changes
+//    // in content do not change the layout size of the RecyclerView
+//    mRecyclerView.setHasFixedSize(true);
+//
+//    // use a linear layout manager
+//    mLayoutManager = new LinearLayoutManager(this);
+//    mRecyclerView.setLayoutManager(mLayoutManager);
+//
+//    // specify an adapter (see also next example)
+//    myDataset = new ArrayList<>();
+//    mAdapter = new CardViewAdapter(myDataset);
+//    mRecyclerView.setAdapter(mAdapter);
+//
+//    myDataset.add(new MyData("#InsideOut", R.mipmap.ic_launcher));
+//    myDataset.add(new MyData("#Mini", R.mipmap.ic_search_black_24dp));
+//    myDataset.add(new MyData("#ToyStroy", R.mipmap.ic_launcher));
 
-    locationListener = new WeatherLocationListener();
-    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+// ======================= 네비게이션 드로워 ==========================
+    setContentView(R.layout.navi_draw);
 
-    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+    lvNavList = (ListView)findViewById(R.id.lv_activity_main_nav_list);
+    flContainer = (FrameLayout)findViewById(R.id.fl_activity_main_container);
 
-    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
-    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
-
-    Log.e("어디", "start / lat: " + latitude);
-    Log.e("어디", "start / lon: " + longitude);
-
-    //    double latitude = Double.longBitsToDouble(preferenceManager.getInstance(context).getLat());
-    //    double longitude = Double.longBitsToDouble(preferenceManager.getInstance(context).getLon());
-
-    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
-    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
-
-    new DownloadJson().execute(API_URL);
-    new MapJson().execute(MAP_API);
-
-    // =====================
-    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+    lvNavList.setAdapter(
+        new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
+    lvNavList.setOnItemClickListener(new DrawerItemClickListener());
 
   }
+
+  private class DrawerItemClickListener implements ListView.OnItemClickListener
+  {
+
+    @Override
+    public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
+    {
+      switch (position)
+      {
+        case 0:
+          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
+          break;
+        case 1:
+          flContainer.setBackgroundColor(Color.parseColor("#5F9EA0"));
+          break;
+        case 2:
+          flContainer.setBackgroundColor(Color.parseColor("#556B2F"));
+          break;
+        case 3:
+          flContainer.setBackgroundColor(Color.parseColor("#FF8C00"));
+          break;
+        case 4:
+          flContainer.setBackgroundColor(Color.parseColor("#DAA520"));
+          break;
+
+      }
+
+    }
+  }
+
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -124,23 +197,13 @@ public class MainActivity extends AppCompatActivity
   public boolean onOptionsItemSelected(MenuItem item)
   {
     //ActionBar 메뉴 클릭에 대한 이벤트 처리
-    String txt = null;
     int id = item.getItemId();
     switch (id)
     {
-      case R.id.action_settings:
-        txt = "Setting click";
-        break;
-      case R.id.item1:
-        txt = "Item1 click";
-        break;
       case R.id.btn_my_location:
-        //        txt = "위치를 찾는 중입니다";
         findNearByStation();
         break;
     }
-//    Toast toast = Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_LONG);
-//    toast.show();
     return super.onOptionsItemSelected(item);
   }
 
@@ -444,7 +507,7 @@ public class MainActivity extends AppCompatActivity
       handler.removeCallbacks(timeOutFindStationCallBack);
       locationManager.removeUpdates(locationListener);
       dialog.dismiss();
-//      viewClear();
+      viewClear();
       start();
     }
 
