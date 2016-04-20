@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
   private RecyclerView.LayoutManager mLayoutManager;
   private ArrayList<MyData> myDataset;
 
-  // ============== navi draw =================
+  // =============== navi draw ==================
 
   private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green",
       "Dark Orange", "Golden Rod"};
