@@ -20,7 +20,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -49,6 +52,7 @@ import java.util.Date;
 
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.beans.MyData;
+import kr.mintech.weather.controllers.CardViewAdapter;
 import kr.mintech.weather.controllers.ListViewAdapter;
 import kr.mintech.weather.fragments.WeatherFragment;
 import kr.mintech.weather.managers.PreferenceManager;
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity
       "Dark Orange", "Golden Rod"};
   private ListView lvNavList;
   private FrameLayout flContainer;
+  private DrawerLayout dlDrawer;
+  private ActionBarDrawerToggle dtToggle;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity
 //    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
 //    ========================= CardView ===========================
-//
+
 //    setContentView(R.layout.my_activity);
 //    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 //
@@ -140,7 +146,7 @@ public class MainActivity extends AppCompatActivity
 //    mRecyclerView.setAdapter(mAdapter);
 //
 //    myDataset.add(new MyData("#InsideOut", R.mipmap.ic_launcher));
-//    myDataset.add(new MyData("#Mini", R.mipmap.ic_search_black_24dp));
+//    myDataset.add(new MyData("#Mini", R.mipmap.ic_launcher));
 //    myDataset.add(new MyData("#ToyStroy", R.mipmap.ic_launcher));
 
 // ======================= 네비게이션 드로워 ==========================
@@ -152,7 +158,6 @@ public class MainActivity extends AppCompatActivity
     lvNavList.setAdapter(
         new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
-
   }
 
   private class DrawerItemClickListener implements ListView.OnItemClickListener
