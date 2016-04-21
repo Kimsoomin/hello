@@ -12,10 +12,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.DataSetObservable;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -39,28 +39,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import kr.mintech.weather.beans.ListViewItem;
-import kr.mintech.weather.beans.MyData;
 import kr.mintech.weather.controllers.CardViewAdapter;
-import kr.mintech.weather.controllers.ListViewAdapter;
-import kr.mintech.weather.fragments.WeatherFragment;
 import kr.mintech.weather.managers.PreferenceManager;
 
 
 public class MainActivity extends AppCompatActivity
 {
-  public static View view;
+  //  public static View view;
+  //  private ListViewAdapter adapter;
+
   private final DataSetObservable mDataSetObservable = new DataSetObservable();
   private Context context;
   private PreferenceManager preferenceManager;
-
-  private ListViewAdapter adapter;
-  private WeatherFragment weatherFragment;
 
   private static int LCOATION_TIME_OUT_SECOND = 30 * 1000;
   private Handler handler = new Handler();
@@ -75,10 +76,12 @@ public class MainActivity extends AppCompatActivity
 
   //  ============== card view ==================
 
-  private RecyclerView mRecyclerView;
+  public static RecyclerView mRecyclerView;
   private RecyclerView.Adapter mAdapter;
+
   private RecyclerView.LayoutManager mLayoutManager;
-  private ArrayList<MyData> myDataset;
+  private ArrayList<ListViewItem> listViewItems;
+  private CardViewAdapter adapter;
 
   // =============== navi draw ==================
 
@@ -87,6 +90,16 @@ public class MainActivity extends AppCompatActivity
   private FrameLayout flContainer;
   private DrawerLayout dlDrawer;
   private ActionBarDrawerToggle dtToggle;
+
+  // ============ 액션바 + 네비 =============
+  private DrawerLayout mDrawerLayout; // 주 기능
+  private ListView mDrawerList; // 내용
+  private ActionBarDrawerToggle mDrawerToggle; // 주 기능
+
+  private CharSequence mDrawerTitle; // ActionBar의 제목을 변경하기 위한 변수
+  private CharSequence mTitle; // ActionBar의 제목을 변경하기 위한 변수
+  private String[] mPlanetTitles; // 태양계 행성 이름들
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -99,84 +112,129 @@ public class MainActivity extends AppCompatActivity
   public void start()
   {
     //    ====================== 기존 리스트 뷰 ==========================
+    //    setContentView(R.layout.activity_main);
+    //    ListView listview = (ListView) findViewById(R.id.listview);
+    //    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
+    //    listview.setAdapter(adapter);
+    //
+    //    locationListener = new WeatherLocationListener();
+    //    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    //
+    //    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+    //
+    //    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+    //    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+    //
+    //    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+    //    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
+    //
+    //    new DownloadJson().execute(API_URL);
+    //    new MapJson().execute(MAP_API);
+
+    //    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+
+    //    ========================= CardView ===========================
+
+    //    setContentView(R.layout.my_activity);
     setContentView(R.layout.activity_main);
-//    ListView listview = (ListView) findViewById(R.id.listview);
-//    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
-//    listview.setAdapter(adapter);
-//
-//    locationListener = new WeatherLocationListener();
-//    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-//
-//    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
-//    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
-//
-//    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
-//    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
-//
-//    new DownloadJson().execute(API_URL);
-//    new MapJson().execute(MAP_API);
-
-//    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
-
-//    ========================= CardView ===========================
-
-//    setContentView(R.layout.my_activity);
     mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+//    mLayoutManager = new WrappingLinearLayoutManager(getApplicationContext());
+//    mLayoutManager = new LinearLayoutManager(this);
+//    mRecyclerView.setNestedScrollingEnabled(false);
+//    mRecyclerView.setLayoutManager(mLayoutManager);
+    mLayoutManager = new LinearLayoutManager(getApplicationContext());
 
     mRecyclerView.setHasFixedSize(true);
 
-    // use a linear layout manager
-    mLayoutManager = new LinearLayoutManager(this);
-    mRecyclerView.setLayoutManager(mLayoutManager);
+    mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-    // specify an adapter (see also next example)
-    myDataset = new ArrayList<>();
-    mAdapter = new CardViewAdapter(myDataset);
+    mAdapter = new CardViewAdapter(getApplicationContext(), R.layout.activity_main, listViewItems);
     mRecyclerView.setAdapter(mAdapter);
 
-    myDataset.add(new MyData("#InsideOut", R.mipmap.ic_launcher));
-    myDataset.add(new MyData("#Mini", R.mipmap.ic_launcher));
-    myDataset.add(new MyData("#ToyStroy", R.mipmap.ic_launcher));
+    locationListener = new WeatherLocationListener();
+    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-//    ======================= 네비게이션 드로워 ==========================
-//    setContentView(R.layout.navi_draw);
+    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+
+    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+
+    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
+
+    new MapJson().execute(MAP_API);
+    new DownloadJson().execute(API_URL);
+
+    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+
+
+    //    ======================= 네비게이션 드로워 ==========================
 
     lvNavList = (ListView) findViewById(R.id.lv_activity_main_nav_list);
-    flContainer = (FrameLayout) findViewById(R.id.fl_activity_main_container);
+    //    flContainer = (FrameLayout) findViewById(R.id.fl_activity_main_container);
 
     lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
 
+    // 액션바 제목
+    mTitle = mDrawerTitle = getTitle();
 
+    // ActionBar의 홈버튼을 Navigation Drawer 토글기능으로 사용
+//    getActionBar().setDisplayHomeAsUpEnabled(true);
+//    getActionBar().setHomeButtonEnabled(true);
+
+    // 토글 정의
+//    mDrawerToggle = new ActionBarDrawerToggle(
+//        this,
+//        mDrawerLayout,
+//        R.drawable.img_action_background,
+//        R.string.app_name,
+//        R.string.drawer_close
+//    ) {
+//      public void onDrawerClosed(View view) {
+//        getActionBar().setTitle(mTitle);
+//        invalidateOptionsMenu();
+//      }
+//
+//      public void onDrawerOpened(View drawerView) {
+//        getActionBar().setTitle(mDrawerTitle);
+//        invalidateOptionsMenu();
+//      }
+//    };
+//    // Drawer Layout의 리스너를 mDrawerToggle로 정의
+//    mDrawerLayout.setDrawerListener(mDrawerToggle);
+//
+//    //  인스턴스 상태가 존재 안하면 가장 첫번째 아이템으로 시작
+//    if (savedInstanceState == null) {
+//      selectItem(0);
+//    }
   }
 
   private class DrawerItemClickListener implements ListView.OnItemClickListener
   {
-
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
     {
-      switch (position)
-      {
-        case 0:
-          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
-          break;
-        case 1:
-          flContainer.setBackgroundColor(Color.parseColor("#5F9EA0"));
-          break;
-        case 2:
-          flContainer.setBackgroundColor(Color.parseColor("#556B2F"));
-          break;
-        case 3:
-          flContainer.setBackgroundColor(Color.parseColor("#FF8C00"));
-          break;
-        case 4:
-          flContainer.setBackgroundColor(Color.parseColor("#DAA520"));
-          break;
-
-      }
+      //      switch (position)
+      //      {
+      //        case 0:
+      //          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
+      //          break;
+      //        case 1:
+      //          flContainer.setBackgroundColor(Color.parseColor("#5F9EA0"));
+      //          break;
+      //        case 2:
+      //          flContainer.setBackgroundColor(Color.parseColor("#556B2F"));
+      //          break;
+      //        case 3:
+      //          flContainer.setBackgroundColor(Color.parseColor("#FF8C00"));
+      //          break;
+      //        case 4:
+      //          flContainer.setBackgroundColor(Color.parseColor("#DAA520"));
+      //          break;
+      //
+      //      }
 
     }
   }
@@ -194,12 +252,15 @@ public class MainActivity extends AppCompatActivity
   public boolean onOptionsItemSelected(MenuItem item)
   {
     //ActionBar 메뉴 클릭에 대한 이벤트 처리
-    int id = item.getItemId();
-    switch (id)
+
+    switch (item.getItemId())
     {
       case R.id.btn_my_location:
         findNearByStation();
         break;
+      case android.R.id.home:
+        finish();
+        return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -238,6 +299,9 @@ public class MainActivity extends AppCompatActivity
         cal.add(Calendar.DATE, i);
         String day = dayFormat.format(new Date(cal.getTimeInMillis()));
         String date = dateFormatYear.format(new Date(cal.getTimeInMillis()));
+        Log.d("어디", "day : " + day);
+        Log.d("어디", "date : " + date);
+        Log.d("어디", "summary : " + summary);
 
         ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime);
         items.add(item);
@@ -246,157 +310,158 @@ public class MainActivity extends AppCompatActivity
     {
       e.printStackTrace();
     }
-
+    Log.d("어디","generate 나가기 전: " +items.get(0).getDate());
     return items;
   }
 
   /* ========================== 맵 JSON ==========================*/
-//  private class MapJson extends AsyncTask<String, String, String>
-//  {
-//    @Override
-//    protected String doInBackground(String... arg0)
-//    {
-//      Log.d("어디", "map");
-//      try
-//      {
-//        return (String) getData((String) arg0[0]);
-//      } catch (Exception e)
-//      {
-//        return "Json download failed";
-//      }
-//    }
-//
-//    protected void onPostExecute(String result)
-//    {
-//      try
-//      {
-//        Log.d("MAP", "onPost");
-//        JSONObject jsonResult = new JSONObject(result.toString());
-//        JSONArray resultArray = jsonResult.getJSONArray("results");
-//        final int max = resultArray.length();
-//        for (int i = 0; i < max; i++)
-//        {
-//          JSONObject obj = resultArray.getJSONObject(2);
-//          address = obj.getString("formatted_address");
-//          Log.d("어디", "MAP/onPost/address: " + address);
-//        }
-//
-//        text = (TextView) findViewById(R.id.address);
-//        text.setText(address);
-//      } catch (JSONException e)
-//      {
-//        Log.e("catch", "catch진입");
-//        e.printStackTrace();
-//      }
-//    }
-//
-//    private String getData(String strUrl)
-//    {
-//      StringBuilder sb = new StringBuilder();
-//
-//      try
-//      {
-//        BufferedInputStream bis = null;
-//        URL url = new URL(strUrl);
-//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//        int responseCode;
-//
-//        con.setConnectTimeout(3000);
-//        con.setReadTimeout(3000);
-//
-//        responseCode = con.getResponseCode();
-//
-//        if (responseCode == 200)
-//        {
-//          bis = new BufferedInputStream(con.getInputStream());
-//          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
-//          String line = null;
-//
-//          while ((line = reader.readLine()) != null)
-//            sb.append(line);
-//
-//          bis.close();
-//        }
-//
-//      } catch (Exception e)
-//      {
-//        e.printStackTrace();
-//      }
-//
-//      return sb.toString();
-//    }
-//  }
-//
-//  /* ========================== 날씨 JSON ==========================*/
-//  private class DownloadJson extends AsyncTask<String, String, String>
-//  {
-//    @Override
-//    protected String doInBackground(String... arg0)
-//    {
-//      try
-//      {
-//        return (String) getData((String) arg0[0]);
-//      } catch (Exception e)
-//      {
-//        return "Json download failed";
-//      }
-//    }
-//
-//    protected void onPostExecute(String result)
-//    {
-//      try
-//      {
-//        Log.d("어디", "api onPost");
-//
-//        JSONObject jsonResult = new JSONObject(result.toString());
-//        JSONObject dailyObject = jsonResult.getJSONObject("daily");
-//        JSONArray dataArray = dailyObject.getJSONArray("data");
-//
+  private class MapJson extends AsyncTask<String, String, String>
+  {
+    @Override
+    protected String doInBackground(String... arg0)
+    {
+      Log.d("어디", "map");
+      try
+      {
+        return (String) getData((String) arg0[0]);
+      } catch (Exception e)
+      {
+        return "Json download failed";
+      }
+    }
+
+    protected void onPostExecute(String result)
+    {
+      try
+      {
+        Log.d("MAP", "onPost");
+        JSONObject jsonResult = new JSONObject(result.toString());
+        JSONArray resultArray = jsonResult.getJSONArray("results");
+        final int max = resultArray.length();
+        for (int i = 0; i < max; i++)
+        {
+          JSONObject obj = resultArray.getJSONObject(2);
+          address = obj.getString("formatted_address");
+          Log.d("어디", "MAP/onPost/address: " + address);
+        }
+
+        text = (TextView) findViewById(R.id.address);
+        text.setText(address);
+      } catch (JSONException e)
+      {
+        Log.e("catch", "catch진입");
+        e.printStackTrace();
+      }
+    }
+
+    private String getData(String strUrl)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      try
+      {
+        BufferedInputStream bis = null;
+        URL url = new URL(strUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        int responseCode;
+
+        con.setConnectTimeout(3000);
+        con.setReadTimeout(3000);
+
+        responseCode = con.getResponseCode();
+
+        if (responseCode == 200)
+        {
+          bis = new BufferedInputStream(con.getInputStream());
+          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+          String line = null;
+
+          while ((line = reader.readLine()) != null)
+            sb.append(line);
+
+          bis.close();
+        }
+
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+
+      return sb.toString();
+    }
+  }
+
+  /* ========================== 날씨 JSON ==========================*/
+  private class DownloadJson extends AsyncTask<String, String, String>
+  {
+    @Override
+    protected String doInBackground(String... arg0)
+    {
+      try
+      {
+        return (String) getData((String) arg0[0]);
+      } catch (Exception e)
+      {
+        return "Json download failed";
+      }
+    }
+
+    protected void onPostExecute(String result)
+    {
+      try
+      {
+        Log.d("어디", "api onPost");
+
+        JSONObject jsonResult = new JSONObject(result.toString());
+        JSONObject dailyObject = jsonResult.getJSONObject("daily");
+        JSONArray dataArray = dailyObject.getJSONArray("data");
+
+        mAdapter = new CardViewAdapter(generateModels(dataArray));
+//        listViewItems.addAll(generateModels(dataArray));
 //        adapter.addAll(generateModels(dataArray));
-//
-//      } catch (JSONException e)
-//      {
-//        Log.e("catch", "catch진입");
-//        e.printStackTrace();
-//      }
-//    }
-//
-//    private String getData(String strUrl)
-//    {
-//      StringBuilder sb = new StringBuilder();
-//
-//      try
-//      {
-//        BufferedInputStream bis = null;
-//        URL url = new URL(strUrl);
-//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//        int responseCode;
-//
-//        con.setConnectTimeout(3000);
-//        con.setReadTimeout(3000);
-//
-//        responseCode = con.getResponseCode();
-//
-//        if (responseCode == 200)
-//        {
-//          bis = new BufferedInputStream(con.getInputStream());
-//          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
-//          String line = null;
-//
-//          while ((line = reader.readLine()) != null)
-//            sb.append(line);
-//
-//          bis.close();
-//        }
-//
-//      } catch (Exception e)
-//      {
-//        e.printStackTrace();
-//      }
-//
-//      return sb.toString();
-//    }
-//  }
+      } catch (JSONException e)
+      {
+        Log.e("catch", "catch진입");
+        e.printStackTrace();
+      }
+    }
+
+    private String getData(String strUrl)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      try
+      {
+        BufferedInputStream bis = null;
+        URL url = new URL(strUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        int responseCode;
+
+        con.setConnectTimeout(3000);
+        con.setReadTimeout(3000);
+
+        responseCode = con.getResponseCode();
+
+        if (responseCode == 200)
+        {
+          bis = new BufferedInputStream(con.getInputStream());
+          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+          String line = null;
+
+          while ((line = reader.readLine()) != null)
+            sb.append(line);
+
+          bis.close();
+        }
+
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+
+      return sb.toString();
+    }
+  }
 
   /* ================================== Location ==========================================*/
   @Override
@@ -532,7 +597,7 @@ public class MainActivity extends AppCompatActivity
 
   public static void viewClear()
   {
-    view = null;
+//    mRecyclerView = null;
   }
 };
 

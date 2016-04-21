@@ -16,7 +16,8 @@
 
         <activity
             android:name="kr.mintech.weather.MainActivity"
-            android:label="@string/weather">
+            android:label="@string/weather"
+            >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
