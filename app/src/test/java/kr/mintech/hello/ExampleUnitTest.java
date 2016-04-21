@@ -1,4 +1,4 @@
-package kr.mintech.hello;
+package kr.mintech.weather;
 
 import org.junit.Test;
 
