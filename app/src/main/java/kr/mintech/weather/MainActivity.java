@@ -51,6 +51,7 @@ import java.util.Date;
 
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.controllers.CardViewAdapter;
+import kr.mintech.weather.controllers.CardViewAdapterMain;
 import kr.mintech.weather.managers.PreferenceManager;
 
 
@@ -77,9 +78,12 @@ public class MainActivity extends AppCompatActivity
   //  ============== card view ==================
 
   public static RecyclerView mRecyclerView;
+  public static RecyclerView mRecyclerViewMain;
   private RecyclerView.Adapter mAdapter;
+  private RecyclerView.Adapter mAdapterMain;
 
   private RecyclerView.LayoutManager mLayoutManager;
+  private RecyclerView.LayoutManager mLayoutManagerMain;
   private ArrayList<ListViewItem> listViewItems;
   private CardViewAdapter adapter;
 
@@ -90,15 +94,6 @@ public class MainActivity extends AppCompatActivity
   private FrameLayout flContainer;
   private DrawerLayout dlDrawer;
   private ActionBarDrawerToggle dtToggle;
-
-  // ============ 액션바 + 네비 =============
-  private DrawerLayout mDrawerLayout; // 주 기능
-  private ListView mDrawerList; // 내용
-  private ActionBarDrawerToggle mDrawerToggle; // 주 기능
-
-  private CharSequence mDrawerTitle; // ActionBar의 제목을 변경하기 위한 변수
-  private CharSequence mTitle; // ActionBar의 제목을 변경하기 위한 변수
-  private String[] mPlanetTitles; // 태양계 행성 이름들
 
 
   @Override
@@ -138,19 +133,25 @@ public class MainActivity extends AppCompatActivity
     //    setContentView(R.layout.my_activity);
     setContentView(R.layout.activity_main);
     mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+    mRecyclerViewMain = (RecyclerView) findViewById(R.id.my_recycler_view_main);
 
 //    mLayoutManager = new WrappingLinearLayoutManager(getApplicationContext());
 //    mLayoutManager = new LinearLayoutManager(this);
 //    mRecyclerView.setNestedScrollingEnabled(false);
 //    mRecyclerView.setLayoutManager(mLayoutManager);
     mLayoutManager = new LinearLayoutManager(getApplicationContext());
+    mLayoutManagerMain = new LinearLayoutManager(getApplicationContext());
 
     mRecyclerView.setHasFixedSize(true);
+    mRecyclerViewMain.setHasFixedSize(true);
 
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    mRecyclerViewMain.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
     mAdapter = new CardViewAdapter(getApplicationContext(), R.layout.activity_main, listViewItems);
+    mAdapterMain = new CardViewAdapterMain(getApplicationContext(), R.layout.activity_main, listViewItems);
     mRecyclerView.setAdapter(mAdapter);
+    mRecyclerViewMain.setAdapter(mAdapter);
 
     locationListener = new WeatherLocationListener();
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -177,38 +178,10 @@ public class MainActivity extends AppCompatActivity
     lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
 
-    // 액션바 제목
-    mTitle = mDrawerTitle = getTitle();
-
     // ActionBar의 홈버튼을 Navigation Drawer 토글기능으로 사용
 //    getActionBar().setDisplayHomeAsUpEnabled(true);
 //    getActionBar().setHomeButtonEnabled(true);
 
-    // 토글 정의
-//    mDrawerToggle = new ActionBarDrawerToggle(
-//        this,
-//        mDrawerLayout,
-//        R.drawable.img_action_background,
-//        R.string.app_name,
-//        R.string.drawer_close
-//    ) {
-//      public void onDrawerClosed(View view) {
-//        getActionBar().setTitle(mTitle);
-//        invalidateOptionsMenu();
-//      }
-//
-//      public void onDrawerOpened(View drawerView) {
-//        getActionBar().setTitle(mDrawerTitle);
-//        invalidateOptionsMenu();
-//      }
-//    };
-//    // Drawer Layout의 리스너를 mDrawerToggle로 정의
-//    mDrawerLayout.setDrawerListener(mDrawerToggle);
-//
-//    //  인스턴스 상태가 존재 안하면 가장 첫번째 아이템으로 시작
-//    if (savedInstanceState == null) {
-//      selectItem(0);
-//    }
   }
 
   private class DrawerItemClickListener implements ListView.OnItemClickListener
@@ -216,25 +189,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
     {
-      //      switch (position)
-      //      {
-      //        case 0:
-      //          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
-      //          break;
-      //        case 1:
-      //          flContainer.setBackgroundColor(Color.parseColor("#5F9EA0"));
-      //          break;
-      //        case 2:
-      //          flContainer.setBackgroundColor(Color.parseColor("#556B2F"));
-      //          break;
-      //        case 3:
-      //          flContainer.setBackgroundColor(Color.parseColor("#FF8C00"));
-      //          break;
-      //        case 4:
-      //          flContainer.setBackgroundColor(Color.parseColor("#DAA520"));
-      //          break;
-      //
-      //      }
 
     }
   }
@@ -265,6 +219,55 @@ public class MainActivity extends AppCompatActivity
     return super.onOptionsItemSelected(item);
   }
 
+  private ArrayList<ListViewItem> generateModels_main(JSONArray jsonArray)
+  {
+    ArrayList<ListViewItem> items = new ArrayList<>();
+
+    SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat dateFormatHour = new SimpleDateFormat("hh:mm:ss");
+    SimpleDateFormat dayFormat = new SimpleDateFormat("EEE");
+
+    try
+    {
+      for (int i = 0; i < 1; i++)
+      {
+        JSONObject obj = jsonArray.getJSONObject(i);
+        String summary = obj.getString("summary");
+        String icon = obj.getString("icon");
+        String sunrise = obj.getString("sunriseTime");
+        String sunset = obj.getString("sunsetTime");
+        Log.d("어디", "generateModels_main / sunset: " + sunset);
+        Double temperatureMin = obj.getDouble("temperatureMin");
+        Double temperatureMax = obj.getDouble("temperatureMax");
+
+        long unixSunrise = Long.parseLong(sunrise) * 1000;
+        long unixSunset = Long.parseLong(sunset) * 1000;
+        String sunriseTime = dateFormatHour.format(unixSunrise);
+        String sunsetTime = dateFormatHour.format(unixSunset);
+
+        Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
+        Double temperatureChange = (temperatureAvg - 32) + 1.8;
+        String temperature = String.format("%.2f", temperatureChange);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, i);
+        String day = dayFormat.format(new Date(cal.getTimeInMillis()));
+        String date = dateFormatYear.format(new Date(cal.getTimeInMillis()));
+        Log.d("어디", "generateModels_main /day : " + day);
+        Log.d("어디", "generateModels_main /date : " + date);
+        Log.d("어디", "generateModels_main /summary : " + summary);
+
+        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime);
+        items.add(item);
+      }
+    } catch (JSONException e)
+    {
+      e.printStackTrace();
+    }
+    Log.d("어디","generateModels_main 나가기 전: " +items.get(0).getDate());
+    return items;
+  }
+
   private ArrayList<ListViewItem> generateModels(JSONArray jsonArray)
   {
     ArrayList<ListViewItem> items = new ArrayList<>();
@@ -275,7 +278,7 @@ public class MainActivity extends AppCompatActivity
 
     try
     {
-      for (int i = 0; i < 7; i++)
+      for (int i = 1; i < 7; i++)
       {
         JSONObject obj = jsonArray.getJSONObject(i);
         String summary = obj.getString("summary");
@@ -299,9 +302,9 @@ public class MainActivity extends AppCompatActivity
         cal.add(Calendar.DATE, i);
         String day = dayFormat.format(new Date(cal.getTimeInMillis()));
         String date = dateFormatYear.format(new Date(cal.getTimeInMillis()));
-        Log.d("어디", "day : " + day);
-        Log.d("어디", "date : " + date);
-        Log.d("어디", "summary : " + summary);
+        Log.d("어디", "generateModels / day : " + day);
+        Log.d("어디", "generateModels /date : " + date);
+        Log.d("어디", "generateModels /summary : " + summary);
 
         ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime);
         items.add(item);
@@ -310,7 +313,7 @@ public class MainActivity extends AppCompatActivity
     {
       e.printStackTrace();
     }
-    Log.d("어디","generate 나가기 전: " +items.get(0).getDate());
+    Log.d("어디","generateModels 나가기 전: " +items.get(0).getDate());
     return items;
   }
 
@@ -417,6 +420,7 @@ public class MainActivity extends AppCompatActivity
         JSONArray dataArray = dailyObject.getJSONArray("data");
 
         mAdapter = new CardViewAdapter(generateModels(dataArray));
+        mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
 //        listViewItems.addAll(generateModels(dataArray));
 //        adapter.addAll(generateModels(dataArray));
       } catch (JSONException e)

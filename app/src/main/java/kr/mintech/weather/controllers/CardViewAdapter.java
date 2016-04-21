@@ -36,20 +36,11 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
   public CardViewAdapter(ArrayList<ListViewItem> listViewItemList)
   {
     this.listViewItemList = listViewItemList;
-    for (int i = 0; i < 1; i++)
-    {
-      listViewItemList1 = listViewItemList.get(0);
-    }
     addAll(listViewItemList);
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(0).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(1).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(2).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(3).getTitle());
-
-    Log.d("어디", " 오늘 정보만 빼기 listViewItemList1: " + listViewItemList1.getTitle());
-    Log.d("어디", " 오늘 정보만 빼기 listViewItemList1: " + listViewItemList1.getDate());
-    Log.d("어디", " 오늘 정보만 빼기 listViewItemList1: " + listViewItemList1.getStatus());
-    Log.d("어디", " 오늘 정보만 빼기 listViewItemList1: " + listViewItemList1.getTemperature());
   }
 
   public void addAll(ArrayList<ListViewItem> listViewItemList)
@@ -70,15 +61,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
     public ImageView icon;
     public LinearLayout topContainer;
 
-    public TextView day1;
-    public TextView status1;
-    public TextView date1;
-    public TextView sunriseTime1;
-    public TextView sunsetTime1;
-    public TextView temperature1;
-    public ImageView icon1;
-    public LinearLayout topContainer1;
-
     public ViewHolder(View view)
     {
       super(view);
@@ -93,14 +75,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
 //      cardView = (CardView) view.findViewById(R.id.card_view);
       cardView = (CardView) view;
 
-      //      day1 = (TextView) view.findViewById(R.id.day1);
-      //      status1 = (TextView) view.findViewById(R.id.status1);
-      //      date1 = (TextView) view.findViewById(R.id.date1);
-      //      sunriseTime1 = (TextView) view.findViewById(R.id.sunrise1);
-      //      sunsetTime1 = (TextView) view.findViewById(R.id.sunset1);
-      //      temperature1 = (TextView) view.findViewById(R.id.temperature1);
-      //      icon1 = (ImageView) view.findViewById(R.id.weather_image1);
-      //      topContainer1 = (LinearLayout) view.findViewById(R.id.top_container1);
     }
   }
 
