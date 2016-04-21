@@ -16,7 +16,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -40,11 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity
   private TextView text;
   private Dialog dialog;
 
-//  ============== card view ==================
+  //  ============== card view ==================
 
   private RecyclerView mRecyclerView;
   private RecyclerView.Adapter mAdapter;
@@ -88,8 +82,7 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green",
-      "Dark Orange", "Golden Rod"};
+  private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green", "Dark Orange", "Golden Rod"};
   private ListView lvNavList;
   private FrameLayout flContainer;
   private DrawerLayout dlDrawer;
@@ -105,8 +98,8 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
-//    ====================== 기존 리스트 뷰 ==========================
-//    setContentView(R.layout.activity_main);
+    //    ====================== 기존 리스트 뷰 ==========================
+    setContentView(R.layout.activity_main);
 //    ListView listview = (ListView) findViewById(R.id.listview);
 //    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
 //    listview.setAdapter(adapter);
@@ -124,40 +117,39 @@ public class MainActivity extends AppCompatActivity
 //
 //    new DownloadJson().execute(API_URL);
 //    new MapJson().execute(MAP_API);
-//
+
 //    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
 //    ========================= CardView ===========================
 
 //    setContentView(R.layout.my_activity);
-//    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-//
-//    // use this setting to improve performance if you know that changes
-//    // in content do not change the layout size of the RecyclerView
-//    mRecyclerView.setHasFixedSize(true);
-//
-//    // use a linear layout manager
-//    mLayoutManager = new LinearLayoutManager(this);
-//    mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//    // specify an adapter (see also next example)
-//    myDataset = new ArrayList<>();
-//    mAdapter = new CardViewAdapter(myDataset);
-//    mRecyclerView.setAdapter(mAdapter);
-//
-//    myDataset.add(new MyData("#InsideOut", R.mipmap.ic_launcher));
-//    myDataset.add(new MyData("#Mini", R.mipmap.ic_launcher));
-//    myDataset.add(new MyData("#ToyStroy", R.mipmap.ic_launcher));
+    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
-// ======================= 네비게이션 드로워 ==========================
-    setContentView(R.layout.navi_draw);
+    mRecyclerView.setHasFixedSize(true);
 
-    lvNavList = (ListView)findViewById(R.id.lv_activity_main_nav_list);
-    flContainer = (FrameLayout)findViewById(R.id.fl_activity_main_container);
+    // use a linear layout manager
+    mLayoutManager = new LinearLayoutManager(this);
+    mRecyclerView.setLayoutManager(mLayoutManager);
 
-    lvNavList.setAdapter(
-        new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
+    // specify an adapter (see also next example)
+    myDataset = new ArrayList<>();
+    mAdapter = new CardViewAdapter(myDataset);
+    mRecyclerView.setAdapter(mAdapter);
+
+    myDataset.add(new MyData("#InsideOut", R.mipmap.ic_launcher));
+    myDataset.add(new MyData("#Mini", R.mipmap.ic_launcher));
+    myDataset.add(new MyData("#ToyStroy", R.mipmap.ic_launcher));
+
+//    ======================= 네비게이션 드로워 ==========================
+//    setContentView(R.layout.navi_draw);
+
+    lvNavList = (ListView) findViewById(R.id.lv_activity_main_nav_list);
+    flContainer = (FrameLayout) findViewById(R.id.fl_activity_main_container);
+
+    lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
+
+
   }
 
   private class DrawerItemClickListener implements ListView.OnItemClickListener
@@ -229,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         String icon = obj.getString("icon");
         String sunrise = obj.getString("sunriseTime");
         String sunset = obj.getString("sunsetTime");
-        Log.d("어디","sunset: "+sunset);
+        Log.d("어디", "sunset: " + sunset);
         Double temperatureMin = obj.getDouble("temperatureMin");
         Double temperatureMax = obj.getDouble("temperatureMax");
 
@@ -259,152 +251,152 @@ public class MainActivity extends AppCompatActivity
   }
 
   /* ========================== 맵 JSON ==========================*/
-  private class MapJson extends AsyncTask<String, String, String>
-  {
-    @Override
-    protected String doInBackground(String... arg0)
-    {
-      Log.d("어디", "map");
-      try
-      {
-        return (String) getData((String) arg0[0]);
-      } catch (Exception e)
-      {
-        return "Json download failed";
-      }
-    }
-
-    protected void onPostExecute(String result)
-    {
-      try
-      {
-        Log.d("MAP", "onPost");
-        JSONObject jsonResult = new JSONObject(result.toString());
-        JSONArray resultArray = jsonResult.getJSONArray("results");
-        final int max = resultArray.length();
-        for (int i = 0; i < max; i++)
-        {
-          JSONObject obj = resultArray.getJSONObject(2);
-          address = obj.getString("formatted_address");
-          Log.d("어디", "MAP/onPost/address: " + address);
-        }
-
-        text = (TextView) findViewById(R.id.address);
-        text.setText(address);
-      } catch (JSONException e)
-      {
-        Log.e("catch", "catch진입");
-        e.printStackTrace();
-      }
-    }
-
-    private String getData(String strUrl)
-    {
-      StringBuilder sb = new StringBuilder();
-
-      try
-      {
-        BufferedInputStream bis = null;
-        URL url = new URL(strUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        int responseCode;
-
-        con.setConnectTimeout(3000);
-        con.setReadTimeout(3000);
-
-        responseCode = con.getResponseCode();
-
-        if (responseCode == 200)
-        {
-          bis = new BufferedInputStream(con.getInputStream());
-          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
-          String line = null;
-
-          while ((line = reader.readLine()) != null)
-            sb.append(line);
-
-          bis.close();
-        }
-
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-
-      return sb.toString();
-    }
-  }
-
-  /* ========================== 날씨 JSON ==========================*/
-  private class DownloadJson extends AsyncTask<String, String, String>
-  {
-    @Override
-    protected String doInBackground(String... arg0)
-    {
-      try
-      {
-        return (String) getData((String) arg0[0]);
-      } catch (Exception e)
-      {
-        return "Json download failed";
-      }
-    }
-
-    protected void onPostExecute(String result)
-    {
-      try
-      {
-        Log.d("어디", "api onPost");
-
-        JSONObject jsonResult = new JSONObject(result.toString());
-        JSONObject dailyObject = jsonResult.getJSONObject("daily");
-        JSONArray dataArray = dailyObject.getJSONArray("data");
-
-        adapter.addAll(generateModels(dataArray));
-
-      } catch (JSONException e)
-      {
-        Log.e("catch", "catch진입");
-        e.printStackTrace();
-      }
-    }
-
-    private String getData(String strUrl)
-    {
-      StringBuilder sb = new StringBuilder();
-
-      try
-      {
-        BufferedInputStream bis = null;
-        URL url = new URL(strUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        int responseCode;
-
-        con.setConnectTimeout(3000);
-        con.setReadTimeout(3000);
-
-        responseCode = con.getResponseCode();
-
-        if (responseCode == 200)
-        {
-          bis = new BufferedInputStream(con.getInputStream());
-          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
-          String line = null;
-
-          while ((line = reader.readLine()) != null)
-            sb.append(line);
-
-          bis.close();
-        }
-
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-
-      return sb.toString();
-    }
-  }
+//  private class MapJson extends AsyncTask<String, String, String>
+//  {
+//    @Override
+//    protected String doInBackground(String... arg0)
+//    {
+//      Log.d("어디", "map");
+//      try
+//      {
+//        return (String) getData((String) arg0[0]);
+//      } catch (Exception e)
+//      {
+//        return "Json download failed";
+//      }
+//    }
+//
+//    protected void onPostExecute(String result)
+//    {
+//      try
+//      {
+//        Log.d("MAP", "onPost");
+//        JSONObject jsonResult = new JSONObject(result.toString());
+//        JSONArray resultArray = jsonResult.getJSONArray("results");
+//        final int max = resultArray.length();
+//        for (int i = 0; i < max; i++)
+//        {
+//          JSONObject obj = resultArray.getJSONObject(2);
+//          address = obj.getString("formatted_address");
+//          Log.d("어디", "MAP/onPost/address: " + address);
+//        }
+//
+//        text = (TextView) findViewById(R.id.address);
+//        text.setText(address);
+//      } catch (JSONException e)
+//      {
+//        Log.e("catch", "catch진입");
+//        e.printStackTrace();
+//      }
+//    }
+//
+//    private String getData(String strUrl)
+//    {
+//      StringBuilder sb = new StringBuilder();
+//
+//      try
+//      {
+//        BufferedInputStream bis = null;
+//        URL url = new URL(strUrl);
+//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//        int responseCode;
+//
+//        con.setConnectTimeout(3000);
+//        con.setReadTimeout(3000);
+//
+//        responseCode = con.getResponseCode();
+//
+//        if (responseCode == 200)
+//        {
+//          bis = new BufferedInputStream(con.getInputStream());
+//          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+//          String line = null;
+//
+//          while ((line = reader.readLine()) != null)
+//            sb.append(line);
+//
+//          bis.close();
+//        }
+//
+//      } catch (Exception e)
+//      {
+//        e.printStackTrace();
+//      }
+//
+//      return sb.toString();
+//    }
+//  }
+//
+//  /* ========================== 날씨 JSON ==========================*/
+//  private class DownloadJson extends AsyncTask<String, String, String>
+//  {
+//    @Override
+//    protected String doInBackground(String... arg0)
+//    {
+//      try
+//      {
+//        return (String) getData((String) arg0[0]);
+//      } catch (Exception e)
+//      {
+//        return "Json download failed";
+//      }
+//    }
+//
+//    protected void onPostExecute(String result)
+//    {
+//      try
+//      {
+//        Log.d("어디", "api onPost");
+//
+//        JSONObject jsonResult = new JSONObject(result.toString());
+//        JSONObject dailyObject = jsonResult.getJSONObject("daily");
+//        JSONArray dataArray = dailyObject.getJSONArray("data");
+//
+//        adapter.addAll(generateModels(dataArray));
+//
+//      } catch (JSONException e)
+//      {
+//        Log.e("catch", "catch진입");
+//        e.printStackTrace();
+//      }
+//    }
+//
+//    private String getData(String strUrl)
+//    {
+//      StringBuilder sb = new StringBuilder();
+//
+//      try
+//      {
+//        BufferedInputStream bis = null;
+//        URL url = new URL(strUrl);
+//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//        int responseCode;
+//
+//        con.setConnectTimeout(3000);
+//        con.setReadTimeout(3000);
+//
+//        responseCode = con.getResponseCode();
+//
+//        if (responseCode == 200)
+//        {
+//          bis = new BufferedInputStream(con.getInputStream());
+//          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+//          String line = null;
+//
+//          while ((line = reader.readLine()) != null)
+//            sb.append(line);
+//
+//          bis.close();
+//        }
+//
+//      } catch (Exception e)
+//      {
+//        e.printStackTrace();
+//      }
+//
+//      return sb.toString();
+//    }
+//  }
 
   /* ================================== Location ==========================================*/
   @Override
