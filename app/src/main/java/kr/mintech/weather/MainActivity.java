@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -52,7 +53,6 @@ import java.util.Date;
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.controllers.CardViewAdapter;
 import kr.mintech.weather.controllers.CardViewAdapterMain;
-import kr.mintech.weather.managers.CustomLinearLayoutManager;
 import kr.mintech.weather.managers.PreferenceManager;
 
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green", "Dark Orange", "Golden Rod"};
+  private String[] navItems = {"Sign in", "Sign up", "Setting", "Share Weather", "Help" };
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity
     mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
     mRecyclerViewMain = (RecyclerView) findViewById(R.id.my_recycler_view_main);
 
-    mLayoutManager = new CustomLinearLayoutManager(this);
-    mLayoutManagerMain = new CustomLinearLayoutManager(this);
+    mLayoutManager = new LinearLayoutManager(this);
+    mLayoutManagerMain = new LinearLayoutManager(this);
 
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerViewMain.setLayoutManager(mLayoutManagerMain);
@@ -144,10 +144,10 @@ public class MainActivity extends AppCompatActivity
     mRecyclerViewMain.setHasFixedSize(true);
 
     mRecyclerView.setAdapter(mAdapter);
-    mRecyclerViewMain.setAdapter(mAdapter);
+    mRecyclerViewMain.setAdapter(mAdapterMain);
 
-//    mRecyclerView.setNestedScrollingEnabled(false);
-//    mRecyclerViewMain.setNestedScrollingEnabled(false);
+    mRecyclerView.setNestedScrollingEnabled(false);
+    mRecyclerViewMain.setNestedScrollingEnabled(false);
 
     locationListener = new WeatherLocationListener();
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity
         String sunsetTime = dateFormatHour.format(unixSunset);
 
         Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
-        Double temperatureChange = (temperatureAvg - 32) + 1.8;
+        Double temperatureChange = (temperatureAvg - 32) / 1.8;
         String temperature = String.format("%.2f", temperatureChange);
 
         Calendar cal = Calendar.getInstance();
@@ -456,8 +456,6 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
-        Log.d("어디", "api onPost");
-
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONObject dailyObject = jsonResult.getJSONObject("daily");
         JSONArray dataArray = dailyObject.getJSONArray("data");
@@ -466,7 +464,7 @@ public class MainActivity extends AppCompatActivity
         mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
 
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerViewMain.setAdapter(mAdapter);
+        mRecyclerViewMain.setAdapter(mAdapterMain);
 
         //        listViewItems.addAll(generateModels(dataArray));
         //        adapter.addAll(generateModels(dataArray));

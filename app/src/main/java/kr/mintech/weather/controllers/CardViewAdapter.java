@@ -1,8 +1,5 @@
 package kr.mintech.weather.controllers;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +16,6 @@ import kr.mintech.weather.beans.ListViewItem;
 
 public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHolder>
 {
-  private Context context;
   private ArrayList<ListViewItem> listViewItemList;
 
   public CardViewAdapter(ArrayList<ListViewItem> listViewItemList)
@@ -60,12 +56,11 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
   @Override
   public CardViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
-    final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_view, parent, false);
+    final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
     ViewHolder vh = new ViewHolder(v);
     return vh;
   }
 
-  @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
   @Override
   public void onBindViewHolder(ViewHolder holder, int position)
   {
@@ -92,9 +87,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
     else
       holder.icon.setImageResource(R.drawable.ic_weather_clear);
 
-//    int proportionalHeight = UIUtil.containerHeight((MainActivity) mCntx);
-//    TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, proportionalHeight); // (width, height)
-//    holder.container.setLayoutParams(params);
   }
 
   @Override
