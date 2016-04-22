@@ -16,4 +16,7 @@
     <string name="msg_please_gps_enable">"원활한 서비스 이용을 위해서 GPS를 ‘사용’으로 해주세요"</string>
     <string name="msg_dont_support_outside_seoul">서울 외 지역은 서비스 준비중입니다.</string>
 
+    <string name="drawer_open">open?</string>
+    <string name="drawer_close">close?</string>
+
 </resources>

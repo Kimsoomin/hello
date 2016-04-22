@@ -3,7 +3,6 @@ package kr.mintech.weather.controllers;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,34 +19,16 @@ import kr.mintech.weather.beans.ListViewItem;
 
 public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHolder>
 {
-  public CardView cardView;
   private Context context;
   private ArrayList<ListViewItem> listViewItemList;
-  private ListViewItem listViewItemList1;
-  int listviewitem_layout;
-
-  public CardViewAdapter(Context context, int listviewitem_layout, ArrayList<ListViewItem> listViewItemList)
-  {
-    this.context = context;
-    this.listViewItemList = listViewItemList;
-    this.listviewitem_layout = listviewitem_layout;
-  }
 
   public CardViewAdapter(ArrayList<ListViewItem> listViewItemList)
   {
     this.listViewItemList = listViewItemList;
-    addAll(listViewItemList);
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(0).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(1).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(2).getTitle());
     Log.d("어디", "CardViewAdapter / title : " + listViewItemList.get(3).getTitle());
-  }
-
-  public void addAll(ArrayList<ListViewItem> listViewItemList)
-  {
-    Log.d("어디", "addAll 진입");
-    this.listViewItemList.addAll(listViewItemList);
-    notifyDataSetChanged();
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder
@@ -72,8 +53,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
       temperature = (TextView) view.findViewById(R.id.temperature);
       icon = (ImageView) view.findViewById(R.id.weather_image);
       topContainer = (LinearLayout) view.findViewById(R.id.top_container);
-//      cardView = (CardView) view.findViewById(R.id.card_view);
-      cardView = (CardView) view;
 
     }
   }
@@ -91,7 +70,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
   public void onBindViewHolder(ViewHolder holder, int position)
   {
 
-    Log.d("어디", "왜 viewHolder 안들어가나");
+    Log.d("어디", "viewHolder 들어왔다!!!");
     final ListViewItem item = listViewItemList.get(position);
 
     Log.d("어디", "viewholder : " + item.getTitle());
@@ -106,13 +85,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
     holder.sunsetTime.setText("일몰(pm): " + item.getSunsetTime());
     holder.temperature.setText("평균 온도: " + item.getTemperature());
 
-    //    holder.day1.setText(listViewItemList1.getTitle());
-    //    holder.status.setText(listViewItemList1.getStatus());
-    //    holder.date.setText(listViewItemList1.getDate());
-    //    holder.sunriseTime.setText("일출(am): " + listViewItemList1.getSunsetTime());
-    //    holder.sunsetTime.setText("일몰(pm): " +listViewItemList1.getSunsetTime());
-    //    holder.temperature.setText("평균 온도: " +listViewItemList1.getTemperature());
-
     if (item.getIcon().contains("rain"))
       holder.icon.setImageResource(R.drawable.ic_weather_rain);
     else if (item.getIcon().contains("cloud"))
@@ -120,12 +92,9 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
     else
       holder.icon.setImageResource(R.drawable.ic_weather_clear);
 
-    //    if (listViewItemList1.getIcon().contains("rain"))
-    //      holder.icon1.setImageResource(R.drawable.ic_weather_rain);
-    //    else if (listViewItemList1.getIcon().contains("cloud"))
-    //      holder.icon1.setImageResource(R.drawable.ic_weather_cloud);
-    //    else
-    //      holder.icon1.setImageResource(R.drawable.ic_weather_clear);
+//    int proportionalHeight = UIUtil.containerHeight((MainActivity) mCntx);
+//    TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, proportionalHeight); // (width, height)
+//    holder.container.setLayoutParams(params);
   }
 
   @Override
@@ -137,7 +106,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
   @Override
   public int getItemCount()
   {
-    //    Log.d("어디","getItemCount / 리스뷰 사이즈: " +listViewItemList.size());
+    Log.d("어디","getItemCount / 리스뷰 사이즈: " +listViewItemList.size());
     //    return listViewItemList.size();
     return listViewItemList == null ? 0 : listViewItemList.size();
   }

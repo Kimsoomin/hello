@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.DataSetObservable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,9 +21,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -30,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,6 +52,7 @@ import java.util.Date;
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.controllers.CardViewAdapter;
 import kr.mintech.weather.controllers.CardViewAdapterMain;
+import kr.mintech.weather.managers.CustomLinearLayoutManager;
 import kr.mintech.weather.managers.PreferenceManager;
 
 
@@ -79,21 +80,20 @@ public class MainActivity extends AppCompatActivity
 
   public static RecyclerView mRecyclerView;
   public static RecyclerView mRecyclerViewMain;
-  private RecyclerView.Adapter mAdapter;
-  private RecyclerView.Adapter mAdapterMain;
+  private static RecyclerView.Adapter mAdapter;
+  private static RecyclerView.Adapter mAdapterMain;
 
   private RecyclerView.LayoutManager mLayoutManager;
   private RecyclerView.LayoutManager mLayoutManagerMain;
-  private ArrayList<ListViewItem> listViewItems;
-  private CardViewAdapter adapter;
+  private static ArrayList<ListViewItem> listViewItems;
 
   // =============== navi draw ==================
 
   private String[] navItems = {"Brown", "Cadet Blue", "Dark Olive Green", "Dark Orange", "Golden Rod"};
   private ListView lvNavList;
-  private FrameLayout flContainer;
-  private DrawerLayout dlDrawer;
-  private ActionBarDrawerToggle dtToggle;
+  private DrawerLayout mDrawerLayout; // 주 기능
+  private ActionBarDrawerToggle mDrawerToggle; // 주 기능
+  private ActionBar actionBar;
 
 
   @Override
@@ -130,28 +130,24 @@ public class MainActivity extends AppCompatActivity
 
     //    ========================= CardView ===========================
 
-    //    setContentView(R.layout.my_activity);
     setContentView(R.layout.activity_main);
     mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
     mRecyclerViewMain = (RecyclerView) findViewById(R.id.my_recycler_view_main);
 
-//    mLayoutManager = new WrappingLinearLayoutManager(getApplicationContext());
-//    mLayoutManager = new LinearLayoutManager(this);
-//    mRecyclerView.setNestedScrollingEnabled(false);
-//    mRecyclerView.setLayoutManager(mLayoutManager);
-    mLayoutManager = new LinearLayoutManager(getApplicationContext());
-    mLayoutManagerMain = new LinearLayoutManager(getApplicationContext());
+    mLayoutManager = new CustomLinearLayoutManager(this);
+    mLayoutManagerMain = new CustomLinearLayoutManager(this);
+
+    mRecyclerView.setLayoutManager(mLayoutManager);
+    mRecyclerViewMain.setLayoutManager(mLayoutManagerMain);
 
     mRecyclerView.setHasFixedSize(true);
     mRecyclerViewMain.setHasFixedSize(true);
 
-    mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-    mRecyclerViewMain.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-    mAdapter = new CardViewAdapter(getApplicationContext(), R.layout.activity_main, listViewItems);
-    mAdapterMain = new CardViewAdapterMain(getApplicationContext(), R.layout.activity_main, listViewItems);
     mRecyclerView.setAdapter(mAdapter);
     mRecyclerViewMain.setAdapter(mAdapter);
+
+//    mRecyclerView.setNestedScrollingEnabled(false);
+//    mRecyclerViewMain.setNestedScrollingEnabled(false);
 
     locationListener = new WeatherLocationListener();
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -169,19 +165,61 @@ public class MainActivity extends AppCompatActivity
 
     progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
-
     //    ======================= 네비게이션 드로워 ==========================
 
     lvNavList = (ListView) findViewById(R.id.lv_activity_main_nav_list);
-    //    flContainer = (FrameLayout) findViewById(R.id.fl_activity_main_container);
 
     lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
 
+    // DrawerLayout 정의
+    mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_main_drawer);
     // ActionBar의 홈버튼을 Navigation Drawer 토글기능으로 사용
-//    getActionBar().setDisplayHomeAsUpEnabled(true);
-//    getActionBar().setHomeButtonEnabled(true);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setHomeButtonEnabled(true);
 
+    mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
+    {
+
+      @Override
+      public void onDrawerClosed(View drawerView)
+      {
+        super.onDrawerClosed(drawerView);
+      }
+
+      @Override
+      public void onDrawerOpened(View drawerView)
+      {
+        super.onDrawerOpened(drawerView);
+      }
+
+    };
+    mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+  }
+
+
+  @Override
+  protected void onPostCreate(Bundle savedInstanceState)
+  {
+    super.onPostCreate(savedInstanceState);
+    mDrawerToggle.syncState();
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig)
+  {
+    super.onConfigurationChanged(newConfig);
+    mDrawerToggle.onConfigurationChanged(newConfig);
+  }
+
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu)
+  {
+    Log.d("어디", "onPrepareOptionsMenu 진입");
+    // If the nav drawer is open, hide action items related to the content view
+    boolean drawerOpen = mDrawerLayout.isDrawerOpen(lvNavList);
+    return super.onPrepareOptionsMenu(menu);
   }
 
   private class DrawerItemClickListener implements ListView.OnItemClickListener
@@ -189,10 +227,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
     {
-
+      Log.d("어디", "DrawerItemClickListener");
+      switch (position)
+      {
+        case 0:
+          //          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
+          break;
+      }
     }
   }
-
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
@@ -212,9 +255,10 @@ public class MainActivity extends AppCompatActivity
       case R.id.btn_my_location:
         findNearByStation();
         break;
-      case android.R.id.home:
-        finish();
-        return true;
+    }
+    if (mDrawerToggle.onOptionsItemSelected(item))
+    {
+      return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -264,7 +308,7 @@ public class MainActivity extends AppCompatActivity
     {
       e.printStackTrace();
     }
-    Log.d("어디","generateModels_main 나가기 전: " +items.get(0).getDate());
+    Log.d("어디", "generateModels_main 나가기 전: " + items.get(0).getDate());
     return items;
   }
 
@@ -313,7 +357,6 @@ public class MainActivity extends AppCompatActivity
     {
       e.printStackTrace();
     }
-    Log.d("어디","generateModels 나가기 전: " +items.get(0).getDate());
     return items;
   }
 
@@ -421,8 +464,12 @@ public class MainActivity extends AppCompatActivity
 
         mAdapter = new CardViewAdapter(generateModels(dataArray));
         mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
-//        listViewItems.addAll(generateModels(dataArray));
-//        adapter.addAll(generateModels(dataArray));
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerViewMain.setAdapter(mAdapter);
+
+        //        listViewItems.addAll(generateModels(dataArray));
+        //        adapter.addAll(generateModels(dataArray));
       } catch (JSONException e)
       {
         Log.e("catch", "catch진입");
@@ -601,7 +648,7 @@ public class MainActivity extends AppCompatActivity
 
   public static void viewClear()
   {
-//    mRecyclerView = null;
+    //    mRecyclerView = null;
   }
 };
 
