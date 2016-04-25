@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
+//    android:name="com.google.android.gms.version"
+//    android:value="@integer/google_play_services_version"
     super.onCreate(savedInstanceState);
     //    checkLanguage();
 

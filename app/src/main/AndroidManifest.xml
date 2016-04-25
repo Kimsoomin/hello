@@ -16,6 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyARKW5SJIx8B0LKUo7egyKsfCTacHWDsl0"/>
+
         <activity
             android:name="kr.mintech.weather.MainActivity"
             android:label="@string/weather">
@@ -28,7 +36,7 @@
         </activity>
 
         <activity
-            android:name="kr.mintech.weather.MainActivity"
+            android:name="kr.mintech.weather.SignInActivity"
             android:label="@string/weather">
 
             <intent-filter>
@@ -40,11 +48,8 @@
 
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyANdVw4QIycuEyLbfkECU_ct7NjEjklooY"/>
+
+
     </application>
 
 </manifest>
