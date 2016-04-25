@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -139,6 +140,18 @@ public class MainActivity extends AppCompatActivity
       mName.setText(name);
       mAddress.setText(address);
       mAttributions.setText(Html.fromHtml(attributions));
+
+      String str = name.toString();
+      Log.d("어디","str  /  " +str);
+      String lat = str.substring(1, str.indexOf(","));
+      String lon = str.substring(13, str.indexOf(")"));
+
+      Log.d("어디","lat  /  " +lat);
+      Log.d("어디","lon  /  " +lon);
+//      String lat = result.substring(0, result.indexOf(","));
+//      String lon = result.substring(1, result.indexOf(","));
+//      Log.d("어디","lat+lon" +lat);
+//      Log.d("어디","lat+lon" +lon);
 
     }
     else

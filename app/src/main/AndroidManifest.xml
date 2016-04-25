@@ -22,7 +22,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyARKW5SJIx8B0LKUo7egyKsfCTacHWDsl0"/>
+            android:value="AIzaSyBk7MCuJqU1z8dhTW2HCgxr2_jiXzyudjE"/>
 
         <activity
             android:name="kr.mintech.weather.MainActivity"

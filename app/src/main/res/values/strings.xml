@@ -19,4 +19,6 @@
     <string name="drawer_open">open?</string>
     <string name="drawer_close">close?</string>
 
+    <string name="google_app_id">YOUR_PROJECT_NUMBER</string>
+
 </resources>
