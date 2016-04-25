@@ -86,82 +86,31 @@ public class BasePreferenceManager
   }
 
 
-//  /**
-//   * key 설정
-//   *
-//   * @param key   키 값
-//   * @param value 내용
-//   */
-//  protected static void put(String key, int value)
-//  {
-//    SharedPreferences p = _preference;
-//    SharedPreferences.Editor editor = p.edit();
-//    editor.putInt(key, value);
-//    editor.commit();
-//  }
-//
-//
-//  /**
-//   * int 값 가져오기
-//   *
-//   * @param key          키 값
-//   * @param defaultValue 기본값
-//   * @return int
-//   */
-//  protected static int get(String key, int defaultValue)
-//  {
-//    SharedPreferences p = _preference;
-//    return p.getInt(key, defaultValue);
-//  }
-
-  /* ========================== */
   /**
    * key 설정
    *
    * @param key   키 값
    * @param value 내용
    */
-  protected static void putLat(String key, double value)
+  protected static void put(String key, int value)
   {
     SharedPreferences p = _preference;
     SharedPreferences.Editor editor = p.edit();
-    editor.putLong(key, Double.doubleToRawLongBits(value));
+    editor.putInt(key, value);
     editor.commit();
   }
 
 
   /**
-   * double 값 가져오기
+   * int 값 가져오기
    *
    * @param key          키 값
    * @param defaultValue 기본값
    * @return int
    */
-  protected static long getLat(String key, long defaultValue)
+  protected static int get(String key, int defaultValue)
   {
     SharedPreferences p = _preference;
-    return p.getLong(key, defaultValue);
-  }
-
-  protected static void putLon(String key, double value)
-  {
-    SharedPreferences p = _preference;
-    SharedPreferences.Editor editor = p.edit();
-    editor.putLong(key, Double.doubleToRawLongBits(value));
-    editor.commit();
-  }
-
-
-  /**
-   * double 값 가져오기
-   *
-   * @param key          키 값
-   * @param defaultValue 기본값
-   * @return int
-   */
-  protected static long getLon(String key, long defaultValue)
-  {
-    SharedPreferences p = _preference;
-    return p.getLong(key, defaultValue);
+    return p.getInt(key, defaultValue);
   }
 }

@@ -7,7 +7,6 @@ import kr.mintech.weather.beans.Const;
 public class PreferenceManager extends BasePreferenceManager
 {
   private static PreferenceManager instance;
-  private static Const con;
 
 
   public static PreferenceManager getInstance(Context context)
@@ -29,26 +28,17 @@ public class PreferenceManager extends BasePreferenceManager
     super(context);
   }
 
-  private static final String KEY_LAT = "key_lat";
-  private static final String KEY_LON = "key_lon";
+  private static final String KEY_SELECTED_LANGUAGE = "key_selected_language";
 
 
-  public void setLat(double lat)
+  public void setSelectedLanguage(int value)
   {
-    putLat(KEY_LAT, lat);
+    put(KEY_SELECTED_LANGUAGE, value);
   }
 
-  public long getLat()
+  public int getSelectedLanguage()
   {
-    return getLat(KEY_LAT, 37);
-  }
-
-  public void setLon(double lon) {putLon(KEY_LON, lon);
-  }
-
-  public long getLon()
-  {
-    return getLon(KEY_LON, 127);
+    return get(KEY_SELECTED_LANGUAGE, Const.L_EN);
   }
 
 }
