@@ -9,7 +9,27 @@ public class ListViewItem
   private String temperature;
   private String sunriseTime;
   private String sunsetTime;
-  public double lon = -1, lat = -1;
+  private String dewpoint;
+  private String humidity;
+  private String windspeed;
+  private String visibility;
+  private String pressure;
+
+  public ListViewItem(String day, String date, String status, String icon, String temperature, String sunriseTime, String sunsetTime, String dewpoint, String humidity, String windspeed, String visibility, String pressure)
+  {
+    this.day = day;
+    this.date = date;
+    this.status = status;
+    this.icon = icon;
+    this.temperature = temperature;
+    this.sunriseTime = sunriseTime;
+    this.sunsetTime = sunsetTime;
+    this.dewpoint = dewpoint;
+    this.humidity = humidity;
+    this.windspeed = windspeed;
+    this.visibility = visibility;
+    this.pressure = pressure;
+  }
 
   public ListViewItem(String day, String date, String status, String icon, String temperature, String sunriseTime, String sunsetTime)
   {
@@ -48,13 +68,39 @@ public class ListViewItem
     return this.temperature;
   }
 
-  public String getSunsetTime(){
+  public String getSunsetTime()
+  {
     return this.sunsetTime;
   }
 
   public String getSunriseTime()
   {
     return this.sunriseTime;
+  }
+
+  public String getDewpoint()
+  {
+    return this.dewpoint;
+  }
+
+  public String getHumidity()
+  {
+    return this.humidity;
+  }
+
+  public String getWindspeed()
+  {
+    return this.windspeed;
+  }
+
+  public String getVisibility()
+  {
+    return this.visibility;
+  }
+
+  public String getPressure()
+  {
+    return this.pressure;
   }
 
 }

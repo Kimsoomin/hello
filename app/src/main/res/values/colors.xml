@@ -3,7 +3,21 @@
 
     <color name="ColorPrimary">#8BC34A</color>
     <color name="ColorPrimaryDark">#4CAF50</color>
-    <!-- subway에서 가져온 칼라-->
+    <color name="blue">#5677FC</color>
+    <color name="blue_100">#d0d9ff</color>
+    <color name="blue_200">#afbfff</color>
+    <color name="blue_300">#91a7ff</color>
+    <color name="indigo">#3F51b5</color>
+    <color name="indigo_300">#7986cb</color>
+    <!-- subway에서 가져온 칼라 -->
+
+    <color name="pressed1">#959ca4</color>
+    <color name="pressed2">#646d79</color>
+    <color name="focused1">#959ca4</color>
+    <color name="focused2">#646d79</color>
+    <color name="default1">#686e77</color>
+    <color name="default2">#40474f</color>
+    <color name="stroke">#00000000</color>
 
     <color name="appcolor">#2dbdb6</color>
     <color name="background">#404343</color>
@@ -25,8 +39,8 @@
     <color name="dark_pink">#ff6262</color>
     <color name="darker_pink">#ff4545</color>
     <color name="dark_pink_transparent">#90ff6262</color>
-    <color name="light_blue">#d0697577</color>
-    <color name="dark_blue">#697577</color>
+    <color name="light_black">#d0697577</color>
+    <color name="dark_black">#697577</color>
     <color name="summary_center">#dddddd</color>
     <color name="navi_center">#a3a3a3</color>
     <color name="tutorial_skip">#686868</color>

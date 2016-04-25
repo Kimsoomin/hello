@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Sign in", "Sign up", "Setting", "Share Weather", "Help" };
+  private String[] navItems = {"Sign in", "Sign up", "Setting", "Share Weather", "Help"};
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
@@ -231,7 +232,19 @@ public class MainActivity extends AppCompatActivity
       switch (position)
       {
         case 0:
-          //          flContainer.setBackgroundColor(Color.parseColor("#A52A2A"));
+       Toast.makeText(MainActivity.this, "sign in 클릭", Toast.LENGTH_SHORT).show();
+          break;
+        case 1:
+          Toast.makeText(MainActivity.this, "sign up 클릭", Toast.LENGTH_SHORT).show();
+          break;
+        case 2:
+          Toast.makeText(MainActivity.this, "setting 클릭", Toast.LENGTH_SHORT).show();
+          break;
+        case 3:
+          Toast.makeText(MainActivity.this, "share weather 클릭", Toast.LENGTH_SHORT).show();
+          break;
+        case 4:
+          Toast.makeText(MainActivity.this, "help 클릭", Toast.LENGTH_SHORT).show();
           break;
       }
     }
@@ -280,6 +293,13 @@ public class MainActivity extends AppCompatActivity
         String icon = obj.getString("icon");
         String sunrise = obj.getString("sunriseTime");
         String sunset = obj.getString("sunsetTime");
+
+        String dewPoint = obj.getString("dewPoint");
+        String humidity = obj.getString("humidity");
+        String windSpeed = obj.getString("windSpeed");
+        String visibility = obj.getString("visibility");
+        String pressure = obj.getString("pressure");
+
         Log.d("어디", "generateModels_main / sunset: " + sunset);
         Double temperatureMin = obj.getDouble("temperatureMin");
         Double temperatureMax = obj.getDouble("temperatureMax");
@@ -291,7 +311,9 @@ public class MainActivity extends AppCompatActivity
 
         Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
         Double temperatureChange = (temperatureAvg - 32) / 1.8;
-        String temperature = String.format("%.2f", temperatureChange);
+        String temp = String.format("%.2f", temperatureChange);
+        String temperature = temp.substring(0, temp.indexOf("."));
+
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, i);
@@ -301,14 +323,13 @@ public class MainActivity extends AppCompatActivity
         Log.d("어디", "generateModels_main /date : " + date);
         Log.d("어디", "generateModels_main /summary : " + summary);
 
-        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime);
+        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, visibility, pressure);
         items.add(item);
       }
     } catch (JSONException e)
     {
       e.printStackTrace();
     }
-    Log.d("어디", "generateModels_main 나가기 전: " + items.get(0).getDate());
     return items;
   }
 
@@ -339,8 +360,9 @@ public class MainActivity extends AppCompatActivity
         String sunsetTime = dateFormatHour.format(unixSunset);
 
         Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
-        Double temperatureChange = (temperatureAvg - 32) + 1.8;
-        String temperature = String.format("%.2f", temperatureChange);
+        Double temperatureChange = (temperatureAvg - 32) / 1.8;
+        String temp = String.format("%.2f", temperatureChange);
+        String temperature = temp.substring(0, temp.indexOf("."));
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, i);

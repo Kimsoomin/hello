@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    card_view:cardCornerRadius="16dp">
+    card_view:cardCornerRadius="12dp">
 
     <LinearLayout
         android:id="@+id/top_container_main"
@@ -17,68 +17,74 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
             android:orientation="horizontal"
-            android:layout_marginLeft="16dp"
             android:weightSum="1">
+
+
+            <TextView
+                android:id="@+id/day_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="0.3"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/date_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.3"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/update_hour_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:gravity="right"
                 android:paddingRight="64dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"/>
+                android:textSize="12sp"
+                android:textStyle="bold"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="16dp">
+            android:layout_marginLeft="12dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/temperature_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/margin32"
                     android:layout_gravity="center_vertical"
-                    android:textStyle="bold"
-                    android:layout_weight="0.3"/>
+                    android:textSize="40dp"
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/weather_image_main"
                     android:layout_width="@dimen/margin64"
                     android:layout_height="@dimen/margin64"
-                    android:src="@drawable/ico_wg1"
-                    android:layout_weight="0.3"/>
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/ico_wg1"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginLeft="@dimen/margin64"
                     android:orientation="vertical"
-                    android:gravity="right"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/margin16"
-                    android:weightSum="1"
-                    android:layout_weight="0.3">
+                    android:weightSum="1">
 
                     <TextView
                         android:id="@+id/sunrise_main"
@@ -97,42 +103,232 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/frog_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:layout_marginLeft="16dp"
             android:weightSum="1">
 
             <TextView
-                android:id="@+id/day_main"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_weight="0.4"
-                android:layout_gravity="left"/>
-
-            <TextView
                 android:id="@+id/status_main"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="0.6"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/detail_button"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginLeft="88dp"
+                android:textSize="10dp"
+                android:background="@drawable/selector"
+                />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="0.35">
+
+                    <ImageView
+                        android:id="@+id/img_dewpoint"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/dewpoint"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp">
+
+                        <TextView
+                            android:id="@+id/explain_dewpoint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="이슬점"/>
+
+                        <TextView
+                            android:id="@+id/detail_dewpoint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="0.35">
+
+                    <ImageView
+                        android:id="@+id/img_humidity"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/humidity"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp">
+
+                        <TextView
+                            android:id="@+id/explain_humidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="습도"/>
+
+                        <TextView
+                            android:id="@+id/detail_humidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="0.35">
+
+                    <ImageView
+                        android:id="@+id/img_windspeed"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/windspeed"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp">
+
+                        <TextView
+                            android:id="@+id/explain_windspeed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="풍속"/>
+
+                        <TextView
+                            android:id="@+id/detail_windspeed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="0.35">
+
+                    <ImageView
+                        android:id="@+id/img_visibility"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/visibility"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp">
+
+                        <TextView
+                            android:id="@+id/explain_visibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="가시거리"/>
+
+                        <TextView
+                            android:id="@+id/detail_visibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="0.35">
+
+                    <ImageView
+                        android:id="@+id/img_pressure"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/pressure"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp">
+
+                        <TextView
+                            android:id="@+id/explain_pressure"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:text="기압"/>
+
+                        <TextView
+                            android:id="@+id/detail_pressure"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
-
-
 </android.support.v7.widget.CardView>
 
