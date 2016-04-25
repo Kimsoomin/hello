@@ -64,7 +64,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
   @Override
   public void onBindViewHolder(ViewHolder holder, int position)
   {
-
     Log.d("어디", "viewHolder 들어왔다!!!");
     final ListViewItem item = listViewItemList.get(position);
 
@@ -102,5 +101,6 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.ViewHo
     //    return listViewItemList.size();
     return listViewItemList == null ? 0 : listViewItemList.size();
   }
+
 }
 

@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -172,6 +173,24 @@ public class MainActivity extends AppCompatActivity
 
     lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
+//    lvNavList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//    {
+//      @Override
+//      public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+//      {
+//        switch (position)
+//        {
+//          case 0:
+//            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+//            startActivity(intent);
+//            break;
+//          case 1:
+//            Toast.makeText(MainActivity.this, "sign up click", Toast.LENGTH_SHORT).show();
+//
+//        }
+//      }
+//    });
+
 
     // DrawerLayout 정의
     mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_main_drawer);
@@ -229,25 +248,21 @@ public class MainActivity extends AppCompatActivity
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)
     {
       Log.d("어디", "DrawerItemClickListener");
-      switch (position)
-      {
-        case 0:
-       Toast.makeText(MainActivity.this, "sign in 클릭", Toast.LENGTH_SHORT).show();
-          break;
-        case 1:
-          Toast.makeText(MainActivity.this, "sign up 클릭", Toast.LENGTH_SHORT).show();
-          break;
-        case 2:
-          Toast.makeText(MainActivity.this, "setting 클릭", Toast.LENGTH_SHORT).show();
-          break;
-        case 3:
-          Toast.makeText(MainActivity.this, "share weather 클릭", Toast.LENGTH_SHORT).show();
-          break;
-        case 4:
-          Toast.makeText(MainActivity.this, "help 클릭", Toast.LENGTH_SHORT).show();
-          break;
-      }
+      selectItem(position);
     }
+  }
+
+  private void selectItem(int position) {
+    switch (position)
+    {
+      case 0:
+        Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+        startActivity(intent);
+        break;
+      case 1:
+        Toast.makeText(MainActivity.this, "sign up click", Toast.LENGTH_SHORT).show();
+    }
+    mDrawerLayout.closeDrawer(GravityCompat.START);
   }
 
   @Override
