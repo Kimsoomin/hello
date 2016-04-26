@@ -43,7 +43,6 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
     public TextView sunriseTime_main;
     public TextView sunsetTime_main;
     public TextView temperature_main;
-    public TextView update_hour_main;
     public ImageView icon_main;
     public LinearLayout topContainer_main;
 
@@ -58,14 +57,11 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
     public TextView explain_windspeed;
     public TextView detail_visibility;
     public TextView explain_visibility;
-    public TextView detail_pressure;
-    public TextView explain_pressure;
 
     public ImageView img_dewpoint;
     public ImageView img_humidity;
     public ImageView img_windspeed;
     public ImageView img_visibility;
-    public ImageView img_pressure;
 
     public ViewHolder(View view)
     {
@@ -78,7 +74,6 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
       temperature_main = (TextView) view.findViewById(R.id.temperature_main);
       icon_main = (ImageView) view.findViewById(R.id.weather_image_main);
       topContainer_main = (LinearLayout) view.findViewById(R.id.top_container_main);
-      update_hour_main = (TextView) view.findViewById(R.id.update_hour_main);
       detail_button = (Button) view.findViewById(R.id.detail_button);
 
       detail_container = (LinearLayout) view.findViewById(R.id.detail_container);
@@ -91,14 +86,11 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
       explain_windspeed = (TextView) view.findViewById(R.id.explain_windspeed);
       detail_visibility = (TextView) view.findViewById(R.id.detail_visibility);
       explain_visibility = (TextView) view.findViewById(R.id.explain_visibility);
-      detail_pressure = (TextView) view.findViewById(R.id.detail_pressure);
-      explain_pressure = (TextView) view.findViewById(R.id.explain_pressure);
 
       img_dewpoint = (ImageView) view.findViewById(R.id.img_dewpoint);
       img_humidity = (ImageView) view.findViewById(R.id.img_humidity);
       img_windspeed = (ImageView) view.findViewById(R.id.img_windspeed);
       img_visibility = (ImageView) view.findViewById(R.id.img_visibility);
-      img_pressure = (ImageView) view.findViewById(R.id.img_pressure);
     }
   }
 
@@ -121,7 +113,6 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
     Log.d("메인", "viewholder : " + listViewItemList1.getDate());
 
     holder.day_main.setText("오늘 " +listViewItemList1.getTitle()+"요일");
-    holder.update_hour_main.setText("Last update");
     holder.status_main.setText(listViewItemList1.getStatus());
     holder.date_main.setText(listViewItemList1.getDate());
     holder.sunriseTime_main.setText("일출(am): " + listViewItemList1.getSunriseTime());
@@ -132,7 +123,6 @@ public class CardViewAdapterMain extends RecyclerView.Adapter<CardViewAdapterMai
     holder.detail_humidity.setText(listViewItemList1.getHumidity()+ "%");
     holder.detail_windspeed.setText(listViewItemList1.getWindspeed()+ "M/초");
     holder.detail_visibility.setText(listViewItemList1.getVisibility()+ "km");
-    holder.detail_pressure.setText(listViewItemList1.getPressure()+ "hPa");
 
     if (listViewItemList1.getIcon().contains("rain"))
       holder.icon_main.setImageResource(R.drawable.ic_weather_rain);

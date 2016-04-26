@@ -37,34 +37,14 @@
                     android:layout_height="0.3dip"
                     android:layout_below="@+id/address"
                     android:background="#FF909090"/>
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/weather_today"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/location">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/my_recycler_view_main"
+                <ListView
+                    android:id="@+id/listview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical"/>
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/line"/>
+
             </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/weather_week"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/weather_today">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/my_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical"/>
-            </RelativeLayout>
-
 
             <ProgressBar
                 android:id="@+id/progress_bar"

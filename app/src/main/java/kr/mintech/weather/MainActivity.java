@@ -1,6 +1,5 @@
 package kr.mintech.weather;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
@@ -25,7 +24,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -62,14 +60,13 @@ import java.util.Locale;
 
 import kr.mintech.weather.beans.Const;
 import kr.mintech.weather.beans.ListViewItem;
-import kr.mintech.weather.controllers.CardViewAdapter;
-import kr.mintech.weather.controllers.CardViewAdapterMain;
+import kr.mintech.weather.controllers.CardViewListViewAdapter;
 import kr.mintech.weather.managers.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
 {
-  //  public static View view;
-  //  private ListViewAdapter adapter;
+  public static View view;
+  private static CardViewListViewAdapter adapter;
 
   //  Locale systemLocale = getResources().getConfiguration().locale;
   //  String strLanguage = systemLocale.getLanguage();
@@ -142,31 +139,30 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
-//    ======================기존 리스트 뷰 ==========================
-//    setContentView(R.layout.activity_main);
-//    ListView listview = (ListView) findViewById(R.id.listview);
-//    adapter = new ListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
-//    listview.setAdapter(adapter);
-//
-//    locationListener = new WeatherLocationListener();
-//    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-//
-//    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
-//    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
-//
-//    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
-//    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
-//
-//    new DownloadJson().execute(API_URL);
-//    new MapJson().execute(MAP_API);
-//
-//    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
-
-//  =================== place picker ======================
+    //    ======================기존 리스트 뷰 ==========================
     setContentView(R.layout.activity_main);
     text = (TextView) findViewById(R.id.address);
+    ListView listview = (ListView) findViewById(R.id.listview);
+    adapter = new CardViewListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
+    listview.setAdapter(adapter);
+
+    locationListener = new WeatherLocationListener();
+    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+
+    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+
+    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
+
+    new MapJson().execute(MAP_API);
+    new DownloadJson().execute(API_URL);
+
+    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+
+    //  =================== place picker ======================
 
     text.setOnClickListener(new View.OnClickListener()
     {
@@ -188,44 +184,44 @@ public class MainActivity extends AppCompatActivity
       }
     });
 
-//    ========================= CardView ===========================
-
-    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-    mRecyclerViewMain = (RecyclerView) findViewById(R.id.my_recycler_view_main);
-
-    mLayoutManager = new LinearLayoutManager(this);
-    mLayoutManagerMain = new LinearLayoutManager(this);
-
-    mRecyclerView.setLayoutManager(mLayoutManager);
-    mRecyclerViewMain.setLayoutManager(mLayoutManagerMain);
-
-    mRecyclerView.setHasFixedSize(true);
-    mRecyclerViewMain.setHasFixedSize(true);
-
-    mRecyclerView.setAdapter(mAdapter);
-    mRecyclerViewMain.setAdapter(mAdapterMain);
-
-    mRecyclerView.setNestedScrollingEnabled(false);
-    mRecyclerViewMain.setNestedScrollingEnabled(false);
-
-    locationListener = new WeatherLocationListener();
-    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-
-    latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
-    longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
-
-    Log.d("어디","start() / lat / " + latitude);
-    Log.d("어디","start() / lon / " + longitude);
-
-    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
-    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
-
-    new MapJson().execute(MAP_API);
-    new DownloadJson().execute(API_URL);
-
-    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+    //    ========================= CardView ===========================
+    //
+    //    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+    //    mRecyclerViewMain = (RecyclerView) findViewById(R.id.my_recycler_view_main);
+    //
+    //    mLayoutManager = new LinearLayoutManager(this);
+    //    mLayoutManagerMain = new LinearLayoutManager(this);
+    //
+    //    mRecyclerView.setLayoutManager(mLayoutManager);
+    //    mRecyclerViewMain.setLayoutManager(mLayoutManagerMain);
+    //
+    //    mRecyclerView.setHasFixedSize(true);
+    //    mRecyclerViewMain.setHasFixedSize(true);
+    //
+    //    mRecyclerView.setAdapter(mAdapter);
+    //    mRecyclerViewMain.setAdapter(mAdapterMain);
+    //
+    //    mRecyclerView.setNestedScrollingEnabled(false);
+    //    mRecyclerViewMain.setNestedScrollingEnabled(false);
+    //
+    //    locationListener = new WeatherLocationListener();
+    //    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    //
+    //    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+    //
+    //    latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+    //    longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+    //
+    //    Log.d("어디","start() / lat / " + latitude);
+    //    Log.d("어디","start() / lon / " + longitude);
+    //
+    //    String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+    //    String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
+    //
+    //    new MapJson().execute(MAP_API);
+    //    new DownloadJson().execute(API_URL);
+    //
+    //    progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
     //    ======================= 네비게이션 드로워 ==========================
 
@@ -241,7 +237,7 @@ public class MainActivity extends AppCompatActivity
     //        switch (position)
     //        {
     //          case 0:
-    //            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+    //            Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
     //            startActivity(intent);
     //            break;
     //          case 1:
@@ -277,7 +273,7 @@ public class MainActivity extends AppCompatActivity
     mDrawerLayout.addDrawerListener(mDrawerToggle);
   }
 
-//  =================== place picker result =========================
+  //  =================== place picker result =========================
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data)
   {
@@ -307,8 +303,8 @@ public class MainActivity extends AppCompatActivity
       latitude = Double.valueOf(lat);
       longitude = Double.valueOf(lon);
 
-      Log.d("어디","place picker / latitude / " +latitude);
-      Log.d("어디","place picker / longitude / " +longitude);
+      Log.d("어디", "place picker / latitude / " + latitude);
+      Log.d("어디", "place picker / longitude / " + longitude);
 
       // 저장할 값들을 입력합니다.
       editor.putLong("lat", Double.doubleToRawLongBits(latitude));
@@ -378,7 +374,7 @@ public class MainActivity extends AppCompatActivity
     switch (position)
     {
       case 0:
-        Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+        Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
         startActivity(intent);
         break;
       case 1:
@@ -480,7 +476,7 @@ public class MainActivity extends AppCompatActivity
 
     try
     {
-      for (int i = 1; i < 7; i++)
+      for (int i = 0; i < 7; i++)
       {
         JSONObject obj = jsonArray.getJSONObject(i);
         String summary = obj.getString("summary");
@@ -550,7 +546,6 @@ public class MainActivity extends AppCompatActivity
           Log.d("어디", "MAP/onPost/address: " + address);
         }
 
-        text = (TextView) findViewById(R.id.address);
         text.setText(address);
       } catch (JSONException e)
       {
@@ -619,14 +614,14 @@ public class MainActivity extends AppCompatActivity
         JSONObject dailyObject = jsonResult.getJSONObject("daily");
         JSONArray dataArray = dailyObject.getJSONArray("data");
 
-        mAdapter = new CardViewAdapter(generateModels(dataArray));
-        mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
+//        mAdapter = new CardViewAdapter(generateModels(dataArray));
+//        mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
+//
+//        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerViewMain.setAdapter(mAdapterMain);
 
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerViewMain.setAdapter(mAdapterMain);
-
-        //        listViewItems.addAll(generateModels(dataArray));
-        //        adapter.addAll(generateModels(dataArray));
+//        listViewItems.addAll(generateModels(dataArray));
+        adapter.addAll(generateModels(dataArray));
       } catch (JSONException e)
       {
         Log.e("catch", "catch진입");
