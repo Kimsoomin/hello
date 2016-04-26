@@ -101,7 +101,7 @@ public class CardViewListViewAdapter extends BaseAdapter
       holder.icon.setImageResource(R.drawable.ic_weather_clear);
 
 // ============================== ^ holder 테스트 ^==========================
-// ============================== 기존 소스 ==============================
+// ============================== 기존 소스 =================================
 //    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_item, parent, false);
 //    ListViewItem item = listViewItemList.get(position);
 //
