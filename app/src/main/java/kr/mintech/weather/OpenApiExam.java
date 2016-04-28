@@ -27,6 +27,8 @@ public class OpenApiExam extends Activity implements OnClickListener {
   Button btnClear;
   Button btnSend;
   TextView tvResult;
+  String test;
+  String res;
 
   // 통신에 사용되는 변수
   APIRequest api;
@@ -40,7 +42,7 @@ public class OpenApiExam extends Activity implements OnClickListener {
   String hndResult = "";
   Handler msgHandler = new Handler(){
     public void dispatchMessage(Message msg) {
-      tvResult.setText(hndResult);
+      tvResult.setText(res);
     };
   };
 
@@ -120,6 +122,8 @@ public class OpenApiExam extends Activity implements OnClickListener {
     public void onComplete(ResponseMessage result) {
       // 응답을 받아 메시지 핸들러에 알려준다.
       hndResult = result.getStatusCode() + "\n" + result.toString();
+      test = hndResult.split("grade")[1];
+      res = test.substring(3,5);
       msgHandler.sendEmptyMessage(0);
     }
   };

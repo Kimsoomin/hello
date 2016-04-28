@@ -12,10 +12,12 @@ public class ListViewItem
   private String dewpoint;
   private String humidity;
   private String windspeed;
-  private String visibility;
   private String pressure;
+  private String dust;
 
-  public ListViewItem(String day, String date, String status, String icon, String temperature, String sunriseTime, String sunsetTime, String dewpoint, String humidity, String windspeed, String visibility, String pressure)
+  public ListViewItem(){};
+  public ListViewItem(String day, String date, String status, String icon, String temperature,
+                      String sunriseTime, String sunsetTime, String dewpoint, String humidity, String windspeed, String pressure)
   {
     this.day = day;
     this.date = date;
@@ -27,8 +29,8 @@ public class ListViewItem
     this.dewpoint = dewpoint;
     this.humidity = humidity;
     this.windspeed = windspeed;
-    this.visibility = visibility;
     this.pressure = pressure;
+
   }
 
   public ListViewItem(String day, String date, String status, String icon, String temperature, String sunriseTime, String sunsetTime)
@@ -93,14 +95,19 @@ public class ListViewItem
     return this.windspeed;
   }
 
-  public String getVisibility()
-  {
-    return this.visibility;
-  }
 
   public String getPressure()
   {
     return this.pressure;
   }
 
+  public void setDust(String dust)
+  {
+    this.dust = dust;
+  }
+
+  public String getDust()
+  {
+    return this.dust;
+  }
 }

@@ -18,8 +18,19 @@ import kr.mintech.weather.beans.ListViewItem;
 
 public class CardViewListViewAdapter extends BaseAdapter
 {
+  private ListViewItem listViewItem = new ListViewItem();
   private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
   LayoutInflater inflater;
+
+  public CardViewListViewAdapter()
+  {
+
+  }
+
+  public ListViewItem CardViewListViewAdapterReceive()
+  {
+    return this.listViewItem;
+  }
 
   public CardViewListViewAdapter(Context context, LayoutInflater inflater, ArrayList<ListViewItem> listViewItemList)
   {
@@ -27,15 +38,15 @@ public class CardViewListViewAdapter extends BaseAdapter
     this.inflater = inflater;
   }
 
-  public void addItem(ListViewItem item)
-  {
-    listViewItemList.add(item);
-  }
-
   public void addAll(ArrayList<ListViewItem> items)
   {
     this.listViewItemList.addAll(items);
     notifyDataSetChanged();
+  }
+
+  public void add(String res)
+  {
+    this.listViewItem.setDust(res);
   }
 
   //================================================
@@ -60,48 +71,6 @@ public class CardViewListViewAdapter extends BaseAdapter
   @Override
   public View getView(int position, View convertView, final ViewGroup parent)
   {
-
-//    //리스트뷰 성능에 관한 부분
-//    ViewHolder holder;
-//    if (convertView == null)
-//    {
-//      convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
-////      convertView = inflater.inflate(R.layout.listview_item, parent, false);
-//
-//      holder = new ViewHolder();
-//      holder.item = listViewItemList.get(position);
-//      holder.day = (TextView) convertView.findViewById(R.id.day);
-//      holder.status = (TextView) convertView.findViewById(R.id.status);
-//      holder.date = (TextView) convertView.findViewById(R.id.date);
-//      holder.sunriseTime = (TextView) convertView.findViewById(R.id.sunrise);
-//      holder.sunsetTime = (TextView) convertView.findViewById(R.id.sunset);
-//
-//      holder.temperature = (TextView) convertView.findViewById(R.id.temperature);
-//      holder.icon = (ImageView) convertView.findViewById(R.id.weather_image);
-//      holder.topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
-//
-//      convertView.setTag(holder);
-//    }
-//    else
-//    {
-//      holder = (ViewHolder) convertView.getTag();
-//    }
-//    
-//    holder.day.setText(holder.item.getTitle());
-//    holder.status.setText(holder.item.getStatus());
-//    holder.date.setText(holder.item.getDate());
-//    holder.sunriseTime.setText("일출(am): " + holder.item.getSunriseTime());
-//    holder.sunsetTime.setText("일몰(pm): " + holder.item.getSunsetTime());
-//    holder.temperature.setText("평균 온도: " + holder.item.getTemperature());
-//
-//    if (holder.item.getIcon().contains("rain"))
-//      holder.icon.setImageResource(R.drawable.ic_weather_rain);
-//    else if (holder.item.getIcon().contains("cloud"))
-//      holder.icon.setImageResource(R.drawable.ic_weather_cloud);
-//    else
-//      holder.icon.setImageResource(R.drawable.ic_weather_clear);
-
-// ============================== ^ holder 테스트 ^==========================
 // ============================== 기존 소스 =================================
     final ListViewItem item = listViewItemList.get(position);
     
@@ -115,6 +84,7 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView sunriseTime_main = (TextView) convertView.findViewById(R.id.sunrise_main);
       TextView sunsetTime_main = (TextView) convertView.findViewById(R.id.sunset_main);
       TextView temperature_main = (TextView) convertView.findViewById(R.id.temperature_main);
+      TextView dust_main = (TextView) convertView.findViewById(R.id.dust_main);
       ImageView icon_main = (ImageView) convertView.findViewById(R.id.weather_image_main);
       LinearLayout topContainer_main = (LinearLayout) convertView.findViewById(R.id.top_container_main);
       Button detail_button = (Button) convertView.findViewById(R.id.detail_button);
@@ -127,13 +97,13 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView explain_humidity = (TextView) convertView.findViewById(R.id.explain_humidity);
       TextView detail_windspeed = (TextView) convertView.findViewById(R.id.detail_windspeed);
       TextView explain_windspeed = (TextView) convertView.findViewById(R.id.explain_windspeed);
-      TextView detail_visibility = (TextView) convertView.findViewById(R.id.detail_visibility);
-      TextView explain_visibility = (TextView) convertView.findViewById(R.id.explain_visibility);
+      TextView detail_pressure = (TextView) convertView.findViewById(R.id.detail_pressure);
+      TextView explain_pressure = (TextView) convertView.findViewById(R.id.explain_pressure);
 
       ImageView img_dewpoint = (ImageView) convertView.findViewById(R.id.img_dewpoint);
       ImageView img_humidity = (ImageView) convertView.findViewById(R.id.img_humidity);
       ImageView img_windspeed = (ImageView) convertView.findViewById(R.id.img_windspeed);
-      ImageView img_visibility = (ImageView) convertView.findViewById(R.id.img_visibility);
+      ImageView img_pressure = (ImageView) convertView.findViewById(R.id.img_pressure);
 
       // =====================================
 
@@ -147,7 +117,9 @@ public class CardViewListViewAdapter extends BaseAdapter
       detail_dewpoint.setText(item.getDewpoint()+ "°");
       detail_humidity.setText(item.getHumidity()+ "%");
       detail_windspeed.setText(item.getWindspeed()+ "M/초");
-      detail_visibility.setText(item.getVisibility()+ "km");
+      detail_pressure.setText(item.getPressure()+ "hPa");
+      Log.d("어디","어댑터 getDust : " +listViewItem.getDust());
+      dust_main.setText("미세먼지 : " +listViewItem.getDust());
 
       if (item.getIcon().contains("rain"))
         icon_main.setImageResource(R.drawable.ic_weather_rain);
@@ -197,20 +169,6 @@ public class CardViewListViewAdapter extends BaseAdapter
     }
 
     return convertView;
-  }
-
-  private static class ViewHolder
-  {
-    public TextView day;
-    public TextView status;
-    public TextView date;
-    public TextView sunriseTime;
-    public TextView sunsetTime;
-    public TextView temperature;
-    public ImageView icon;
-    public LinearLayout topContainer;
-    public ListViewItem item;
-
   }
 }
 

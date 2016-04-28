@@ -2,7 +2,10 @@ package kr.mintech.weather;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,10 +59,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import kr.mintech.weather.api.APIRequest;
 import kr.mintech.weather.beans.Const;
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.common.PlanetXSDKConstants;
+import kr.mintech.weather.common.PlanetXSDKException;
+import kr.mintech.weather.common.RequestBundle;
+import kr.mintech.weather.common.RequestListener;
+import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
 import kr.mintech.weather.managers.PreferenceManager;
 
@@ -102,7 +113,7 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Setting", "Share Weather"};
+  private String[] navItems = {"Setting", "sk planet 미세먼지"};
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
@@ -119,7 +130,22 @@ public class MainActivity extends AppCompatActivity
   private String lat;
   private String lon;
 
+  // 미세먼지 sk planet
+  APIRequest api;
+  RequestBundle requestBundle;
+  // http://apis.skplanetx.com/melon/newreleases/songs?version={version}&page={page}&count={count}
+  // String URL = "http://apis.skplanetx.com/melon/newreleases/songs";
+  String URL = "http://apis.skplanetx.com/weather/dust";
+  Map<String, Object> param;
 
+  String hndResult = "";
+  String test;
+  String dust;
+
+  // 알림바
+  NotificationManager nm;
+  private static final String INTENT_ACTION = "kr.mintech.weather.MainActivity";
+  private static AlarmReceive receive = new AlarmReceive();
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -134,11 +160,13 @@ public class MainActivity extends AppCompatActivity
     //    checkLanguage();
 
     super.onCreate(savedInstanceState);
+
     start();
   }
 
   public void start()
   {
+
     //    ======================기존 리스트 뷰 ==========================
     setContentView(R.layout.activity_main);
     text = (TextView) findViewById(R.id.address);
@@ -161,6 +189,54 @@ public class MainActivity extends AppCompatActivity
     new DownloadJson().execute(API_URL);
 
     progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+
+    // =========================미 세 먼 지=============================
+    api = new APIRequest();
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+
+    // url에 삽입되는 파라미터 설정
+    param = new HashMap<String, Object>();
+    param.put("version", "1");
+    param.put("lat", latitude);
+    param.put("lon", longitude);
+
+    // 호출시 사용될 값 설정
+    requestBundle = new RequestBundle();
+    requestBundle.setUrl(URL);
+    requestBundle.setParameters(param);
+    requestBundle.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+    requestBundle.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+    RequestListener reqListener = new RequestListener()
+    {
+      @Override
+      public void onPlanetSDKException(PlanetXSDKException e)
+      {
+        hndResult = e.toString();
+      }
+
+      @Override
+      public void onComplete(ResponseMessage result)
+      {
+        // 응답을 받아 메시지 핸들러에 알려준다.
+        hndResult = result.getStatusCode() + "\n" + result.toString();
+        test = hndResult.split("grade")[1];
+        dust = test.substring(3, 5);
+        Log.d("어디", "미세먼지 받아옴?????" + dust);
+        //        notify.NotifyDust(res);
+        receive.add(dust);
+        adapter.add(dust);
+      }
+    };
+
+    try
+    {
+      // 비동기 호출
+      api.request(requestBundle, reqListener);
+    } catch (PlanetXSDKException e)
+    {
+      e.printStackTrace();
+    }
 
     //  =================== place picker ======================
 
@@ -271,6 +347,8 @@ public class MainActivity extends AppCompatActivity
 
     };
     mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+    alarm_on();
   }
 
   //  =================== place picker result =========================
@@ -374,11 +452,15 @@ public class MainActivity extends AppCompatActivity
     switch (position)
     {
       case 0:
-        Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
-        startActivity(intent);
+        Toast.makeText(MainActivity.this, "알림바 끄기", Toast.LENGTH_SHORT).show();
+        // Notify 끄기
+        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(111);
         break;
       case 1:
-        Toast.makeText(MainActivity.this, "sign up click", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
+        startActivity(intent);
+
     }
     mDrawerLayout.closeDrawer(GravityCompat.START);
   }
@@ -409,17 +491,16 @@ public class MainActivity extends AppCompatActivity
     return super.onOptionsItemSelected(item);
   }
 
-  private ArrayList<ListViewItem> generateModels_main(JSONArray jsonArray)
+  private ArrayList<ListViewItem> generateModels(JSONArray jsonArray)
   {
     ArrayList<ListViewItem> items = new ArrayList<>();
 
     SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat dateFormatHour = new SimpleDateFormat("hh:mm:ss");
     SimpleDateFormat dayFormat = new SimpleDateFormat("EEE");
-
     try
     {
-      for (int i = 0; i < 1; i++)
+      for (int i = 0; i < 7; i++)
       {
         JSONObject obj = jsonArray.getJSONObject(i);
         String summary = obj.getString("summary");
@@ -430,60 +511,14 @@ public class MainActivity extends AppCompatActivity
         String dewPoint = obj.getString("dewPoint");
         String humidity = obj.getString("humidity");
         String windSpeed = obj.getString("windSpeed");
-        String visibility = obj.getString("visibility");
         String pressure = obj.getString("pressure");
 
-        Log.d("어디", "generateModels_main / sunset: " + sunset);
-        Double temperatureMin = obj.getDouble("temperatureMin");
-        Double temperatureMax = obj.getDouble("temperatureMax");
-
-        long unixSunrise = Long.parseLong(sunrise) * 1000;
-        long unixSunset = Long.parseLong(sunset) * 1000;
-        String sunriseTime = dateFormatHour.format(unixSunrise);
-        String sunsetTime = dateFormatHour.format(unixSunset);
-
-        Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
-        Double temperatureChange = (temperatureAvg - 32) / 1.8;
-        String temp = String.format("%.2f", temperatureChange);
-        String temperature = temp.substring(0, temp.indexOf("."));
-
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, i);
-        String day = dayFormat.format(new Date(cal.getTimeInMillis()));
-        String date = dateFormatYear.format(new Date(cal.getTimeInMillis()));
-        Log.d("어디", "generateModels_main /day : " + day);
-        Log.d("어디", "generateModels_main /date : " + date);
-        Log.d("어디", "generateModels_main /summary : " + summary);
-
-        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, visibility, pressure);
-        items.add(item);
-      }
-    } catch (JSONException e)
-    {
-      e.printStackTrace();
-    }
-    return items;
-  }
-
-  private ArrayList<ListViewItem> generateModels(JSONArray jsonArray)
-  {
-    ArrayList<ListViewItem> items = new ArrayList<>();
-
-    SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy-MM-dd");
-    SimpleDateFormat dateFormatHour = new SimpleDateFormat("hh:mm:ss");
-    SimpleDateFormat dayFormat = new SimpleDateFormat("EEE");
-
-    try
-    {
-      for (int i = 0; i < 7; i++)
-      {
-        JSONObject obj = jsonArray.getJSONObject(i);
-        String summary = obj.getString("summary");
-        String icon = obj.getString("icon");
-        String sunrise = obj.getString("sunriseTime");
-        String sunset = obj.getString("sunsetTime");
         Log.d("어디", "sunset: " + sunset);
+        Log.d("어디", "dewPoint: " + dewPoint);
+        Log.d("어디", "humidity: " + humidity);
+        Log.d("어디", "windSpeed: " + windSpeed);
+        Log.d("어디", "pressure: " + pressure);
+
         Double temperatureMin = obj.getDouble("temperatureMin");
         Double temperatureMax = obj.getDouble("temperatureMax");
 
@@ -505,14 +540,85 @@ public class MainActivity extends AppCompatActivity
         Log.d("어디", "generateModels /date : " + date);
         Log.d("어디", "generateModels /summary : " + summary);
 
-        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime);
+        ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
         items.add(item);
       }
     } catch (JSONException e)
     {
       e.printStackTrace();
     }
+
+    //    notify.NotifyMain(items.get(0).getIcon(), items.get(0).getStatus());
+    //    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+    //    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
+    //
+    //    // 작은 아이콘 이미지.
+    //    if (items.get(0).getIcon().contains("rain"))
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_rain);
+    //    else if (items.get(0).getIcon().contains("cloud"))
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_cloud);
+    //    else
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_clear);
+    //
+    //    // 알림이 출력될 때 상단에 나오는 문구.
+    //    mBuilder.setTicker("미리 보기");
+    //
+    //    Calendar calendar = Calendar.getInstance();
+    //    //알람시간 calendar에 set해주기
+    //
+    //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 18, 56);//시간을 10시 01분으로 일단 set했음
+    //    calendar.set(Calendar.SECOND, 0);
+    //
+    //    // 알림 출력 시간.
+    //    mBuilder.setWhen(calendar.getTimeInMillis()*60*1000);
+    //
+    //    // 알림 메세지 갯수
+    //    //    mBuilder.setNumber(10);
+    //    // 알림 제목.
+    //    mBuilder.setContentTitle(items.get(0).getStatus());
+    //    // 알림 내용.
+    //    mBuilder.setContentText("미세먼지 : " + dust);
+    //    // 프로그래스 바.
+    //    //    mBuilder.setProgress(100, 50, false);
+    //    // 알림시 사운드, 진동, 불빛을 설정 가능.
+    //    mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+    //    // 알림 터치시 반응.
+    //    mBuilder.setContentIntent(pendingIntent);
+    //    // 알림 터치시 반응 후 알림 삭제 여부.
+    //    mBuilder.setAutoCancel(true);
+    //    // 우선순위.
+    //    mBuilder.setPriority(Notification.PRIORITY_MAX);
+    //
+    //    // 행동 최대3개 등록 가능.
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Remove", pendingIntent);
+    //
+    //    // 고유ID로 알림을 생성.
+    //    nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    //    nm.notify(111, mBuilder.build());
     return items;
+  }
+
+  public void alarm_on()
+  {
+    // 알람 등록하기
+    Log.d("어디", " ====================== setAlarm ================ ");
+    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
+
+    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+    Calendar calendar = Calendar.getInstance();
+    //알람시간 calendar에 set해주기
+
+    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 18, 44);//시간을 10시 01분으로 일단 set했음
+    calendar.set(Calendar.SECOND, 0);
+
+    //알람 예약
+    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
+    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+    Toast.makeText(MainActivity.this, "시간설정:" + Integer.toString(calendar.get(calendar.HOUR_OF_DAY)) + ":" + Integer.toString(calendar.get(calendar.MINUTE)), Toast.LENGTH_LONG).show();
   }
 
   /* ========================== 맵 JSON ==========================*/
@@ -614,14 +720,15 @@ public class MainActivity extends AppCompatActivity
         JSONObject dailyObject = jsonResult.getJSONObject("daily");
         JSONArray dataArray = dailyObject.getJSONArray("data");
 
-//        mAdapter = new CardViewAdapter(generateModels(dataArray));
-//        mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
-//
-//        mRecyclerView.setAdapter(mAdapter);
-//        mRecyclerViewMain.setAdapter(mAdapterMain);
+        //        mAdapter = new CardViewAdapter(generateModels(dataArray));
+        //        mAdapterMain = new CardViewAdapterMain(generateModels_main(dataArray));
+        //
+        //        mRecyclerView.setAdapter(mAdapter);
+        //        mRecyclerViewMain.setAdapter(mAdapterMain);
 
-//        listViewItems.addAll(generateModels(dataArray));
+        //        listViewItems.addAll(generateModels(dataArray));
         adapter.addAll(generateModels(dataArray));
+        receive.addAll(generateModels(dataArray));
       } catch (JSONException e)
       {
         Log.e("catch", "catch진입");
