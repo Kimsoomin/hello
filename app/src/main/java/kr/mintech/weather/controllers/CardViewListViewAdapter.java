@@ -12,12 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import kr.mintech.weather.R;
 import kr.mintech.weather.beans.ListViewItem;
 
 public class CardViewListViewAdapter extends BaseAdapter
 {
+  String language;
   private ListViewItem listViewItem = new ListViewItem();
   private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
   LayoutInflater inflater;
@@ -71,22 +73,109 @@ public class CardViewListViewAdapter extends BaseAdapter
   @Override
   public View getView(int position, View convertView, final ViewGroup parent)
   {
-// ============================== 기존 소스 =================================
+    language = Locale.getDefault().getLanguage();
+    Log.d("어디","언어확인 / " +language);
+    // ============================== 기존 소스 =================================
     final ListViewItem item = listViewItemList.get(position);
-    
-    if (position==0)
+
+    if (position == 0)
     {
       convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item_main, parent, false);
 
       TextView day_main = (TextView) convertView.findViewById(R.id.day_main);
       TextView status_main = (TextView) convertView.findViewById(R.id.status_main);
       TextView date_main = (TextView) convertView.findViewById(R.id.date_main);
-      TextView sunriseTime_main = (TextView) convertView.findViewById(R.id.sunrise_main);
-      TextView sunsetTime_main = (TextView) convertView.findViewById(R.id.sunset_main);
       TextView temperature_main = (TextView) convertView.findViewById(R.id.temperature_main);
       TextView dust_main = (TextView) convertView.findViewById(R.id.dust_main);
       ImageView icon_main = (ImageView) convertView.findViewById(R.id.weather_image_main);
       LinearLayout topContainer_main = (LinearLayout) convertView.findViewById(R.id.top_container_main);
+      Button detail_button = (Button) convertView.findViewById(R.id.detail_button_main);
+
+      final LinearLayout detail_container_main = (LinearLayout) convertView.findViewById(R.id.detail_container_main);
+
+      TextView detail_dewpoint_main = (TextView) convertView.findViewById(R.id.detail_dewpoint_main);
+      TextView explain_dewpoint_main = (TextView) convertView.findViewById(R.id.explain_dewpoint_main);
+      TextView detail_humidity_main = (TextView) convertView.findViewById(R.id.detail_humidity_main);
+      TextView explain_humidity_main = (TextView) convertView.findViewById(R.id.explain_humidity_main);
+      TextView detail_windspeed_main = (TextView) convertView.findViewById(R.id.detail_windspeed_main);
+      TextView explain_windspeed_main = (TextView) convertView.findViewById(R.id.explain_windspeed_main);
+      TextView detail_pressure_main = (TextView) convertView.findViewById(R.id.detail_pressure_main);
+      TextView explain_pressure_main = (TextView) convertView.findViewById(R.id.explain_pressure_main);
+
+      TextView detail_sunriseTime_main = (TextView) convertView.findViewById(R.id.detail_sunrise_main);
+      TextView detail_sunsetTime_main = (TextView) convertView.findViewById(R.id.detail_sunset_main);
+      TextView explain_sunriseTime_main = (TextView) convertView.findViewById(R.id.explain_sunrise_main);
+      TextView explain_sunsetTime_main = (TextView) convertView.findViewById(R.id.explain_sunset_main);
+
+      ImageView img_dewpoint_main = (ImageView) convertView.findViewById(R.id.img_dewpoint_main);
+      ImageView img_humidity_main = (ImageView) convertView.findViewById(R.id.img_humidity_main);
+      ImageView img_windspeed_main = (ImageView) convertView.findViewById(R.id.img_windspeed_main);
+      ImageView img_pressure_main = (ImageView) convertView.findViewById(R.id.img_pressure_main);
+
+      TextView explain_sunrise_main = (TextView) convertView.findViewById(R.id.explain_sunrise_main);
+      TextView explain_sunset_main = (TextView) convertView.findViewById(R.id.explain_sunset_main);
+
+      // =====================================
+      if (language.contains("en"))
+      {
+        day_main.setText("Today / "+item.getTitle());
+        detail_windspeed_main.setText(item.getWindspeed() + "M/second");
+        dust_main.setText("Dust : "+listViewItem.getDust());
+        explain_dewpoint_main.setText(R.string.dewpoint);
+        explain_windspeed_main.setText(R.string.windspeed);
+        explain_pressure_main.setText(R.string.pressure);
+        explain_humidity_main.setText(R.string.humidity);
+        explain_humidity_main.setText(R.string.humidity);
+        explain_sunrise_main.setText(R.string.sunrise);
+        explain_sunset_main.setText(R.string.sunset);
+      }
+      else
+      {
+        day_main.setText("오늘 / " + item.getTitle() + "요일");
+        detail_windspeed_main.setText(item.getWindspeed() + "M/초");
+        dust_main.setText("미세먼지 : " + listViewItem.getDust());
+      }
+
+      status_main.setText(item.getStatus());
+      date_main.setText(item.getDate());
+      detail_sunriseTime_main.setText(item.getSunriseTime());
+      detail_sunsetTime_main.setText(item.getSunsetTime());
+      temperature_main.setText(item.getTemperature());
+      detail_button.setText("detail");
+      detail_dewpoint_main.setText(item.getDewpoint() + "°");
+      detail_humidity_main.setText(item.getHumidity() + "%");
+
+      detail_pressure_main.setText(item.getPressure() + "hPa");
+
+      if (item.getIcon().contains("rain"))
+        icon_main.setImageResource(R.drawable.ic_weather_rain);
+      else if (item.getIcon().contains("cloud"))
+        icon_main.setImageResource(R.drawable.ic_weather_cloud);
+      else
+        icon_main.setImageResource(R.drawable.ic_weather_clear);
+
+      detail_button.setOnClickListener(new View.OnClickListener()
+      {
+        @Override
+        public void onClick(View v)
+        {
+          detail_container_main.setVisibility(detail_container_main.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+          Log.d("어디", "버튼클릭");
+        }
+      });
+    }
+/* ========== else ===========*/
+    else
+    {
+
+      convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
+
+      TextView day = (TextView) convertView.findViewById(R.id.day);
+      TextView status = (TextView) convertView.findViewById(R.id.status);
+      TextView date = (TextView) convertView.findViewById(R.id.date);
+      TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
+      ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
+      LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
       Button detail_button = (Button) convertView.findViewById(R.id.detail_button);
 
       final LinearLayout detail_container = (LinearLayout) convertView.findViewById(R.id.detail_container);
@@ -105,28 +194,47 @@ public class CardViewListViewAdapter extends BaseAdapter
       ImageView img_windspeed = (ImageView) convertView.findViewById(R.id.img_windspeed);
       ImageView img_pressure = (ImageView) convertView.findViewById(R.id.img_pressure);
 
-      // =====================================
+      TextView detail_sunrise = (TextView) convertView.findViewById(R.id.detail_sunrise);
+      TextView detail_sunset = (TextView) convertView.findViewById(R.id.detail_sunset);
+      TextView explain_sunrise = (TextView) convertView.findViewById(R.id.explain_sunrise);
+      TextView explain_sunset = (TextView) convertView.findViewById(R.id.explain_sunset);
 
-      day_main.setText("오늘 " +item.getTitle()+"요일");
-      status_main.setText(item.getStatus());
-      date_main.setText(item.getDate());
-      sunriseTime_main.setText(item.getSunriseTime());
-      sunsetTime_main.setText(item.getSunsetTime());
-      temperature_main.setText(item.getTemperature());
+      if (language.contains("en"))
+      {
+        day.setText(item.getTitle());
+        detail_windspeed.setText(item.getWindspeed() + "M/second");
+        explain_dewpoint.setText(R.string.dewpoint);
+        explain_windspeed.setText(R.string.windspeed);
+        explain_pressure.setText(R.string.pressure);
+        explain_humidity.setText(R.string.humidity);
+        explain_humidity.setText(R.string.humidity);
+        explain_sunrise.setText(R.string.sunrise);
+        explain_sunset.setText(R.string.sunset);
+      }
+
+      else
+      {
+        day.setText(item.getTitle() + "요일");
+        detail_windspeed.setText(item.getWindspeed() + "M/초");
+      }
+
+      status.setText(item.getStatus());
+      date.setText(item.getDate());
+      detail_sunrise.setText(item.getSunriseTime());
+      detail_sunset.setText(item.getSunsetTime());
+      temperature.setText(item.getTemperature());
       detail_button.setText("detail");
-      detail_dewpoint.setText(item.getDewpoint()+ "°");
-      detail_humidity.setText(item.getHumidity()+ "%");
-      detail_windspeed.setText(item.getWindspeed()+ "M/초");
-      detail_pressure.setText(item.getPressure()+ "hPa");
-      Log.d("어디","어댑터 getDust : " +listViewItem.getDust());
-      dust_main.setText("미세먼지 : " +listViewItem.getDust());
+      detail_dewpoint.setText(item.getDewpoint() + "°");
+      detail_humidity.setText(item.getHumidity() + "%");
+      detail_pressure.setText(item.getPressure() + "hPa");
+      Log.d("어디", "어댑터 getDust : " + listViewItem.getDust());
 
       if (item.getIcon().contains("rain"))
-        icon_main.setImageResource(R.drawable.ic_weather_rain);
+        icon.setImageResource(R.drawable.ic_weather_rain);
       else if (item.getIcon().contains("cloud"))
-        icon_main.setImageResource(R.drawable.ic_weather_cloud);
+        icon.setImageResource(R.drawable.ic_weather_cloud);
       else
-        icon_main.setImageResource(R.drawable.ic_weather_clear);
+        icon.setImageResource(R.drawable.ic_weather_clear);
 
       detail_button.setOnClickListener(new View.OnClickListener()
       {
@@ -137,34 +245,6 @@ public class CardViewListViewAdapter extends BaseAdapter
           Log.d("어디", "버튼클릭");
         }
       });
-    }
-/* ========== else ===========*/
-    else {
-
-      convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
-      
-      TextView day = (TextView) convertView.findViewById(R.id.day);
-      TextView status = (TextView) convertView.findViewById(R.id.status);
-      TextView date = (TextView) convertView.findViewById(R.id.date);
-      TextView sunriseTime = (TextView) convertView.findViewById(R.id.sunrise);
-      TextView sunsetTime = (TextView) convertView.findViewById(R.id.sunset);
-      TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
-      ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
-      LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
-
-      day.setText(item.getTitle());
-      status.setText(item.getStatus());
-      date.setText(item.getDate());
-      sunriseTime.setText("일출(am): " + item.getSunriseTime());
-      sunsetTime.setText("일몰(pm): " + item.getSunsetTime());
-      temperature.setText("평균 온도: " + item.getTemperature());
-
-      if (item.getIcon().contains("rain"))
-        icon.setImageResource(R.drawable.ic_weather_rain);
-      else if (item.getIcon().contains("cloud"))
-        icon.setImageResource(R.drawable.ic_weather_cloud);
-      else
-        icon.setImageResource(R.drawable.ic_weather_clear);
 
     }
 

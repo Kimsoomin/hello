@@ -31,18 +31,11 @@
                     android:textSize="18sp"
                     android:textStyle="bold"/>
 
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.3dip"
-                    android:layout_below="@+id/address"
-                    android:background="#FF909090"/>
-
                 <ListView
                     android:id="@+id/listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/line"/>
+                    android:layout_below="@+id/address"/>
 
             </RelativeLayout>
 

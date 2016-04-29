@@ -64,7 +64,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import kr.mintech.weather.api.APIRequest;
-import kr.mintech.weather.beans.Const;
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.common.PlanetXSDKConstants;
 import kr.mintech.weather.common.PlanetXSDKException;
@@ -75,6 +74,9 @@ import kr.mintech.weather.controllers.CardViewListViewAdapter;
 
 public class MainActivity extends AppCompatActivity
 {
+
+  public int languageValue;
+
   public static View view;
   private static CardViewListViewAdapter adapter;
 
@@ -111,7 +113,8 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Setting", "알림 On/Off"};
+  private String[] navItemsKo = {"설정", "알림 On/Off"};
+  private String[] navItemsEn = {"Setting", "Notification On/Off"};
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
@@ -120,9 +123,6 @@ public class MainActivity extends AppCompatActivity
   // placePicker
 
   private static final int PLACE_PICKER_REQUEST = 1;
-  private TextView mName;
-  private TextView mAddress;
-  private TextView mAttributions;
   private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
   private String str;
   private String lat;
@@ -143,21 +143,14 @@ public class MainActivity extends AppCompatActivity
   // 알림바
   NotificationManager nm;
 
+  // 언어설정
+  String language;
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
-    //  int languageValue = PreferenceManager.getInstance(MainActivity.this).getSelectedLanguage();
-    //    if (Locale.getDefault().getLanguage().contains("ko"))
-    //    {
-    //      startStationName.setText(firstStationBean.nameKo);
-    //      endStationName.setText(lastStationBean.nameKo);
-    //    }
-    //    start();
-    //  }
-    //    checkLanguage();
-
     super.onCreate(savedInstanceState);
-
+    language = Locale.getDefault().getLanguage();
     start();
   }
 
@@ -219,8 +212,29 @@ public class MainActivity extends AppCompatActivity
         hndResult = result.getStatusCode() + "\n" + result.toString();
         test = hndResult.split("grade")[1];
         dust = test.substring(3, 5);
-        Log.d("어디", "미세먼지 받아옴?????" + dust);
-        //        notify.NotifyDust(res);
+
+        if (language.contains("en")){
+          if (dust.contains("매우 높음")){
+            dust = "Very High";
+          }
+          else if (dust.equals("높음"))
+          {
+            dust = "High";
+          }
+          else if (dust.contains("보통"))
+          {
+            dust = "Middle";
+          }
+          else if (dust.equals("낮음"))
+          {
+            dust = "Low";
+          }
+          else if (dust.contains("매우 낮음"))
+          {
+            dust = "Very Low";
+          }
+        }
+
         adapter.add(dust);
 
         SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -305,8 +319,14 @@ public class MainActivity extends AppCompatActivity
     //    ======================= 네비게이션 드로워 ==========================
 
     lvNavList = (ListView) findViewById(R.id.lv_activity_main_nav_list);
-
-    lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItems));
+    if (language.contains("ko"))
+    {
+      lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItemsKo));
+    }
+    else
+    {
+      lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItemsEn));
+    }
     lvNavList.setOnItemClickListener(new DrawerItemClickListener());
     //    lvNavList.setOnItemClickListener(new AdapterView.OnItemClickListener()
     //    {
@@ -361,7 +381,6 @@ public class MainActivity extends AppCompatActivity
 
     if (requestCode == PLACE_PICKER_REQUEST && resultCode == Activity.RESULT_OK)
     {
-
       final Place place = PlacePicker.getPlace(this, data);
       final CharSequence name = place.getName();
       final CharSequence address = place.getAddress();
@@ -401,21 +420,6 @@ public class MainActivity extends AppCompatActivity
 
     start();
   }
-
-  private void checkLanguage()
-  {
-    String language = Locale.getDefault().getLanguage();
-    int languageValue = Const.L_EN;
-    if (language.equals("ko"))
-      languageValue = Const.L_KO;
-    else if (language.equals("zh"))
-      languageValue = Const.L_ZH;
-    else if (language.equals("ja"))
-      languageValue = Const.L_JP;
-
-    //    PreferenceManager.getInstance(this).setSelectedLanguage(languageValue);
-  }
-
 
   @Override
   protected void onPostCreate(Bundle savedInstanceState)
@@ -462,7 +466,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, AlarmReceive.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Log.d("어디","alarmManager 끄기!!!");
+        Log.d("어디", "alarmManager 끄기!!!");
         alarmManager.cancel(sender);
 
         break;
@@ -549,6 +553,50 @@ public class MainActivity extends AppCompatActivity
         Log.d("어디", "generateModels /date : " + date);
         Log.d("어디", "generateModels /summary : " + summary);
 
+        if (language.contains("ko"))
+        {
+          if (summary.contains("Mostly cloudy overnight"))
+          {
+            summary = "밤새 구름 조금";
+          }
+          else if (summary.contains("Mostly cloudy throughout the day and breezy until evening"))
+          {
+            summary = "하루 종일 흐림";
+          }
+          else if (summary.contains("Mostly cloudy throughout the day"))
+          {
+            summary = "구름 종종";
+          }
+          else if (summary.equals("Rain starting in the evening"))
+          {
+            summary = "저녁에 비";
+          }
+          else if (summary.contains("Rain until evening"))
+          {
+            summary = "저녁까지 비";
+          }
+          else if (summary.contains("Clear throughout the day"))
+          {
+            summary = "하루 종일 맑음";
+          }
+          else if (summary.contains("Mostly cloudy throughout the day and breezy in the afternoon"))
+          {
+            summary = "대부분 흐리고 오후에 미풍";
+          }
+          else if (summary.contains("Mostly cloudy in the morning"))
+          {
+            summary = "오전 대부분 흐림";
+          }
+          else if (summary.contains("Rain starting in the afternoon"))
+          {
+            summary = "오후부터 비";
+          }
+          else if (summary.contains("Rain until afternoon and breezy starting in the afternoon, continuing until evening"))
+          {
+            summary = "오후까 비 그리고 오후부터 시작한 미풍은 저녁까지";
+          }
+        }
+
         ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
         items.add(item);
       }
@@ -631,12 +679,12 @@ public class MainActivity extends AppCompatActivity
     Calendar calendar = Calendar.getInstance();
     //알람시간 calendar에 set해주기
 
-    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 10, 45);//시간을 10시 01분으로 일단 set했음
+    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
     calendar.set(Calendar.SECOND, 0);
 
     //알람 예약
     //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
     Toast.makeText(MainActivity.this, "시간설정:" + Integer.toString(calendar.get(calendar.HOUR_OF_DAY)) + ":" + Integer.toString(calendar.get(calendar.MINUTE)), Toast.LENGTH_LONG).show();
   }
 

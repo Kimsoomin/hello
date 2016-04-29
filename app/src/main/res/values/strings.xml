@@ -20,4 +20,31 @@
     <string name="drawer_close">close?</string>
 
     <string name="google_app_id">YOUR_PROJECT_NUMBER</string>
+
+    <!-- 요일 En -->
+    <string name="today">Today</string>
+    <string name="monday_en">Monday</string>
+    <string name="tuesday_en">Tuesday</string>
+    <string name="wednesday_en">Wednesday</string>
+    <string name="thursday_en">Thursday</string>
+    <string name="friday_en">Friday</string>
+    <string name="saturday_en">Saturday</string>
+    <string name="sunday_en">Sunday</string>
+
+    <!-- 알림 En -->
+    <string name="notification_on">Notification On</string>
+    <string name="notification_off">Notification Off</string>
+
+    <!-- 날씨 En -->
+    <string name="dust">Dust</string>
+    <string name="avg_temperature">Avg temperature</string>
+
+    <string name="dewpoint">dew Point</string>
+    <string name="humidity">Humidity</string>
+    <string name="windspeed">windSpeed</string>
+    <string name="pressure">Pressure</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
+
 </resources>
