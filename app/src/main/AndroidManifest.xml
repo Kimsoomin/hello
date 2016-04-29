@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name="kr.mintech.weather.OpenApiExam"
+            android:name="kr.mintech.weather.AlarmOnOffActivity"
             android:label="@string/weather">
 
             <intent-filter>

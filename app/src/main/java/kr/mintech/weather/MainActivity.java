@@ -72,7 +72,6 @@ import kr.mintech.weather.common.RequestBundle;
 import kr.mintech.weather.common.RequestListener;
 import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
-import kr.mintech.weather.managers.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -87,7 +86,6 @@ public class MainActivity extends AppCompatActivity
 
   private final DataSetObservable mDataSetObservable = new DataSetObservable();
   private Context context;
-  private PreferenceManager preferenceManager;
 
   private static int LCOATION_TIME_OUT_SECOND = 30 * 1000;
   private Handler handler = new Handler();
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItems = {"Setting", "sk planet 미세먼지"};
+  private String[] navItems = {"Setting", "알림 On/Off"};
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
@@ -144,8 +142,7 @@ public class MainActivity extends AppCompatActivity
 
   // 알림바
   NotificationManager nm;
-  private static final String INTENT_ACTION = "kr.mintech.weather.MainActivity";
-  private static AlarmReceive receive = new AlarmReceive();
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -224,8 +221,14 @@ public class MainActivity extends AppCompatActivity
         dust = test.substring(3, 5);
         Log.d("어디", "미세먼지 받아옴?????" + dust);
         //        notify.NotifyDust(res);
-        receive.add(dust);
         adapter.add(dust);
+
+        SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        SharedPreferences.Editor editor = preference.edit();
+        // 저장할 값들을 입력합니다.
+        editor.putString("dust", dust);
+
+        editor.commit();
       }
     };
 
@@ -410,7 +413,7 @@ public class MainActivity extends AppCompatActivity
     else if (language.equals("ja"))
       languageValue = Const.L_JP;
 
-    PreferenceManager.getInstance(this).setSelectedLanguage(languageValue);
+    //    PreferenceManager.getInstance(this).setSelectedLanguage(languageValue);
   }
 
 
@@ -454,12 +457,18 @@ public class MainActivity extends AppCompatActivity
       case 0:
         Toast.makeText(MainActivity.this, "알림바 끄기", Toast.LENGTH_SHORT).show();
         // Notify 끄기
-        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(111);
+        //        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //        nm.cancel(111);
+        Intent intent = new Intent(this, AlarmReceive.class);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Log.d("어디","alarmManager 끄기!!!");
+        alarmManager.cancel(sender);
+
         break;
       case 1:
-        Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
-        startActivity(intent);
+        Intent intent2 = new Intent(MainActivity.this, AlarmOnOffActivity.class);
+        startActivity(intent2);
 
     }
     mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -548,7 +557,14 @@ public class MainActivity extends AppCompatActivity
       e.printStackTrace();
     }
 
-    //    notify.NotifyMain(items.get(0).getIcon(), items.get(0).getStatus());
+    SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+    SharedPreferences.Editor editor = preference.edit();
+    // 저장할 값들을 입력합니다.
+    editor.putString("getIcon", items.get(0).getIcon());
+    editor.putString("getStatus", items.get(0).getStatus());
+
+    editor.commit();
+
     //    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
     //    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
     //
@@ -566,11 +582,14 @@ public class MainActivity extends AppCompatActivity
     //    Calendar calendar = Calendar.getInstance();
     //    //알람시간 calendar에 set해주기
     //
-    //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 18, 56);//시간을 10시 01분으로 일단 set했음
+    //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 9, 25);//시간을 10시 01분으로 일단 set했음
     //    calendar.set(Calendar.SECOND, 0);
     //
     //    // 알림 출력 시간.
-    //    mBuilder.setWhen(calendar.getTimeInMillis()*60*1000);
+    //    for (int i = 0; i < 999; i++)
+    //    {
+    //      mBuilder.setWhen(calendar.getTimeInMillis() * 60 * 1000 * i);
+    //    }
     //
     //    // 알림 메세지 갯수
     //    //    mBuilder.setNumber(10);
@@ -612,7 +631,7 @@ public class MainActivity extends AppCompatActivity
     Calendar calendar = Calendar.getInstance();
     //알람시간 calendar에 set해주기
 
-    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 18, 44);//시간을 10시 01분으로 일단 set했음
+    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 10, 45);//시간을 10시 01분으로 일단 set했음
     calendar.set(Calendar.SECOND, 0);
 
     //알람 예약
@@ -728,7 +747,6 @@ public class MainActivity extends AppCompatActivity
 
         //        listViewItems.addAll(generateModels(dataArray));
         adapter.addAll(generateModels(dataArray));
-        receive.addAll(generateModels(dataArray));
       } catch (JSONException e)
       {
         Log.e("catch", "catch진입");
