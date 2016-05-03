@@ -557,19 +557,11 @@ public class MainActivity extends AppCompatActivity
         {
           if (summary.contains("Mostly cloudy overnight"))
           {
-            summary = "밤새 구름 조금";
-          }
-          else if (summary.contains("Mostly cloudy throughout the day and breezy until evening"))
-          {
-            summary = "하루 종일 흐림";
+            summary = "밤새 흐림";
           }
           else if (summary.contains("Mostly cloudy throughout the day"))
           {
-            summary = "구름 종종";
-          }
-          else if (summary.equals("Rain starting in the evening"))
-          {
-            summary = "저녁에 비";
+            summary = "하루 종일 흐림";
           }
           else if (summary.contains("Rain until evening"))
           {
@@ -579,7 +571,7 @@ public class MainActivity extends AppCompatActivity
           {
             summary = "하루 종일 맑음";
           }
-          else if (summary.contains("Mostly cloudy throughout the day and breezy in the afternoon"))
+          else if (summary.contains("Mostly cloudy"))
           {
             summary = "대부분 흐리고 오후에 미풍";
           }
@@ -591,9 +583,63 @@ public class MainActivity extends AppCompatActivity
           {
             summary = "오후부터 비";
           }
-          else if (summary.contains("Rain until afternoon and breezy starting in the afternoon, continuing until evening"))
+          else if (summary.contains("Rain until afternoon"))
           {
-            summary = "오후까 비 그리고 오후부터 시작한 미풍은 저녁까지";
+            summary = "오후까지 비 그리고 오후부터 시작한 미풍은 저녁까지";
+          }
+          else if (summary.contains("Rain starting in the evening"))
+          {
+            summary = "저녁부터 내리는 비";
+          }
+          else if (summary.contains("Windy until evening"))
+          {
+            summary = "저녁까지 바람 계속";
+          }
+          else if (summary.contains("Rain in the morning"))
+          {
+            summary = "아침부터 내리는 비 그리고 오후부터 시작 된 미풍은 저녁까지";
+          }
+          else if (summary.contains("Partly cloudy until afternoon"))
+          {
+            summary = "오후까지 구름 종종";
+          }
+
+          else if (summary.contains("Heavy rain until evening"))
+          {
+            summary = "저녁까지 강한 비";
+          }
+          else if (summary.contains("Windy until evening"))
+          {
+            summary = "저녁까지 바람";
+          }
+
+          else if (summary.contains("Partly cloudy starting in the evening"))
+          {
+            summary = "저녁부터 구름 종종";
+          }
+          else if (summary.contains("Overcast throughout the day"))
+          {
+            summary = "하루 종일 흐림";
+          }
+          else if (summary.contains("Rain and windy throughout the day"))
+          {
+            summary = "하루 종일 비 바람";
+          }
+          else if (summary.contains("Light rain in the morning"))
+          {
+            summary = "아침에 가벼운 비";
+          }
+          else if (summary.contains("Light rain in the morning"))
+          {
+            summary = "아침에 가벼운 비";
+          }
+          else if (summary.contains("Light rain overnight"))
+          {
+            summary = "밤새 가벼운 비";
+          }
+          else if (summary.contains("Light rain until afternoon"))
+          {
+            summary = "오후까지 가벼운 비";
           }
         }
 
@@ -685,7 +731,6 @@ public class MainActivity extends AppCompatActivity
     //알람 예약
     //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
     am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
-    Toast.makeText(MainActivity.this, "시간설정:" + Integer.toString(calendar.get(calendar.HOUR_OF_DAY)) + ":" + Integer.toString(calendar.get(calendar.MINUTE)), Toast.LENGTH_LONG).show();
   }
 
   /* ========================== 맵 JSON ==========================*/

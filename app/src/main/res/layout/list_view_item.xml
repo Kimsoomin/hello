@@ -288,7 +288,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/sunrise_main"/>
+                        android:src="@drawable/sunrise_512"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -323,7 +323,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/sunset_main"/>
+                        android:src="@drawable/sunset_512"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
