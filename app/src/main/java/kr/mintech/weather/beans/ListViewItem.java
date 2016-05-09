@@ -14,8 +14,18 @@ public class ListViewItem
   private String windspeed;
   private String pressure;
   private String dust;
+  private String dustValue;
 
   public ListViewItem(){};
+
+  public ListViewItem(String dust, String icon, String status)
+  {
+    this.status = status;
+    this.icon = icon;
+    this.dust = dust;
+
+  }
+
   public ListViewItem(String day, String date, String status, String icon, String temperature,
                       String sunriseTime, String sunsetTime, String dewpoint, String humidity, String windspeed, String pressure)
   {
@@ -109,5 +119,15 @@ public class ListViewItem
   public String getDust()
   {
     return this.dust;
+  }
+
+  public void setDustValue(String dustValue)
+  {
+    this.dustValue = dustValue;
+  }
+
+  public String getDustValue()
+  {
+    return this.dustValue;
   }
 }

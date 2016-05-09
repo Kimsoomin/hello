@@ -4,9 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -139,12 +139,17 @@ public class MainActivity extends AppCompatActivity
   String hndResult = "";
   String test;
   String dust;
-
+  String valueInit;
+  String value;
   // 알림바
   NotificationManager nm;
 
   // 언어설정
   String language;
+
+  // Setting Activity
+  String icon;
+  String status;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -211,10 +216,17 @@ public class MainActivity extends AppCompatActivity
         // 응답을 받아 메시지 핸들러에 알려준다.
         hndResult = result.getStatusCode() + "\n" + result.toString();
         test = hndResult.split("grade")[1];
+        valueInit = hndResult.split("value")[1];
+        value = valueInit.substring(3, 8);
         dust = test.substring(3, 5);
 
-        if (language.contains("en")){
-          if (dust.contains("매우 높음")){
+        Log.d("어디", "=========== value ===========  " + valueInit);
+        Log.d("어디", "=========== value ===========  " + value);
+
+        if (language.contains("en"))
+        {
+          if (dust.contains("매우 높음"))
+          {
             dust = "Very High";
           }
           else if (dust.equals("높음"))
@@ -235,12 +247,13 @@ public class MainActivity extends AppCompatActivity
           }
         }
 
-        adapter.add(dust);
+        adapter.add(dust, value);
 
         SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         SharedPreferences.Editor editor = preference.edit();
         // 저장할 값들을 입력합니다.
         editor.putString("dust", dust);
+        editor.putString("value", value);
 
         editor.commit();
       }
@@ -371,7 +384,7 @@ public class MainActivity extends AppCompatActivity
     };
     mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-    alarm_on();
+    //    alarm_on();
   }
 
   //  =================== place picker result =========================
@@ -459,15 +472,13 @@ public class MainActivity extends AppCompatActivity
     switch (position)
     {
       case 0:
-        Toast.makeText(MainActivity.this, "알림바 끄기", Toast.LENGTH_SHORT).show();
-        // Notify 끄기
-        //        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //        nm.cancel(111);
-        Intent intent = new Intent(this, AlarmReceive.class);
-        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Log.d("어디", "alarmManager 끄기!!!");
-        alarmManager.cancel(sender);
+
+        Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+        intent.putExtra("dust", dust);
+        intent.putExtra("icon", icon);
+        intent.putExtra("status", status);
+
+        startActivity(intent);
 
         break;
       case 1:
@@ -641,6 +652,22 @@ public class MainActivity extends AppCompatActivity
           {
             summary = "오후까지 가벼운 비";
           }
+          else if (summary.contains("Light rain starting in the evening"))
+          {
+            summary = "저녁부터 시작되 가벼운 비";
+          }
+          else if (summary.contains("Light rain until evening"))
+          {
+            summary = "저녁까지 가벼운 비";
+          }
+          else if (summary.contains("Drizzle overnight"))
+          {
+            summary = "새벽에 이슬비";
+          }
+          else if (summary.contains("Rain throughout the day"))
+          {
+            summary = "하루종일 비";
+          }
         }
 
         ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
@@ -659,57 +686,54 @@ public class MainActivity extends AppCompatActivity
 
     editor.commit();
 
-    //    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-    //    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
-    //
-    //    // 작은 아이콘 이미지.
-    //    if (items.get(0).getIcon().contains("rain"))
-    //      mBuilder.setSmallIcon(R.drawable.ic_weather_rain);
-    //    else if (items.get(0).getIcon().contains("cloud"))
-    //      mBuilder.setSmallIcon(R.drawable.ic_weather_cloud);
-    //    else
-    //      mBuilder.setSmallIcon(R.drawable.ic_weather_clear);
-    //
-    //    // 알림이 출력될 때 상단에 나오는 문구.
-    //    mBuilder.setTicker("미리 보기");
-    //
-    //    Calendar calendar = Calendar.getInstance();
-    //    //알람시간 calendar에 set해주기
-    //
-    //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 9, 25);//시간을 10시 01분으로 일단 set했음
-    //    calendar.set(Calendar.SECOND, 0);
-    //
-    //    // 알림 출력 시간.
-    //    for (int i = 0; i < 999; i++)
-    //    {
-    //      mBuilder.setWhen(calendar.getTimeInMillis() * 60 * 1000 * i);
-    //    }
-    //
-    //    // 알림 메세지 갯수
-    //    //    mBuilder.setNumber(10);
-    //    // 알림 제목.
-    //    mBuilder.setContentTitle(items.get(0).getStatus());
-    //    // 알림 내용.
-    //    mBuilder.setContentText("미세먼지 : " + dust);
-    //    // 프로그래스 바.
-    //    //    mBuilder.setProgress(100, 50, false);
-    //    // 알림시 사운드, 진동, 불빛을 설정 가능.
-    //    mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-    //    // 알림 터치시 반응.
-    //    mBuilder.setContentIntent(pendingIntent);
-    //    // 알림 터치시 반응 후 알림 삭제 여부.
-    //    mBuilder.setAutoCancel(true);
-    //    // 우선순위.
-    //    mBuilder.setPriority(Notification.PRIORITY_MAX);
-    //
-    //    // 행동 최대3개 등록 가능.
-    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
-    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
-    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Remove", pendingIntent);
-    //
-    //    // 고유ID로 알림을 생성.
-    //    nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    //    nm.notify(111, mBuilder.build());
+    icon = items.get(0).getIcon();
+    status = items.get(0).getStatus();
+
+    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
+
+    // 작은 아이콘 이미지.
+    if (items.get(0).getIcon().contains("rain"))
+      mBuilder.setSmallIcon(R.drawable.ic_weather_rain);
+    else if (items.get(0).getIcon().contains("cloud"))
+      mBuilder.setSmallIcon(R.drawable.ic_weather_cloud);
+    else
+      mBuilder.setSmallIcon(R.drawable.ic_weather_clear);
+
+    // 알림이 출력될 때 상단에 나오는 문구.
+    mBuilder.setTicker("미리 보기");
+
+    mBuilder.setWhen(System.currentTimeMillis());
+
+    // 알림 메세지 갯수
+    //    mBuilder.setNumber(10);
+    // 알림 제목.
+    mBuilder.setContentTitle(items.get(0).getStatus());
+    // 알림 내용.
+    mBuilder.setContentText("미세먼지 : " + dust);
+    // 프로그래스 바.
+    //    mBuilder.setProgress(100, 50, false);
+    // 알림시 사운드, 진동, 불빛을 설정 가능.
+    mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+    // 알림 터치시 반응.
+    mBuilder.setContentIntent(pendingIntent);
+    // 알림 터치시 반응 후 알림 삭제 여부.
+    mBuilder.setAutoCancel(false);
+    // 우선순위.
+    mBuilder.setPriority(Notification.PRIORITY_MAX);
+
+    mBuilder.setOngoing(true);
+
+
+    // 행동 최대3개 등록 가능.
+    //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
+    //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
+    //      mBuilder.addAction(R.mipmap.ic_launcher, "Remove", pendingIntent);
+
+    // 고유ID로 알림을 생성.
+    nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    nm.notify(111, mBuilder.build());
+
     return items;
   }
 
@@ -730,7 +754,7 @@ public class MainActivity extends AppCompatActivity
 
     //알람 예약
     //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
   }
 
   /* ========================== 맵 JSON ==========================*/
@@ -920,14 +944,15 @@ public class MainActivity extends AppCompatActivity
   @SuppressWarnings({"MissingPermission"})
   private void requestLocation()
   {
-    dialog = ProgressDialog.show(MainActivity.this, "", "위치를 찾는 중입니다. 잠시 기다려 주세요", false);
-    progressbar.setVisibility(View.VISIBLE);
-    progressbar.bringToFront();
-    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-    builder.setTitle(getString(R.string.app_name));
-    builder.setMessage("위치를 찾는 중입니다");
-    builder.setPositiveButton(android.R.string.ok, null);
-    builder.create().show();
+    //    dialog = ProgressDialog.show(MainActivity.this, "", "위치를 찾는 중입니다. 잠시 기다려 주세요", false);
+    //    progressbar.setVisibility(View.VISIBLE);
+    //    progressbar.bringToFront();
+    //    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+    //    builder.setTitle(getString(R.string.app_name));
+    //    builder.setMessage("위치를 찾는 중입니다");
+    //    builder.setPositiveButton(android.R.string.ok, null);
+    //    builder.create().show();
+    Toast.makeText(MainActivity.this, "위치를 찾는 중입니다", Toast.LENGTH_SHORT).show();
     handler.postDelayed(timeOutFindStationCallBack, LCOATION_TIME_OUT_SECOND);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);

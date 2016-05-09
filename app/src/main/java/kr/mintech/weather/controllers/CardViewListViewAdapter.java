@@ -46,9 +46,10 @@ public class CardViewListViewAdapter extends BaseAdapter
     notifyDataSetChanged();
   }
 
-  public void add(String res)
+  public void add(String dust, String value)
   {
-    this.listViewItem.setDust(res);
+    this.listViewItem.setDust(dust);
+    this.listViewItem.setDustValue(value);
   }
 
   //================================================
@@ -87,6 +88,7 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView date_main = (TextView) convertView.findViewById(R.id.date_main);
       TextView temperature_main = (TextView) convertView.findViewById(R.id.temperature_main);
       TextView dust_main = (TextView) convertView.findViewById(R.id.dust_main);
+      TextView dust_value_main = (TextView) convertView.findViewById(R.id.dust_value_main);
       ImageView icon_main = (ImageView) convertView.findViewById(R.id.weather_image_main);
       LinearLayout topContainer_main = (LinearLayout) convertView.findViewById(R.id.top_container_main);
       Button detail_button = (Button) convertView.findViewById(R.id.detail_button_main);
@@ -121,6 +123,7 @@ public class CardViewListViewAdapter extends BaseAdapter
         day_main.setText("Today / "+item.getTitle());
         detail_windspeed_main.setText(item.getWindspeed() + "M/second");
         dust_main.setText("Dust : "+listViewItem.getDust());
+        dust_main.setText("DustValue : "+listViewItem.getDustValue());
         explain_dewpoint_main.setText(R.string.dewpoint);
         explain_windspeed_main.setText(R.string.windspeed);
         explain_pressure_main.setText(R.string.pressure);
@@ -134,6 +137,7 @@ public class CardViewListViewAdapter extends BaseAdapter
         day_main.setText("오늘 / " + item.getTitle() + "요일");
         detail_windspeed_main.setText(item.getWindspeed() + "M/초");
         dust_main.setText("미세먼지 : " + listViewItem.getDust());
+        dust_value_main.setText(listViewItem.getDustValue()+ " PM10");
       }
 
       status_main.setText(item.getStatus());

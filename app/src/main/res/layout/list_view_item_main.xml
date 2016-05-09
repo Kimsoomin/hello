@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    card_view:cardCornerRadius="12dp"
-    card_view:cardBackgroundColor="#3F51b5">
+    card_view:cardBackgroundColor="#3F51b5"
+    card_view:cardCornerRadius="12dp">
 
     <LinearLayout
         android:id="@+id/top_container_main"
@@ -29,21 +29,21 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_weight="0.7"
+                android:textColor="@color/caldroid_white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/caldroid_white"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/date_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.25"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/caldroid_white"/>
+                android:layout_weight="0.25"
+                android:textColor="@color/caldroid_white"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -64,30 +64,48 @@
                     android:id="@+id/temperature_main"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="48dp"
-                    android:textStyle="bold"
                     android:layout_weight="0.2"
-                    android:textColor="@color/caldroid_white"/>
+                    android:textColor="@color/caldroid_white"
+                    android:textSize="48dp"
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/weather_image_main"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/margin64"
-                    android:src="@drawable/ico_wg1"
-                    android:layout_weight="0.25"/>
+                    android:layout_weight="0.25"
+                    android:src="@drawable/ico_wg1"/>
 
-                <TextView
-                    android:id="@+id/dust_main"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:layout_weight="0.5"
-                    android:paddingLeft="64dp"
-                    android:layout_marginLeft="56dp"
-                    android:textColor="@color/caldroid_white"/>
+                    android:orientation="vertical"
+                    android:layout_weight="0.5">
 
+                    <TextView
+                        android:id="@+id/dust_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="56dp"
+                        android:paddingLeft="64dp"
+                        android:textColor="@color/caldroid_white"
+                        android:textSize="16dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/dust_value_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="56dp"
+                        android:layout_weight="0.5"
+                        android:paddingLeft="64dp"
+                        android:textColor="@color/caldroid_white"
+                        android:textSize="16dp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -111,12 +129,12 @@
                 android:id="@+id/detail_button_main"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/selector"
                 android:textSize="10dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_gravity="bottom"
                 />
         </LinearLayout>
 
@@ -161,15 +179,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="이슬점"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_dewpoint_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -197,15 +215,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="습도"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_humidity_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -233,15 +251,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="풍속"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_windspeed_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -279,15 +297,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="기압"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_pressure_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -316,15 +334,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="일출"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_sunrise_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -353,15 +371,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="일몰"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:id="@+id/detail_sunset_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12dp"
-                            android:textColor="@color/caldroid_white"/>
+                            android:textColor="@color/caldroid_white"
+                            android:textSize="12dp"/>
                     </LinearLayout>
 
                 </LinearLayout>
