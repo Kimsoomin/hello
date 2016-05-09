@@ -3,9 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hello.iml" filepath="$PROJECT_DIR$/hello.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httpclient-4.5.2/httpclient-4.5.2.iml" filepath="$PROJECT_DIR$/httpclient-4.5.2/httpclient-4.5.2.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpclient-4.5.2/httpclient-4.5.2.iml" filepath="$PROJECT_DIR$/httpclient-4.5.2/httpclient-4.5.2.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" filepath="$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" filepath="$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" />
       <module fileurl="file://$PROJECT_DIR$/microsoft-translator-java-api-0.6.2/microsoft-translator-java-api-0.6.2.iml" filepath="$PROJECT_DIR$/microsoft-translator-java-api-0.6.2/microsoft-translator-java-api-0.6.2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microsoft-translator-java-api-0.6.2/microsoft-translator-java-api-0.6.2.iml" filepath="$PROJECT_DIR$/microsoft-translator-java-api-0.6.2/microsoft-translator-java-api-0.6.2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microsoft-translator-java-api-0.6.2-jar-with-dependencies/microsoft-translator-java-api-0.6.2-jar-with-dependencies.iml" filepath="$PROJECT_DIR$/microsoft-translator-java-api-0.6.2-jar-with-dependencies/microsoft-translator-java-api-0.6.2-jar-with-dependencies.iml" />
       <module fileurl="file://$PROJECT_DIR$/microsoft-translator-java-api-0.6.2-jar-with-dependencies/microsoft-translator-java-api-0.6.2-jar-with-dependencies.iml" filepath="$PROJECT_DIR$/microsoft-translator-java-api-0.6.2-jar-with-dependencies/microsoft-translator-java-api-0.6.2-jar-with-dependencies.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather_test.iml" filepath="$PROJECT_DIR$/weather_test.iml" />
     </modules>

@@ -91,9 +91,12 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView dust_value_main = (TextView) convertView.findViewById(R.id.dust_value_main);
       ImageView icon_main = (ImageView) convertView.findViewById(R.id.weather_image_main);
       LinearLayout topContainer_main = (LinearLayout) convertView.findViewById(R.id.top_container_main);
-      Button detail_button = (Button) convertView.findViewById(R.id.detail_button_main);
+      TextView detail_text = (TextView) convertView.findViewById(R.id.detail_button_main);
+      final ImageView down_arrow = (ImageView) convertView.findViewById(R.id.down_arrow);
+      final ImageView up_arrow = (ImageView) convertView.findViewById(R.id.up_arrow);
 
       final LinearLayout detail_container_main = (LinearLayout) convertView.findViewById(R.id.detail_container_main);
+      final LinearLayout detail_arrow = (LinearLayout) convertView.findViewById(R.id.detail_arrow);
 
       TextView detail_dewpoint_main = (TextView) convertView.findViewById(R.id.detail_dewpoint_main);
       TextView explain_dewpoint_main = (TextView) convertView.findViewById(R.id.explain_dewpoint_main);
@@ -140,12 +143,12 @@ public class CardViewListViewAdapter extends BaseAdapter
         dust_value_main.setText(listViewItem.getDustValue()+ " PM10");
       }
 
+      detail_text.setText("detail");
       status_main.setText(item.getStatus());
       date_main.setText(item.getDate());
       detail_sunriseTime_main.setText(item.getSunriseTime());
       detail_sunsetTime_main.setText(item.getSunsetTime());
       temperature_main.setText(item.getTemperature());
-      detail_button.setText("detail");
       detail_dewpoint_main.setText(item.getDewpoint() + "°");
       detail_humidity_main.setText(item.getHumidity() + "%");
 
@@ -158,12 +161,19 @@ public class CardViewListViewAdapter extends BaseAdapter
       else
         icon_main.setImageResource(R.drawable.ic_weather_clear);
 
-      detail_button.setOnClickListener(new View.OnClickListener()
+      detail_arrow.setOnClickListener(new View.OnClickListener()
       {
         @Override
         public void onClick(View v)
         {
           detail_container_main.setVisibility(detail_container_main.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+          if (down_arrow.getVisibility() == View.VISIBLE) {
+            down_arrow.setVisibility(View.GONE);
+            up_arrow.setVisibility(View.VISIBLE);
+          } else {
+            down_arrow.setVisibility(View.VISIBLE);
+            up_arrow.setVisibility(View.GONE);
+          }
           Log.d("어디", "버튼클릭");
         }
       });
@@ -240,7 +250,7 @@ public class CardViewListViewAdapter extends BaseAdapter
       else
         icon.setImageResource(R.drawable.ic_weather_clear);
 
-      detail_button.setOnClickListener(new View.OnClickListener()
+      detail_container.setOnClickListener(new View.OnClickListener()
       {
         @Override
         public void onClick(View v)

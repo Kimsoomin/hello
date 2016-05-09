@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/card_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    card_view:cardBackgroundColor="#3F51b5"
+    card_view:cardBackgroundColor="@color/green300"
     card_view:cardCornerRadius="12dp">
 
     <LinearLayout
@@ -27,23 +26,22 @@
                 android:id="@+id/day_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="0.7"
+                android:layout_weight="0.65"
                 android:textColor="@color/caldroid_white"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/margin16"/>
 
             <TextView
                 android:id="@+id/date_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_weight="0.25"
                 android:textColor="@color/caldroid_white"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginRight="8dp"/>
 
         </LinearLayout>
 
@@ -52,7 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,47 +66,45 @@
                     android:layout_weight="0.2"
                     android:textColor="@color/caldroid_white"
                     android:textSize="48dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/weather_image_main"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/margin64"
                     android:layout_weight="0.25"
-                    android:src="@drawable/ico_wg1"/>
+                    android:src="@drawable/ico_wg1" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="0.5">
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.5"
+                    android:paddingLeft="64dp"
+                    android:layout_marginLeft="40dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/dust_main"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="56dp"
-                        android:paddingLeft="64dp"
                         android:textColor="@color/caldroid_white"
-                        android:textSize="16dp"
-                        android:textStyle="bold"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/dust_value_main"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="56dp"
-                        android:layout_weight="0.5"
-                        android:paddingLeft="64dp"
+                        android:gravity="right"
                         android:textColor="@color/caldroid_white"
-                        android:textSize="16dp"
-                        android:textStyle="bold"/>
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -116,26 +113,51 @@
             android:layout_marginLeft="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/status_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
-                android:textColor="@color/caldroid_white"/>
+                android:textColor="@color/caldroid_white" />
 
-            <Button
-                android:id="@+id/detail_button_main"
+            <LinearLayout
+                android:id="@+id/detail_arrow"
                 android:layout_width="0dp"
-                android:layout_height="32dp"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_weight="0.25"
-                android:background="@drawable/selector"
-                android:textSize="10dp"
-                />
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/detail_button_main"
+                    android:layout_width="64dp"
+                    android:layout_height="32dp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/caldroid_white"
+                    android:textSize="16sp"
+                    android:paddingLeft="8sp"/>
+
+                <ImageView
+                    android:id="@+id/down_arrow"
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:background="@color/green300"
+                    android:src="@drawable/arrow_down"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/up_arrow"
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:background="@color/green300"
+                    android:src="@drawable/arrow_up"
+                    android:visibility="gone" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -163,10 +185,10 @@
 
                     <ImageView
                         android:id="@+id/img_dewpoint_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/dewpoint"/>
+                        android:src="@drawable/dewpoint" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -180,14 +202,14 @@
                             android:layout_height="wrap_content"
                             android:text="이슬점"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_dewpoint_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -199,10 +221,10 @@
 
                     <ImageView
                         android:id="@+id/img_humidity_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/humidity"/>
+                        android:src="@drawable/humidity" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -216,14 +238,14 @@
                             android:layout_height="wrap_content"
                             android:text="습도"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_humidity_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -235,10 +257,10 @@
 
                     <ImageView
                         android:id="@+id/img_windspeed_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/windspeed"/>
+                        android:src="@drawable/windspeed" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -252,14 +274,14 @@
                             android:layout_height="wrap_content"
                             android:text="풍속"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_windspeed_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -281,10 +303,10 @@
 
                     <ImageView
                         android:id="@+id/img_pressure_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/pressure"/>
+                        android:src="@drawable/pressure" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -298,14 +320,14 @@
                             android:layout_height="wrap_content"
                             android:text="기압"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_pressure_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -318,10 +340,10 @@
 
                     <ImageView
                         android:id="@+id/img_sunrise_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/sunrise_512"/>
+                        android:src="@drawable/sunrise_512" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -335,14 +357,14 @@
                             android:layout_height="wrap_content"
                             android:text="일출"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_sunrise_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -355,10 +377,10 @@
 
                     <ImageView
                         android:id="@+id/img_sunset_main"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/sunset_512"/>
+                        android:src="@drawable/sunset_512" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -372,14 +394,14 @@
                             android:layout_height="wrap_content"
                             android:text="일몰"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/detail_sunset_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/caldroid_white"
-                            android:textSize="12dp"/>
+                            android:textSize="12dp" />
                     </LinearLayout>
 
                 </LinearLayout>

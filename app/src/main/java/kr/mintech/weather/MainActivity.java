@@ -481,9 +481,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
 
         break;
-      case 1:
-        Intent intent2 = new Intent(MainActivity.this, AlarmOnOffActivity.class);
-        startActivity(intent2);
 
     }
     mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -737,25 +734,25 @@ public class MainActivity extends AppCompatActivity
     return items;
   }
 
-  public void alarm_on()
-  {
-    // 알람 등록하기
-    Log.d("어디", " ====================== setAlarm ================ ");
-    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
-
-    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
-
-    Calendar calendar = Calendar.getInstance();
-    //알람시간 calendar에 set해주기
-
-    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
-    calendar.set(Calendar.SECOND, 0);
-
-    //알람 예약
-    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
-  }
+//  public void alarm_on()
+//  {
+//    // 알람 등록하기
+//    Log.d("어디", " ====================== setAlarm ================ ");
+//    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
+//
+//    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+//
+//    Calendar calendar = Calendar.getInstance();
+//    //알람시간 calendar에 set해주기
+//
+//    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
+//    calendar.set(Calendar.SECOND, 0);
+//
+//    //알람 예약
+//    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
+//    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+//  }
 
   /* ========================== 맵 JSON ==========================*/
   private class MapJson extends AsyncTask<String, String, String>
