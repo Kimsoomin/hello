@@ -658,9 +658,10 @@ public class MainActivity extends AppCompatActivity
 
       String addressInit = address.toString();
       Log.d("어디", "======== addressInit ========" + addressInit);
-      Log.d("어디", " ============ addressInit.length() ==========" + addressInit.length());
+      Log.d("어디", " ============ addressInit.length() ========== / " + addressInit.length());
 
-      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
+      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address="+addressInit ;
+      Log.d("어디","///////// place picker googleAddressApi ///////" +googleAddressApi);
 
       if (addressInit.length() == 0)
       {
@@ -672,6 +673,8 @@ public class MainActivity extends AppCompatActivity
       else
       {
         new AddressJson().execute(googleAddressApi);
+        Log.d("어디","========= place picker addressLat ========"+addressLat);
+        Log.d("어디","========= place picker addressLon ========"+addressLon);
         lat = addressLat;
         lon = addressLon;
       }
@@ -1166,6 +1169,7 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
+        Log.d("어디","============ 날씨 JSON 진입 ===========");
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONObject dailyObject = jsonResult.getJSONObject("daily");
         JSONArray dataArray = dailyObject.getJSONArray("data");
@@ -1241,12 +1245,15 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
+        Log.d("어디","============ 주소 JSON 진입 ===========");
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONObject locationObject = jsonResult.getJSONObject("location");
         addressLat = locationObject.getString("lat");
         addressLon = locationObject.getString("lng");
         Log.d("어디", "============ addressLat ==========" + addressLat);
         Log.d("어디", "============ addressLon ==========" + addressLon);
+
+//        adapter.addAll(generateModels(dataArray));
 
       } catch (JSONException e)
       {
