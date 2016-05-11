@@ -46,13 +46,6 @@
                     android:layout_below="@+id/chart"
                     android:layout_marginTop="8dp"/>
 
-                <ListView
-                    android:id="@+id/today_life"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/listview"
-                    android:layout_marginTop="8dp"/>
-
             </RelativeLayout>
 
             <ProgressBar

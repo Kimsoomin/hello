@@ -146,9 +146,9 @@ public class MainActivity extends AppCompatActivity
 
   String hndResult = "";
   String test;
-  String dust = "맑음";
+  String dust;
   String valueInit;
-  String value = "10";
+  String value;
 
   // ============ 세차 지수 sk planet ============
   APIRequest api_carwash;
@@ -214,8 +214,8 @@ public class MainActivity extends AppCompatActivity
 
     SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
 
-    double latitude = Double.longBitsToDouble(pref.getLong("lat", 37));
-    double longitude = Double.longBitsToDouble(pref.getLong("lon", 122));
+    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
+    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
 
     String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
     String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity
 
     // =========================미 세 먼 지=============================
     api = new APIRequest();
-    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
 
     // url에 삽입되는 파라미터 설정
     param = new HashMap<String, Object>();
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity
       public void onComplete(ResponseMessage result)
       {
         // 응답을 받아 메시지 핸들러에 알려준다.
+        Log.d("어디", "onComplte 진입");
         hndResult = result.getStatusCode() + "\n" + result.toString();
         test = hndResult.split("grade")[1];
         valueInit = hndResult.split("value")[1];
@@ -308,209 +309,209 @@ public class MainActivity extends AppCompatActivity
       e.printStackTrace();
     }
 
-    //    =================== 세차 지수 ===========================
-//
-//    api_carwash = new APIRequest();
-//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
-//
-//    // url에 삽입되는 파라미터 설정
-//    param_carwash = new HashMap<String, Object>();
-//    param_carwash.put("version", "1");
-//
-//    // 호출시 사용될 값 설정
-//    requestBundle_carwash = new RequestBundle();
-//    requestBundle_carwash.setUrl(URL_carwash);
-//    requestBundle_carwash.setParameters(param_carwash);
-//    requestBundle_carwash.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
-//    requestBundle_carwash.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
-//
-//    RequestListener reqListener_carwash = new RequestListener()
-//    {
-//      @Override
-//      public void onPlanetSDKException(PlanetXSDKException e)
-//      {
-//        hndResult_carwash = e.toString();
-//      }
-//
-//      @Override
-//      public void onComplete(ResponseMessage result)
-//      {
-//        // 응답을 받아 메시지 핸들러에 알려준다.
-//        hndResult_carwash = result.getStatusCode() + "\n" + result.toString();
-//        String carwash_comment = hndResult_carwash.split("comment")[1];
-//        String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
-//        String carwash_result = carwash.substring(0, carwash.length() - 1);
-//
-//        Log.d("어디", "=========== hndResult_carwash ===========  " + hndResult_carwash);
-//        Log.d("어디", "=========== carwash_comment ===========  " + carwash_comment);
-//        Log.d("어디", "=========== carwash ===========  " + carwash);
-//        Log.d("어디", "=========== carwash_result ===========  " + carwash_result);
-//      }
-//    };
-//
-//    try
-//    {
-//      // 비동기 호출
-//      api_carwash.request(requestBundle_carwash, reqListener_carwash);
-//    } catch (PlanetXSDKException e)
-//    {
-//      e.printStackTrace();
-//    }
-//
-//    //    =================== 자외선 지수 ===========================
-//
-//    api_uv = new APIRequest();
-//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
-//
-//    // url에 삽입되는 파라미터 설정
-//    param_uv = new HashMap<String, Object>();
-//    param_uv.put("version", "1");
-//    param_uv.put("lat", latitude);
-//    param_uv.put("lon", longitude);
-//
-//    // 호출시 사용될 값 설정
-//    requestBundle_uv = new RequestBundle();
-//    requestBundle_uv.setUrl(URL_uv);
-//    requestBundle_uv.setParameters(param_uv);
-//    requestBundle_uv.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
-//    requestBundle_uv.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
-//
-//    RequestListener reqListener_uv = new RequestListener()
-//    {
-//      @Override
-//      public void onPlanetSDKException(PlanetXSDKException e)
-//      {
-//        hndResult_uv = e.toString();
-//      }
-//
-//      @Override
-//      public void onComplete(ResponseMessage result)
-//      {
-//        // 응답을 받아 메시지 핸들러에 알려준다.
-//        hndResult_uv = result.getStatusCode() + "\n" + result.toString();
-//        String uv_comment = hndResult_uv.split("comment")[1];
-//        String uv = uv_comment.substring(3, uv_comment.indexOf(","));
-//        String uv_result = uv.substring(0, uv.length() - 1);
-//
-//        Log.d("어디", "=========== hndResult_uv ===========  " + hndResult_uv);
-//        Log.d("어디", "=========== uv_comment ===========  " + uv_comment);
-//        Log.d("어디", "=========== uv ===========  " + uv);
-//        Log.d("어디", "=========== uv_result ===========  " + uv_result);
-//      }
-//    };
-//
-//    try
-//    {
-//      // 비동기 호출
-//      api_uv.request(requestBundle_uv, reqListener_uv);
-//    } catch (PlanetXSDKException e)
-//    {
-//      e.printStackTrace();
-//    }
-//
-//    //    =================== 빨래 지수 ===========================
-//
-//    api_laundry = new APIRequest();
-//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
-//
-//    // url에 삽입되는 파라미터 설정
-//    param_laundry = new HashMap<String, Object>();
-//    param_laundry.put("version", "1");
-//    param_laundry.put("lat", latitude);
-//    param_laundry.put("lon", longitude);
-//
-//    // 호출시 사용될 값 설정
-//    requestBundle_laundry = new RequestBundle();
-//    requestBundle_laundry.setUrl(URL_laundry);
-//    requestBundle_laundry.setParameters(param_laundry);
-//    requestBundle_laundry.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
-//    requestBundle_laundry.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
-//
-//    RequestListener reqListener_laundry = new RequestListener()
-//    {
-//      @Override
-//      public void onPlanetSDKException(PlanetXSDKException e)
-//      {
-//        hndResult_laundry = e.toString();
-//      }
-//
-//      @Override
-//      public void onComplete(ResponseMessage result)
-//      {
-//        // 응답을 받아 메시지 핸들러에 알려준다.
-////        hndResult_laundry = result.getStatusCode() + "\n" + result.toString();
-////        String laundry_comment = hndResult_laundry.split("comment")[1];
-////        String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
-////        String laundry_result = laundry.substring(0, laundry.length() - 1);
-////
-////        Log.d("어디", "=========== hndResult_laundry ===========  " + hndResult_laundry);
-////        Log.d("어디", "=========== laundry_comment ===========  " + laundry_comment);
-////        Log.d("어디", "=========== laundry ===========  " + laundry);
-////        Log.d("어디", "=========== laundry_result ===========  " + laundry_result);
-//      }
-//    };
-//
-//    try
-//    {
-//      // 비동기 호출
-//      api_laundry.request(requestBundle_laundry, reqListener_laundry);
-//    } catch (PlanetXSDKException e)
-//    {
-//      e.printStackTrace();
-//    }
-//
-//    //    =================== 불쾌 지수 ===========================
-//
-//    api_discomfort = new APIRequest();
-//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
-//
-//    // url에 삽입되는 파라미터 설정
-//    param_discomfort = new HashMap<String, Object>();
-//    param_discomfort.put("version", "1");
-//    param_discomfort.put("lat", latitude);
-//    param_discomfort.put("lon", longitude);
-//
-//    // 호출시 사용될 값 설정
-//    requestBundle_discomfort = new RequestBundle();
-//    requestBundle_discomfort.setUrl(URL_discomfort);
-//    requestBundle_discomfort.setParameters(param_discomfort);
-//    requestBundle_discomfort.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
-//    requestBundle_discomfort.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
-//
-//    RequestListener reqListener_discomfort = new RequestListener()
-//    {
-//      @Override
-//      public void onPlanetSDKException(PlanetXSDKException e)
-//      {
-//        hndResult_discomfort = e.toString();
-//      }
-//
-//      @Override
-//      public void onComplete(ResponseMessage result)
-//      {
-//        // 응답을 받아 메시지 핸들러에 알려준다.
-//        hndResult_discomfort = result.getStatusCode() + "\n" + result.toString();
-//        String discomfort_forecast = hndResult_discomfort.split("forecast")[1];
-//        String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
-//        String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
-//        String discomfort_result = discomfort.substring(0, discomfort.length() - 1);
-//
-//        Log.d("어디", "=========== hndResult_discomfort ===========  " + hndResult_discomfort);
-//        Log.d("어디", "=========== discomfort_forecast ===========  " + discomfort_forecast);
-//        Log.d("어디", "=========== discomfort_4hour ===========  " + discomfort_4hour);
-//        Log.d("어디", "=========== discomfort ===========  " + discomfort);
-//        Log.d("어디", "=========== discomfort_result ===========  " + discomfort_result);
-//      }
-//    };
-//
-//    try
-//    {
-//      // 비동기 호출
-//      api_discomfort.request(requestBundle_discomfort, reqListener_discomfort);
-//    } catch (PlanetXSDKException e)
-//    {
-//      e.printStackTrace();
-//    }
+    //    ===================세차 지수===========================
+
+    api_carwash = new APIRequest();
+    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+
+    // url에 삽입되는 파라미터 설정
+    param_carwash = new HashMap<String, Object>();
+    param_carwash.put("version", "1");
+
+    // 호출시 사용될 값 설정
+    requestBundle_carwash = new RequestBundle();
+    requestBundle_carwash.setUrl(URL_carwash);
+    requestBundle_carwash.setParameters(param_carwash);
+    requestBundle_carwash.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+    requestBundle_carwash.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+    RequestListener reqListener_carwash = new RequestListener()
+    {
+      @Override
+      public void onPlanetSDKException(PlanetXSDKException e)
+      {
+        hndResult_carwash = e.toString();
+      }
+
+      @Override
+      public void onComplete(ResponseMessage result)
+      {
+        // 응답을 받아 메시지 핸들러에 알려준다.
+        hndResult_carwash = result.getStatusCode() + "\n" + result.toString();
+        String carwash_comment = hndResult_carwash.split("comment")[1];
+        String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
+        String carwash_result = carwash.substring(0, carwash.length() - 1);
+
+        Log.d("어디", "=========== hndResult_carwash ===========  " + hndResult_carwash);
+        Log.d("어디", "=========== carwash_comment ===========  " + carwash_comment);
+        Log.d("어디", "=========== carwash ===========  " + carwash);
+        Log.d("어디", "=========== carwash_result ===========  " + carwash_result);
+      }
+    };
+
+    try
+    {
+      // 비동기 호출
+      api_carwash.request(requestBundle_carwash, reqListener_carwash);
+    } catch (PlanetXSDKException e)
+    {
+      e.printStackTrace();
+    }
+
+    //    =================== 자외선 지수 ===========================
+
+    api_uv = new APIRequest();
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+
+    // url에 삽입되는 파라미터 설정
+    param_uv = new HashMap<String, Object>();
+    param_uv.put("version", "1");
+    param_uv.put("lat", latitude);
+    param_uv.put("lon", longitude);
+
+    // 호출시 사용될 값 설정
+    requestBundle_uv = new RequestBundle();
+    requestBundle_uv.setUrl(URL_uv);
+    requestBundle_uv.setParameters(param_uv);
+    requestBundle_uv.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+    requestBundle_uv.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+    RequestListener reqListener_uv = new RequestListener()
+    {
+      @Override
+      public void onPlanetSDKException(PlanetXSDKException e)
+      {
+        hndResult_uv = e.toString();
+      }
+
+      @Override
+      public void onComplete(ResponseMessage result)
+      {
+        // 응답을 받아 메시지 핸들러에 알려준다.
+        hndResult_uv = result.getStatusCode() + "\n" + result.toString();
+        String uv_comment = hndResult_uv.split("comment")[1];
+        String uv = uv_comment.substring(3, uv_comment.indexOf(","));
+        String uv_result = uv.substring(0, uv.length() - 1);
+
+        Log.d("어디", "=========== hndResult_uv ===========  " + hndResult_uv);
+        Log.d("어디", "=========== uv_comment ===========  " + uv_comment);
+        Log.d("어디", "=========== uv ===========  " + uv);
+        Log.d("어디", "=========== uv_result ===========  " + uv_result);
+      }
+    };
+
+    try
+    {
+      // 비동기 호출
+      api_uv.request(requestBundle_uv, reqListener_uv);
+    } catch (PlanetXSDKException e)
+    {
+      e.printStackTrace();
+    }
+
+    //    =================== 빨래 지수 ===========================
+
+    api_laundry = new APIRequest();
+    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+
+    // url에 삽입되는 파라미터 설정
+    param_laundry = new HashMap<String, Object>();
+    param_laundry.put("version", "1");
+    param_laundry.put("lat", latitude);
+    param_laundry.put("lon", longitude);
+
+    // 호출시 사용될 값 설정
+    requestBundle_laundry = new RequestBundle();
+    requestBundle_laundry.setUrl(URL_laundry);
+    requestBundle_laundry.setParameters(param_laundry);
+    requestBundle_laundry.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+    requestBundle_laundry.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+    RequestListener reqListener_laundry = new RequestListener()
+    {
+      @Override
+      public void onPlanetSDKException(PlanetXSDKException e)
+      {
+        hndResult_laundry = e.toString();
+      }
+
+      @Override
+      public void onComplete(ResponseMessage result)
+      {
+        //         응답을 받아 메시지 핸들러에 알려준다.
+        hndResult_laundry = result.getStatusCode() + "\n" + result.toString();
+        String laundry_comment = hndResult_laundry.split("comment")[1];
+        String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
+        String laundry_result = laundry.substring(0, laundry.length() - 1);
+
+        Log.d("어디", "=========== hndResult_laundry ===========  " + hndResult_laundry);
+        Log.d("어디", "=========== laundry_comment ===========  " + laundry_comment);
+        Log.d("어디", "=========== laundry ===========  " + laundry);
+        Log.d("어디", "=========== laundry_result ===========  " + laundry_result);
+      }
+    };
+
+    try
+    {
+      // 비동기 호출
+      api_laundry.request(requestBundle_laundry, reqListener_laundry);
+    } catch (PlanetXSDKException e)
+    {
+      e.printStackTrace();
+    }
+
+    //    =================== 불쾌 지수 ===========================
+
+    api_discomfort = new APIRequest();
+    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+
+    // url에 삽입되는 파라미터 설정
+    param_discomfort = new HashMap<String, Object>();
+    param_discomfort.put("version", "1");
+    param_discomfort.put("lat", latitude);
+    param_discomfort.put("lon", longitude);
+
+    // 호출시 사용될 값 설정
+    requestBundle_discomfort = new RequestBundle();
+    requestBundle_discomfort.setUrl(URL_discomfort);
+    requestBundle_discomfort.setParameters(param_discomfort);
+    requestBundle_discomfort.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+    requestBundle_discomfort.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+    RequestListener reqListener_discomfort = new RequestListener()
+    {
+      @Override
+      public void onPlanetSDKException(PlanetXSDKException e)
+      {
+        hndResult_discomfort = e.toString();
+      }
+
+      @Override
+      public void onComplete(ResponseMessage result)
+      {
+        // 응답을 받아 메시지 핸들러에 알려준다.
+        hndResult_discomfort = result.getStatusCode() + "\n" + result.toString();
+        String discomfort_forecast = hndResult_discomfort.split("forecast")[1];
+        String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
+        String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
+        String discomfort_result = discomfort.substring(0, discomfort.length() - 1);
+
+        Log.d("어디", "=========== hndResult_discomfort ===========  " + hndResult_discomfort);
+        Log.d("어디", "=========== discomfort_forecast ===========  " + discomfort_forecast);
+        Log.d("어디", "=========== discomfort_4hour ===========  " + discomfort_4hour);
+        Log.d("어디", "=========== discomfort ===========  " + discomfort);
+        Log.d("어디", "=========== discomfort_result ===========  " + discomfort_result);
+      }
+    };
+
+    try
+    {
+      // 비동기 호출
+      api_discomfort.request(requestBundle_discomfort, reqListener_discomfort);
+    } catch (PlanetXSDKException e)
+    {
+      e.printStackTrace();
+    }
 
     //  =================== place picker ======================
 
@@ -655,31 +656,31 @@ public class MainActivity extends AppCompatActivity
         attributions = "";
       }
 
-//      String addressInit = address.toString();
-//      Log.d("어디", "======== addressInit ========" + addressInit);
-//      Log.d("어디", " ============ addressInit.length() ==========" + addressInit.length());
-//
-//      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
-//
-//      if (addressInit.length() == 0)
-//      {
-//        str = name.toString();
-//        Log.d("어디", "str  /  " + str);
-//        lat = str.substring(1, str.indexOf(","));
-//        lon = str.substring(13, str.indexOf(")"));
-//      }
-//      else
-//      {
-//        new AddressJson().execute(googleAddressApi);
-//        lat = addressLat;
-//        lon = addressLon;
-//      }
+      String addressInit = address.toString();
+      Log.d("어디", "======== addressInit ========" + addressInit);
+      Log.d("어디", " ============ addressInit.length() ==========" + addressInit.length());
 
-      str = name.toString();
-      Log.d("어디", "str  /  " + str);
-      lat = str.substring(1, str.indexOf(","));
-      lon = str.substring(13, str.indexOf(")"));
-      
+      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
+
+      if (addressInit.length() == 0)
+      {
+        str = name.toString();
+        Log.d("어디", "str  /  " + str);
+        lat = str.substring(1, str.indexOf(","));
+        lon = str.substring(13, str.indexOf(")"));
+      }
+      else
+      {
+        new AddressJson().execute(googleAddressApi);
+        lat = addressLat;
+        lon = addressLon;
+      }
+
+      //      str = name.toString();
+      //      Log.d("어디", "str  /  " + str);
+      //      lat = str.substring(1, str.indexOf(","));
+      //      lon = str.substring(13, str.indexOf(")"));
+
       Log.d("어디", "lat  /  " + lat);
       Log.d("어디", "lon  /  " + lon);
 
@@ -1104,7 +1105,7 @@ public class MainActivity extends AppCompatActivity
         text.setText(address);
       } catch (JSONException e)
       {
-        Log.d("catch", "catch진입");
+        Log.e("catch", "catch진입");
         e.printStackTrace();
       }
     }
