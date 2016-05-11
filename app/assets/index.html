@@ -1,0 +1,55 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function setMessage(msg){
+
+arr=msg;
+google.setOnLoadCallback(drawChart);
+}
+
+function drawChart() {
+
+filt=arr.split("|");  //filtering
+filt2=filt[0].split(","); //filtering
+
+title[0][0]=filt2[0]; //x
+title[0][1]=filt2[1]; //title
+
+data=filt[1].split("/");//data filter
+
+arrRange = data[0].split(",").length;
+
+
+for(i=0;i&lt;data.length;i++){
+tempdata=data[i].split(",");
+chartdata[i][0]=tempdata[0];
+chartdata[i][1]*=tempdata[1];
+}
+
+showchart=title.concat(chartdata);
+
+var data = google.visualization.arrayToDataTable(showchart);
+var options = {
+curveType: 'function',
+
+title: showchart[0][1]
+
+
+};
+var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+chart.draw(data, options);
+
+}
+
+
+
+    </script>
+</head>
+<body>
+<div id="curve_chart" style="width: 900px; height: 500px"></div>
+</body>
+</html>

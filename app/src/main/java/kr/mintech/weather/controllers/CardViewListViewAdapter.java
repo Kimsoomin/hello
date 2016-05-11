@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -74,8 +73,9 @@ public class CardViewListViewAdapter extends BaseAdapter
   @Override
   public View getView(int position, View convertView, final ViewGroup parent)
   {
+
     language = Locale.getDefault().getLanguage();
-    Log.d("어디","언어확인 / " +language);
+    Log.d("어디", "언어확인 / " + language);
     // ============================== 기존 소스 =================================
     final ListViewItem item = listViewItemList.get(position);
 
@@ -123,10 +123,10 @@ public class CardViewListViewAdapter extends BaseAdapter
       // =====================================
       if (language.contains("en"))
       {
-        day_main.setText("Today / "+item.getTitle());
+        day_main.setText("Today / " + item.getTitle());
         detail_windspeed_main.setText(item.getWindspeed() + "M/second");
-        dust_main.setText("Dust : "+listViewItem.getDust());
-        dust_main.setText("DustValue : "+listViewItem.getDustValue());
+        dust_main.setText("Dust : " + listViewItem.getDust());
+        dust_main.setText("DustValue : " + listViewItem.getDustValue());
         explain_dewpoint_main.setText(R.string.dewpoint);
         explain_windspeed_main.setText(R.string.windspeed);
         explain_pressure_main.setText(R.string.pressure);
@@ -140,10 +140,10 @@ public class CardViewListViewAdapter extends BaseAdapter
         day_main.setText("오늘 / " + item.getTitle() + "요일");
         detail_windspeed_main.setText(item.getWindspeed() + "M/초");
         dust_main.setText("미세먼지 : " + listViewItem.getDust());
-        dust_value_main.setText(listViewItem.getDustValue()+ " PM10");
+        dust_value_main.setText(listViewItem.getDustValue() + " PM10");
       }
 
-      detail_text.setText("detail");
+      detail_text.setText("DETAIL");
       status_main.setText(item.getStatus());
       date_main.setText(item.getDate());
       detail_sunriseTime_main.setText(item.getSunriseTime());
@@ -167,10 +167,13 @@ public class CardViewListViewAdapter extends BaseAdapter
         public void onClick(View v)
         {
           detail_container_main.setVisibility(detail_container_main.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-          if (down_arrow.getVisibility() == View.VISIBLE) {
+          if (down_arrow.getVisibility() == View.VISIBLE)
+          {
             down_arrow.setVisibility(View.GONE);
             up_arrow.setVisibility(View.VISIBLE);
-          } else {
+          }
+          else
+          {
             down_arrow.setVisibility(View.VISIBLE);
             up_arrow.setVisibility(View.GONE);
           }
@@ -179,9 +182,9 @@ public class CardViewListViewAdapter extends BaseAdapter
       });
     }
 /* ========== else ===========*/
+
     else
     {
-
       convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
 
       TextView day = (TextView) convertView.findViewById(R.id.day);
@@ -190,7 +193,6 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
       ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
       LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
-      Button detail_button = (Button) convertView.findViewById(R.id.detail_button);
 
       final LinearLayout detail_container = (LinearLayout) convertView.findViewById(R.id.detail_container);
 
@@ -203,6 +205,11 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView detail_pressure = (TextView) convertView.findViewById(R.id.detail_pressure);
       TextView explain_pressure = (TextView) convertView.findViewById(R.id.explain_pressure);
 
+      final LinearLayout detail_arrow = (LinearLayout) convertView.findViewById(R.id.detail_arrow);
+
+      final ImageView down_arrow = (ImageView) convertView.findViewById(R.id.down_arrow);
+      final ImageView up_arrow = (ImageView) convertView.findViewById(R.id.up_arrow);
+
       ImageView img_dewpoint = (ImageView) convertView.findViewById(R.id.img_dewpoint);
       ImageView img_humidity = (ImageView) convertView.findViewById(R.id.img_humidity);
       ImageView img_windspeed = (ImageView) convertView.findViewById(R.id.img_windspeed);
@@ -212,6 +219,8 @@ public class CardViewListViewAdapter extends BaseAdapter
       TextView detail_sunset = (TextView) convertView.findViewById(R.id.detail_sunset);
       TextView explain_sunrise = (TextView) convertView.findViewById(R.id.explain_sunrise);
       TextView explain_sunset = (TextView) convertView.findViewById(R.id.explain_sunset);
+
+      TextView detail_text = (TextView) convertView.findViewById(R.id.detail_button);
 
       if (language.contains("en"))
       {
@@ -232,12 +241,12 @@ public class CardViewListViewAdapter extends BaseAdapter
         detail_windspeed.setText(item.getWindspeed() + "M/초");
       }
 
+      detail_text.setText("DETAIL");
       status.setText(item.getStatus());
       date.setText(item.getDate());
       detail_sunrise.setText(item.getSunriseTime());
       detail_sunset.setText(item.getSunsetTime());
       temperature.setText(item.getTemperature());
-      detail_button.setText("detail");
       detail_dewpoint.setText(item.getDewpoint() + "°");
       detail_humidity.setText(item.getHumidity() + "%");
       detail_pressure.setText(item.getPressure() + "hPa");
@@ -250,12 +259,22 @@ public class CardViewListViewAdapter extends BaseAdapter
       else
         icon.setImageResource(R.drawable.ic_weather_clear);
 
-      detail_container.setOnClickListener(new View.OnClickListener()
+      detail_arrow.setOnClickListener(new View.OnClickListener()
       {
         @Override
         public void onClick(View v)
         {
           detail_container.setVisibility(detail_container.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+          if (down_arrow.getVisibility() == View.VISIBLE)
+          {
+            down_arrow.setVisibility(View.GONE);
+            up_arrow.setVisibility(View.VISIBLE);
+          }
+          else
+          {
+            down_arrow.setVisibility(View.VISIBLE);
+            up_arrow.setVisibility(View.GONE);
+          }
           Log.d("어디", "버튼클릭");
         }
       });

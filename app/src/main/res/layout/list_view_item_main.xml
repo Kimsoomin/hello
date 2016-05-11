@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginTop="8dp">
 
 
             <TextView
@@ -37,11 +38,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:paddingLeft="8dp"
                 android:layout_weight="0.25"
                 android:textColor="@color/caldroid_white"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginRight="8dp"/>
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -82,13 +84,14 @@
                     android:layout_weight="0.5"
                     android:paddingLeft="64dp"
                     android:layout_marginLeft="40dp"
+                    android:layout_marginRight="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/dust_main"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="right"
                         android:textColor="@color/caldroid_white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -97,8 +100,7 @@
                         android:id="@+id/dust_value_main"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="right"
+                        android:layout_gravity="right"
                         android:textColor="@color/caldroid_white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -122,7 +124,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
-                android:textColor="@color/caldroid_white" />
+                android:textColor="@color/caldroid_white"
+                android:layout_marginLeft="@dimen/margin16"/>
 
             <LinearLayout
                 android:id="@+id/detail_arrow"
@@ -130,7 +133,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginRight="8dp">
 
                 <TextView
                     android:id="@+id/detail_button_main"
@@ -138,8 +142,8 @@
                     android:layout_height="32dp"
                     android:gravity="center_vertical"
                     android:textColor="@color/caldroid_white"
-                    android:textSize="16sp"
-                    android:paddingLeft="8sp"/>
+                    android:textSize="12sp"
+                    android:paddingLeft="16dp"/>
 
                 <ImageView
                     android:id="@+id/down_arrow"
@@ -164,10 +168,10 @@
             android:id="@+id/detail_container_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
+            android:background="@color/green200"
             android:visibility="gone">
 
             <LinearLayout
@@ -175,7 +179,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -293,7 +299,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:layout_marginLeft="12dp"
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:layout_width="0dp"

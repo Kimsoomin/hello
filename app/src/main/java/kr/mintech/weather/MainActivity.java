@@ -2,7 +2,6 @@ package kr.mintech.weather;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -39,6 +38,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity
 
   //  ============== card view ==================
 
+  private ArrayList<ListViewItem> items;
   public static RecyclerView mRecyclerView;
   public static RecyclerView mRecyclerViewMain;
   private static RecyclerView.Adapter mAdapter;
@@ -113,22 +118,25 @@ public class MainActivity extends AppCompatActivity
 
   // =============== navi draw ==================
 
-  private String[] navItemsKo = {"설정", "알림 On/Off"};
-  private String[] navItemsEn = {"Setting", "Notification On/Off"};
+  private String[] navItemsKo = {"설정"};
+  private String[] navItemsEn = {"Setting"};
+
+  private NativeAd.Image image;
+
   private ListView lvNavList;
   private DrawerLayout mDrawerLayout; // 주 기능
   private ActionBarDrawerToggle mDrawerToggle; // 주 기능
   private ActionBar actionBar;
 
-  // placePicker
+  // ============ placePicker =============
 
   private static final int PLACE_PICKER_REQUEST = 1;
-  private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+  private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, 127.0303081), new LatLng(37.430610, -121.972090));
   private String str;
   private String lat;
   private String lon;
 
-  // 미세먼지 sk planet
+  // ============ 미세먼지 sk planet ============
   APIRequest api;
   RequestBundle requestBundle;
   // http://apis.skplanetx.com/melon/newreleases/songs?version={version}&page={page}&count={count}
@@ -138,18 +146,51 @@ public class MainActivity extends AppCompatActivity
 
   String hndResult = "";
   String test;
-  String dust;
+  String dust = "맑음";
   String valueInit;
-  String value;
-  // 알림바
+  String value = "10";
+
+  // ============ 세차 지수 sk planet ============
+  APIRequest api_carwash;
+  RequestBundle requestBundle_carwash;
+  String URL_carwash = "http://apis.skplanetx.com/weather/windex/carwash";
+  Map<String, Object> param_carwash;
+  String hndResult_carwash = "";
+
+  // ============ 자외선 지수 sk planet ============
+  APIRequest api_uv;
+  RequestBundle requestBundle_uv;
+  String URL_uv = "http://apis.skplanetx.com/weather/windex/uvindex";
+  Map<String, Object> param_uv;
+  String hndResult_uv = "";
+
+  // ============ 빨래 지수 sk planet ============
+  APIRequest api_laundry;
+  RequestBundle requestBundle_laundry;
+  String URL_laundry = "http://apis.skplanetx.com/weather/windex/laundry";
+  Map<String, Object> param_laundry;
+  String hndResult_laundry = "";
+
+  // ============ 불쾌 지수 sk planet ============
+  APIRequest api_discomfort;
+  RequestBundle requestBundle_discomfort;
+  String URL_discomfort = "http://apis.skplanetx.com/weather/windex/thindex";
+  Map<String, Object> param_discomfort;
+  String hndResult_discomfort = "";
+
+  // ============ 알림바 ============
   NotificationManager nm;
 
-  // 언어설정
+  // =========== 언어설정 ==============
   String language;
 
-  // Setting Activity
+  // =========== Setting Activity ===========
   String icon;
   String status;
+
+  //  ============ 주소 -> 위도 경도 변환 ==========
+  String addressLat;
+  String addressLon;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -161,7 +202,6 @@ public class MainActivity extends AppCompatActivity
 
   public void start()
   {
-
     //    ======================기존 리스트 뷰 ==========================
     setContentView(R.layout.activity_main);
     text = (TextView) findViewById(R.id.address);
@@ -174,8 +214,8 @@ public class MainActivity extends AppCompatActivity
 
     SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
 
-    double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
-    double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
+    double latitude = Double.longBitsToDouble(pref.getLong("lat", 37));
+    double longitude = Double.longBitsToDouble(pref.getLong("lon", 122));
 
     String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
     String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
@@ -217,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         hndResult = result.getStatusCode() + "\n" + result.toString();
         test = hndResult.split("grade")[1];
         valueInit = hndResult.split("value")[1];
-        value = valueInit.substring(3, 8);
+        value = valueInit.substring(3, 7);
         dust = test.substring(3, 5);
 
         Log.d("어디", "=========== value ===========  " + valueInit);
@@ -267,6 +307,210 @@ public class MainActivity extends AppCompatActivity
     {
       e.printStackTrace();
     }
+
+    //    =================== 세차 지수 ===========================
+//
+//    api_carwash = new APIRequest();
+//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//
+//    // url에 삽입되는 파라미터 설정
+//    param_carwash = new HashMap<String, Object>();
+//    param_carwash.put("version", "1");
+//
+//    // 호출시 사용될 값 설정
+//    requestBundle_carwash = new RequestBundle();
+//    requestBundle_carwash.setUrl(URL_carwash);
+//    requestBundle_carwash.setParameters(param_carwash);
+//    requestBundle_carwash.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+//    requestBundle_carwash.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+//
+//    RequestListener reqListener_carwash = new RequestListener()
+//    {
+//      @Override
+//      public void onPlanetSDKException(PlanetXSDKException e)
+//      {
+//        hndResult_carwash = e.toString();
+//      }
+//
+//      @Override
+//      public void onComplete(ResponseMessage result)
+//      {
+//        // 응답을 받아 메시지 핸들러에 알려준다.
+//        hndResult_carwash = result.getStatusCode() + "\n" + result.toString();
+//        String carwash_comment = hndResult_carwash.split("comment")[1];
+//        String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
+//        String carwash_result = carwash.substring(0, carwash.length() - 1);
+//
+//        Log.d("어디", "=========== hndResult_carwash ===========  " + hndResult_carwash);
+//        Log.d("어디", "=========== carwash_comment ===========  " + carwash_comment);
+//        Log.d("어디", "=========== carwash ===========  " + carwash);
+//        Log.d("어디", "=========== carwash_result ===========  " + carwash_result);
+//      }
+//    };
+//
+//    try
+//    {
+//      // 비동기 호출
+//      api_carwash.request(requestBundle_carwash, reqListener_carwash);
+//    } catch (PlanetXSDKException e)
+//    {
+//      e.printStackTrace();
+//    }
+//
+//    //    =================== 자외선 지수 ===========================
+//
+//    api_uv = new APIRequest();
+//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//
+//    // url에 삽입되는 파라미터 설정
+//    param_uv = new HashMap<String, Object>();
+//    param_uv.put("version", "1");
+//    param_uv.put("lat", latitude);
+//    param_uv.put("lon", longitude);
+//
+//    // 호출시 사용될 값 설정
+//    requestBundle_uv = new RequestBundle();
+//    requestBundle_uv.setUrl(URL_uv);
+//    requestBundle_uv.setParameters(param_uv);
+//    requestBundle_uv.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+//    requestBundle_uv.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+//
+//    RequestListener reqListener_uv = new RequestListener()
+//    {
+//      @Override
+//      public void onPlanetSDKException(PlanetXSDKException e)
+//      {
+//        hndResult_uv = e.toString();
+//      }
+//
+//      @Override
+//      public void onComplete(ResponseMessage result)
+//      {
+//        // 응답을 받아 메시지 핸들러에 알려준다.
+//        hndResult_uv = result.getStatusCode() + "\n" + result.toString();
+//        String uv_comment = hndResult_uv.split("comment")[1];
+//        String uv = uv_comment.substring(3, uv_comment.indexOf(","));
+//        String uv_result = uv.substring(0, uv.length() - 1);
+//
+//        Log.d("어디", "=========== hndResult_uv ===========  " + hndResult_uv);
+//        Log.d("어디", "=========== uv_comment ===========  " + uv_comment);
+//        Log.d("어디", "=========== uv ===========  " + uv);
+//        Log.d("어디", "=========== uv_result ===========  " + uv_result);
+//      }
+//    };
+//
+//    try
+//    {
+//      // 비동기 호출
+//      api_uv.request(requestBundle_uv, reqListener_uv);
+//    } catch (PlanetXSDKException e)
+//    {
+//      e.printStackTrace();
+//    }
+//
+//    //    =================== 빨래 지수 ===========================
+//
+//    api_laundry = new APIRequest();
+//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//
+//    // url에 삽입되는 파라미터 설정
+//    param_laundry = new HashMap<String, Object>();
+//    param_laundry.put("version", "1");
+//    param_laundry.put("lat", latitude);
+//    param_laundry.put("lon", longitude);
+//
+//    // 호출시 사용될 값 설정
+//    requestBundle_laundry = new RequestBundle();
+//    requestBundle_laundry.setUrl(URL_laundry);
+//    requestBundle_laundry.setParameters(param_laundry);
+//    requestBundle_laundry.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+//    requestBundle_laundry.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+//
+//    RequestListener reqListener_laundry = new RequestListener()
+//    {
+//      @Override
+//      public void onPlanetSDKException(PlanetXSDKException e)
+//      {
+//        hndResult_laundry = e.toString();
+//      }
+//
+//      @Override
+//      public void onComplete(ResponseMessage result)
+//      {
+//        // 응답을 받아 메시지 핸들러에 알려준다.
+////        hndResult_laundry = result.getStatusCode() + "\n" + result.toString();
+////        String laundry_comment = hndResult_laundry.split("comment")[1];
+////        String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
+////        String laundry_result = laundry.substring(0, laundry.length() - 1);
+////
+////        Log.d("어디", "=========== hndResult_laundry ===========  " + hndResult_laundry);
+////        Log.d("어디", "=========== laundry_comment ===========  " + laundry_comment);
+////        Log.d("어디", "=========== laundry ===========  " + laundry);
+////        Log.d("어디", "=========== laundry_result ===========  " + laundry_result);
+//      }
+//    };
+//
+//    try
+//    {
+//      // 비동기 호출
+//      api_laundry.request(requestBundle_laundry, reqListener_laundry);
+//    } catch (PlanetXSDKException e)
+//    {
+//      e.printStackTrace();
+//    }
+//
+//    //    =================== 불쾌 지수 ===========================
+//
+//    api_discomfort = new APIRequest();
+//    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//
+//    // url에 삽입되는 파라미터 설정
+//    param_discomfort = new HashMap<String, Object>();
+//    param_discomfort.put("version", "1");
+//    param_discomfort.put("lat", latitude);
+//    param_discomfort.put("lon", longitude);
+//
+//    // 호출시 사용될 값 설정
+//    requestBundle_discomfort = new RequestBundle();
+//    requestBundle_discomfort.setUrl(URL_discomfort);
+//    requestBundle_discomfort.setParameters(param_discomfort);
+//    requestBundle_discomfort.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+//    requestBundle_discomfort.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+//
+//    RequestListener reqListener_discomfort = new RequestListener()
+//    {
+//      @Override
+//      public void onPlanetSDKException(PlanetXSDKException e)
+//      {
+//        hndResult_discomfort = e.toString();
+//      }
+//
+//      @Override
+//      public void onComplete(ResponseMessage result)
+//      {
+//        // 응답을 받아 메시지 핸들러에 알려준다.
+//        hndResult_discomfort = result.getStatusCode() + "\n" + result.toString();
+//        String discomfort_forecast = hndResult_discomfort.split("forecast")[1];
+//        String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
+//        String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
+//        String discomfort_result = discomfort.substring(0, discomfort.length() - 1);
+//
+//        Log.d("어디", "=========== hndResult_discomfort ===========  " + hndResult_discomfort);
+//        Log.d("어디", "=========== discomfort_forecast ===========  " + discomfort_forecast);
+//        Log.d("어디", "=========== discomfort_4hour ===========  " + discomfort_4hour);
+//        Log.d("어디", "=========== discomfort ===========  " + discomfort);
+//        Log.d("어디", "=========== discomfort_result ===========  " + discomfort_result);
+//      }
+//    };
+//
+//    try
+//    {
+//      // 비동기 호출
+//      api_discomfort.request(requestBundle_discomfort, reqListener_discomfort);
+//    } catch (PlanetXSDKException e)
+//    {
+//      e.printStackTrace();
+//    }
 
     //  =================== place picker ======================
 
@@ -383,9 +627,17 @@ public class MainActivity extends AppCompatActivity
 
     };
     mDrawerLayout.addDrawerListener(mDrawerToggle);
-
     //    alarm_on();
+
   }
+
+  // ==================== 주소 -> 위도 경도 변환 api =================
+  //  DAUM
+  //  String duamApiKey = 53e2827500534f733c75dadaccfdbaa2
+  //  https://apis.daum.net/local/geo/addr2coord?apikey={apikey}&q=제주 특별자치도 제주시 첨단로 242&output=json
+
+  // google
+  // http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=인코딩된주소
 
   //  =================== place picker result =========================
   @Override
@@ -402,11 +654,32 @@ public class MainActivity extends AppCompatActivity
       {
         attributions = "";
       }
+
+//      String addressInit = address.toString();
+//      Log.d("어디", "======== addressInit ========" + addressInit);
+//      Log.d("어디", " ============ addressInit.length() ==========" + addressInit.length());
+//
+//      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
+//
+//      if (addressInit.length() == 0)
+//      {
+//        str = name.toString();
+//        Log.d("어디", "str  /  " + str);
+//        lat = str.substring(1, str.indexOf(","));
+//        lon = str.substring(13, str.indexOf(")"));
+//      }
+//      else
+//      {
+//        new AddressJson().execute(googleAddressApi);
+//        lat = addressLat;
+//        lon = addressLon;
+//      }
+
       str = name.toString();
       Log.d("어디", "str  /  " + str);
       lat = str.substring(1, str.indexOf(","));
       lon = str.substring(13, str.indexOf(")"));
-
+      
       Log.d("어디", "lat  /  " + lat);
       Log.d("어디", "lon  /  " + lon);
 
@@ -433,6 +706,8 @@ public class MainActivity extends AppCompatActivity
 
     start();
   }
+
+  //  =============================================
 
   @Override
   protected void onPostCreate(Bundle savedInstanceState)
@@ -514,7 +789,7 @@ public class MainActivity extends AppCompatActivity
 
   private ArrayList<ListViewItem> generateModels(JSONArray jsonArray)
   {
-    ArrayList<ListViewItem> items = new ArrayList<>();
+    items = new ArrayList<>();
 
     SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat dateFormatHour = new SimpleDateFormat("hh:mm:ss");
@@ -534,12 +809,6 @@ public class MainActivity extends AppCompatActivity
         String windSpeed = obj.getString("windSpeed");
         String pressure = obj.getString("pressure");
 
-        Log.d("어디", "sunset: " + sunset);
-        Log.d("어디", "dewPoint: " + dewPoint);
-        Log.d("어디", "humidity: " + humidity);
-        Log.d("어디", "windSpeed: " + windSpeed);
-        Log.d("어디", "pressure: " + pressure);
-
         Double temperatureMin = obj.getDouble("temperatureMin");
         Double temperatureMax = obj.getDouble("temperatureMax");
 
@@ -547,6 +816,9 @@ public class MainActivity extends AppCompatActivity
         long unixSunset = Long.parseLong(sunset) * 1000;
         String sunriseTime = dateFormatHour.format(unixSunrise);
         String sunsetTime = dateFormatHour.format(unixSunset);
+
+        String temperMax = Double.toString(temperatureMax);
+        String temperMin = Double.toString(temperatureMin);
 
         Double temperatureAvg = (temperatureMin + temperatureMax) / 2;
         Double temperatureChange = (temperatureAvg - 32) / 1.8;
@@ -557,9 +829,6 @@ public class MainActivity extends AppCompatActivity
         cal.add(Calendar.DATE, i);
         String day = dayFormat.format(new Date(cal.getTimeInMillis()));
         String date = dateFormatYear.format(new Date(cal.getTimeInMillis()));
-        Log.d("어디", "generateModels / day : " + day);
-        Log.d("어디", "generateModels /date : " + date);
-        Log.d("어디", "generateModels /summary : " + summary);
 
         if (language.contains("ko"))
         {
@@ -621,9 +890,9 @@ public class MainActivity extends AppCompatActivity
             summary = "저녁까지 바람";
           }
 
-          else if (summary.contains("Partly cloudy starting in the evening"))
+          else if (summary.contains("Partly cloudy"))
           {
-            summary = "저녁부터 구름 종종";
+            summary = "구름 종종";
           }
           else if (summary.contains("Overcast throughout the day"))
           {
@@ -664,6 +933,18 @@ public class MainActivity extends AppCompatActivity
           else if (summary.contains("Rain throughout the day"))
           {
             summary = "하루종일 비";
+          }
+          else if (summary.contains("Partly cloudy overnight"))
+          {
+            summary = "밤새 종종 구름";
+          }
+          else if (summary.contains("Light rain throughout the day"))
+          {
+            summary = "종일 가벼운 비";
+          }
+          else if (summary.contains("Drizzle in the morning"))
+          {
+            summary = "아침에 이슬비";
           }
         }
 
@@ -721,7 +1002,6 @@ public class MainActivity extends AppCompatActivity
 
     mBuilder.setOngoing(true);
 
-
     // 행동 최대3개 등록 가능.
     //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
     //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
@@ -731,28 +1011,67 @@ public class MainActivity extends AppCompatActivity
     nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     nm.notify(111, mBuilder.build());
 
+    //    ====================== Line chart ===================
+    LineChart lineChart = (LineChart) findViewById(R.id.chart);
+    lineChart.setVisibility(View.VISIBLE);
+
+    ArrayList<Entry> entries = new ArrayList<>();
+    entries.add(new Entry(Integer.parseInt(items.get(0).getTemperature()), 0));
+    entries.add(new Entry(Integer.parseInt(items.get(1).getTemperature()), 1));
+    entries.add(new Entry(Integer.parseInt(items.get(2).getTemperature()), 2));
+    entries.add(new Entry(Integer.parseInt(items.get(3).getTemperature()), 3));
+    entries.add(new Entry(Integer.parseInt(items.get(4).getTemperature()), 4));
+    entries.add(new Entry(Integer.parseInt(items.get(5).getTemperature()), 5));
+    entries.add(new Entry(Integer.parseInt(items.get(6).getTemperature()), 6));
+
+    LineDataSet dataset = new LineDataSet(entries, "평균 온도");
+
+    ArrayList<String> labels = new ArrayList<String>();
+    labels.add(items.get(0).getTitle());
+    labels.add(items.get(1).getTitle());
+    labels.add(items.get(2).getTitle());
+    labels.add(items.get(3).getTitle());
+    labels.add(items.get(4).getTitle());
+    labels.add(items.get(5).getTitle());
+    labels.add(items.get(6).getTitle());
+
+    LineData data = new LineData(labels, dataset);
+    //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+    dataset.setDrawCubic(true);
+    dataset.setDrawFilled(true);
+
+    lineChart.setData(data);
+    lineChart.animateY(5000);
+
+    //    WebView webview = (WebView) findViewById(R.id.webView1);
+    //
+    //    WebSettings webSettings = webview.getSettings();
+    //    webSettings.setJavaScriptEnabled(true);
+    //    webview.requestFocusFromTouch();
+    //    webview.loadUrl("http://chart.apis.google.com/chart?cht=lc&chco=4db6ac&chs=360x120&chd=t:13,15,16,17,17,16,14&chxt=x,y&chxl=0:|화|수|목|금|토|일|월|1:||0||10||20");
+
     return items;
   }
 
-//  public void alarm_on()
-//  {
-//    // 알람 등록하기
-//    Log.d("어디", " ====================== setAlarm ================ ");
-//    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
-//
-//    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
-//
-//    Calendar calendar = Calendar.getInstance();
-//    //알람시간 calendar에 set해주기
-//
-//    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
-//    calendar.set(Calendar.SECOND, 0);
-//
-//    //알람 예약
-//    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-//    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
-//  }
+  //  public void alarm_on()
+  //  {
+  //    // 알람 등록하기
+  //    Log.d("어디", " ====================== setAlarm ================ ");
+  //    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+  //    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
+  //
+  //    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+  //
+  //    Calendar calendar = Calendar.getInstance();
+  //    //알람시간 calendar에 set해주기
+  //
+  //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
+  //    calendar.set(Calendar.SECOND, 0);
+  //
+  //    //알람 예약
+  //    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
+  //    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+  //  }
 
   /* ========================== 맵 JSON ==========================*/
   private class MapJson extends AsyncTask<String, String, String>
@@ -760,7 +1079,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected String doInBackground(String... arg0)
     {
-      Log.d("어디", "map");
       try
       {
         return (String) getData((String) arg0[0]);
@@ -774,7 +1092,6 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
-        Log.d("MAP", "onPost");
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONArray resultArray = jsonResult.getJSONArray("results");
         final int max = resultArray.length();
@@ -782,13 +1099,12 @@ public class MainActivity extends AppCompatActivity
         {
           JSONObject obj = resultArray.getJSONObject(2);
           address = obj.getString("formatted_address");
-          Log.d("어디", "MAP/onPost/address: " + address);
         }
 
         text.setText(address);
       } catch (JSONException e)
       {
-        Log.e("catch", "catch진입");
+        Log.d("catch", "catch진입");
         e.printStackTrace();
       }
     }
@@ -861,6 +1177,76 @@ public class MainActivity extends AppCompatActivity
 
         //        listViewItems.addAll(generateModels(dataArray));
         adapter.addAll(generateModels(dataArray));
+      } catch (JSONException e)
+      {
+        Log.e("catch", "catch진입");
+        e.printStackTrace();
+      }
+    }
+
+    private String getData(String strUrl)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      try
+      {
+        BufferedInputStream bis = null;
+        URL url = new URL(strUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        int responseCode;
+
+        con.setConnectTimeout(3000);
+        con.setReadTimeout(3000);
+
+        responseCode = con.getResponseCode();
+
+        if (responseCode == 200)
+        {
+          bis = new BufferedInputStream(con.getInputStream());
+          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+          String line = null;
+
+          while ((line = reader.readLine()) != null)
+            sb.append(line);
+
+          bis.close();
+        }
+
+      } catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+
+      return sb.toString();
+    }
+  }
+
+  /* ========================== 주소 JSON ==========================*/
+  private class AddressJson extends AsyncTask<String, String, String>
+  {
+    @Override
+    protected String doInBackground(String... arg0)
+    {
+      try
+      {
+        return (String) getData((String) arg0[0]);
+      } catch (Exception e)
+      {
+        return "Json download failed";
+      }
+    }
+
+    protected void onPostExecute(String result)
+    {
+      try
+      {
+        JSONObject jsonResult = new JSONObject(result.toString());
+        JSONObject locationObject = jsonResult.getJSONObject("location");
+        addressLat = locationObject.getString("lat");
+        addressLon = locationObject.getString("lng");
+        Log.d("어디", "============ addressLat ==========" + addressLat);
+        Log.d("어디", "============ addressLon ==========" + addressLon);
+
       } catch (JSONException e)
       {
         Log.e("catch", "catch진입");
@@ -1011,7 +1397,7 @@ public class MainActivity extends AppCompatActivity
 
       handler.removeCallbacks(timeOutFindStationCallBack);
       locationManager.removeUpdates(locationListener);
-      dialog.dismiss();
+      //      dialog.dismiss();
       viewClear();
       start();
     }

@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginTop="8dp">
 
 
             <TextView
@@ -27,20 +28,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_weight="0.7"
+                android:layout_weight="0.65"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/margin16"/>
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:paddingLeft="8dp"
                 android:layout_weight="0.25"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -49,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,26 +64,26 @@
                     android:id="@+id/temperature"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
                     android:textSize="48dp"
-                    android:textStyle="bold"
-                    android:layout_weight="0.2"/>
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/weather_image"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/margin64"
-                    android:src="@drawable/ico_wg1"
-                    android:layout_weight="0.25"/>
+                    android:layout_weight="0.25"
+                    android:src="@drawable/ico_wg1"/>
 
                 <TextView
                     android:id="@+id/dust"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="16dp"
+                    android:layout_marginLeft="56dp"
                     android:layout_weight="0.5"
                     android:paddingLeft="64dp"
-                    android:layout_marginLeft="56dp"/>
+                    android:textSize="16dp"/>
 
             </LinearLayout>
 
@@ -92,25 +95,48 @@
             android:layout_marginLeft="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.7"
+                android:layout_marginLeft="@dimen/margin16"/>
 
-            <Button
-                android:id="@+id/detail_button"
+            <LinearLayout
+                android:id="@+id/detail_arrow"
                 android:layout_width="0dp"
-                android:layout_height="32dp"
-                android:layout_weight="0.25"
-                android:background="@drawable/selector"
-                android:textSize="10dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_gravity="bottom"
-                />
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginRight="8dp">
+
+                <TextView
+                    android:id="@+id/detail_button"
+                    android:layout_width="64dp"
+                    android:layout_height="32dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:textSize="12sp"/>
+
+                <ImageView
+                    android:id="@+id/down_arrow"
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:src="@drawable/arrow_down"
+                    android:visibility="visible"/>
+
+                <ImageView
+                    android:id="@+id/up_arrow"
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:src="@drawable/arrow_up"
+                    android:visibility="gone"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -128,7 +154,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -138,8 +165,8 @@
 
                     <ImageView
                         android:id="@+id/img_dewpoint"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/dewpoint"/>
 
@@ -172,8 +199,8 @@
 
                     <ImageView
                         android:id="@+id/img_humidity"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/humidity"/>
 
@@ -206,8 +233,8 @@
 
                     <ImageView
                         android:id="@+id/img_windspeed"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/windspeed"/>
 
@@ -240,7 +267,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -250,8 +278,8 @@
 
                     <ImageView
                         android:id="@+id/img_pressure"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/pressure"/>
 
@@ -285,8 +313,8 @@
 
                     <ImageView
                         android:id="@+id/img_sunrise"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/sunrise_512"/>
 
@@ -320,8 +348,8 @@
 
                     <ImageView
                         android:id="@+id/img_sunset"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/sunset_512"/>
 

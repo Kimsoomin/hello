@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,11 @@ public class SettingActivity extends AppCompatActivity
   {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.setting);
+
+    ActionBar actionBar = getSupportActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(true);
+
+
     TextView notification = (TextView) findViewById(R.id.notification);
     TextView notification_extend = (TextView) findViewById(R.id.notification_extend);
     final ToggleButton tb = (ToggleButton) this.findViewById(R.id.toggleButton1);
@@ -164,4 +170,13 @@ public class SettingActivity extends AppCompatActivity
     getMenuInflater().inflate(R.menu.menu_setting, menu);
     return true;
   }
+
+  public boolean onOptionsItemSelected(android.view.MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
+  };
 }
