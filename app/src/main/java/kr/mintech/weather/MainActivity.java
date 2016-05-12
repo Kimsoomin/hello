@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,9 +82,6 @@ public class MainActivity extends AppCompatActivity
 
   public int languageValue;
 
-  public static View view;
-  private static CardViewListViewAdapter adapter;
-
   //  Locale systemLocale = getResources().getConfiguration().locale;
   //  String strLanguage = systemLocale.getLanguage();
 
@@ -102,9 +100,13 @@ public class MainActivity extends AppCompatActivity
   private String address;
   private ProgressBar progressbar;
   private TextView text;
+  private LinearLayout placePicker;
   private Dialog dialog;
 
   //  ============== card view ==================
+
+  public static View view;
+  private static CardViewListViewAdapter adapter;
 
   private ArrayList<ListViewItem> items;
   public static RecyclerView mRecyclerView;
@@ -192,6 +194,18 @@ public class MainActivity extends AppCompatActivity
   String addressLat;
   String addressLon;
 
+  // ============= Today Life ==============
+  TextView carwashComment;
+  TextView uvComment;
+  TextView laundryComment;
+  TextView discomfortComment;
+
+  String carwashResult;
+  String uvResult;
+  String laundryResult;
+  String discomfortResult;
+  String discomfortIndex;
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -204,10 +218,28 @@ public class MainActivity extends AppCompatActivity
   {
     //    ======================기존 리스트 뷰 ==========================
     setContentView(R.layout.activity_main);
+
     text = (TextView) findViewById(R.id.address);
+    placePicker = (LinearLayout) findViewById(R.id.place_picker);
+
     ListView listview = (ListView) findViewById(R.id.listview);
     adapter = new CardViewListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
     listview.setAdapter(adapter);
+
+    TextView carwash = (TextView) findViewById(R.id.carwash);
+    TextView uv = (TextView) findViewById(R.id.uv);
+    TextView laundry = (TextView) findViewById(R.id.laundry);
+    TextView discomfort = (TextView) findViewById(R.id.discomfort);
+
+    carwashComment = (TextView) findViewById(R.id.carwash_comment);
+    uvComment = (TextView) findViewById(R.id.uv_comment);
+    laundryComment = (TextView) findViewById(R.id.laundry_comment);
+    discomfortComment = (TextView) findViewById(R.id.discomfort_comment);
+
+    carwash.setText("세차 지수");
+    uv.setText("자외선 지수");
+    laundry.setText("빨래 지수");
+    discomfort.setText("불쾌 지수");
 
     locationListener = new WeatherLocationListener();
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -227,7 +259,7 @@ public class MainActivity extends AppCompatActivity
 
     // =========================미 세 먼 지=============================
     api = new APIRequest();
-    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
     // url에 삽입되는 파라미터 설정
     param = new HashMap<String, Object>();
@@ -290,8 +322,9 @@ public class MainActivity extends AppCompatActivity
 
         adapter.add(dust, value);
 
-        SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        SharedPreferences.Editor editor = preference.edit();
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
         // 저장할 값들을 입력합니다.
         editor.putString("dust", dust);
         editor.putString("value", value);
@@ -312,7 +345,7 @@ public class MainActivity extends AppCompatActivity
     //    ===================세차 지수===========================
 
     api_carwash = new APIRequest();
-    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
     // url에 삽입되는 파라미터 설정
     param_carwash = new HashMap<String, Object>();
@@ -340,12 +373,13 @@ public class MainActivity extends AppCompatActivity
         hndResult_carwash = result.getStatusCode() + "\n" + result.toString();
         String carwash_comment = hndResult_carwash.split("comment")[1];
         String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
-        String carwash_result = carwash.substring(0, carwash.length() - 1);
+        carwashResult = carwash.substring(0, carwash.length() - 1);
 
-        Log.d("어디", "=========== hndResult_carwash ===========  " + hndResult_carwash);
-        Log.d("어디", "=========== carwash_comment ===========  " + carwash_comment);
-        Log.d("어디", "=========== carwash ===========  " + carwash);
-        Log.d("어디", "=========== carwash_result ===========  " + carwash_result);
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("carwashResult", carwashResult);
+        editor.commit();
+
       }
     };
 
@@ -391,12 +425,18 @@ public class MainActivity extends AppCompatActivity
         hndResult_uv = result.getStatusCode() + "\n" + result.toString();
         String uv_comment = hndResult_uv.split("comment")[1];
         String uv = uv_comment.substring(3, uv_comment.indexOf(","));
-        String uv_result = uv.substring(0, uv.length() - 1);
+        uvResult = uv.substring(0, uv.length() - 1);
 
-        Log.d("어디", "=========== hndResult_uv ===========  " + hndResult_uv);
-        Log.d("어디", "=========== uv_comment ===========  " + uv_comment);
-        Log.d("어디", "=========== uv ===========  " + uv);
-        Log.d("어디", "=========== uv_result ===========  " + uv_result);
+        Log.d("어디"," ==========hndResult_uv==========" +hndResult_uv);
+        Log.d("어디"," ==========uv_comment==========" +uv_comment);
+        Log.d("어디"," ==========uv==========" +uv);
+        Log.d("어디"," ==========uvResult==========" +uvResult);
+
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("uvResult", uvResult);
+        editor.commit();
+
       }
     };
 
@@ -412,7 +452,7 @@ public class MainActivity extends AppCompatActivity
     //    =================== 빨래 지수 ===========================
 
     api_laundry = new APIRequest();
-    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
     // url에 삽입되는 파라미터 설정
     param_laundry = new HashMap<String, Object>();
@@ -442,12 +482,18 @@ public class MainActivity extends AppCompatActivity
         hndResult_laundry = result.getStatusCode() + "\n" + result.toString();
         String laundry_comment = hndResult_laundry.split("comment")[1];
         String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
-        String laundry_result = laundry.substring(0, laundry.length() - 1);
+        laundryResult = laundry.substring(0, laundry.length() - 1);
 
-        Log.d("어디", "=========== hndResult_laundry ===========  " + hndResult_laundry);
-        Log.d("어디", "=========== laundry_comment ===========  " + laundry_comment);
-        Log.d("어디", "=========== laundry ===========  " + laundry);
-        Log.d("어디", "=========== laundry_result ===========  " + laundry_result);
+        Log.d("어디"," ==========hndResult_laundry==========" +hndResult_laundry);
+        Log.d("어디"," ==========laundry_comment==========" +laundry_comment);
+        Log.d("어디"," ==========laundry==========" +laundry);
+        Log.d("어디"," ==========laundryResult==========" +laundryResult);
+
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("laundryResult", laundryResult);
+        editor.commit();
+
       }
     };
 
@@ -463,7 +509,7 @@ public class MainActivity extends AppCompatActivity
     //    =================== 불쾌 지수 ===========================
 
     api_discomfort = new APIRequest();
-    APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+    APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
     // url에 삽입되는 파라미터 설정
     param_discomfort = new HashMap<String, Object>();
@@ -494,13 +540,14 @@ public class MainActivity extends AppCompatActivity
         String discomfort_forecast = hndResult_discomfort.split("forecast")[1];
         String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
         String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
-        String discomfort_result = discomfort.substring(0, discomfort.length() - 1);
+        discomfortResult = discomfort.substring(0, discomfort.length() - 1);
+        Log.d("어디", "=========== discomfort_result ===========" + discomfortResult);
 
-        Log.d("어디", "=========== hndResult_discomfort ===========  " + hndResult_discomfort);
-        Log.d("어디", "=========== discomfort_forecast ===========  " + discomfort_forecast);
-        Log.d("어디", "=========== discomfort_4hour ===========  " + discomfort_4hour);
-        Log.d("어디", "=========== discomfort ===========  " + discomfort);
-        Log.d("어디", "=========== discomfort_result ===========  " + discomfort_result);
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("discomfortResult", discomfortResult);
+        editor.commit();
+
       }
     };
 
@@ -515,7 +562,7 @@ public class MainActivity extends AppCompatActivity
 
     //  =================== place picker ======================
 
-    text.setOnClickListener(new View.OnClickListener()
+    placePicker.setOnClickListener(new View.OnClickListener()
     {
       @Override
       public void onClick(View v)
@@ -630,12 +677,50 @@ public class MainActivity extends AppCompatActivity
     mDrawerLayout.addDrawerListener(mDrawerToggle);
     //    alarm_on();
 
+    carwashResult = pref.getString("carwashResult", "?");
+    uvResult = pref.getString("uvResult", "?");
+    laundryResult = pref.getString("laundryResult", "?");
+    discomfortResult = pref.getString("discomfortResult", "?");
+
+    Log.d("어디", "========= ////////// carwashResult /////////// =========" + carwashResult);
+    Log.d("어디", "========= /////////// uvResult /////////// =========" + uvResult);
+    Log.d("어디", "========= /////////// laundryResult /////////// =========" + laundryResult);
+    Log.d("어디", "========= /////////// discomfortResult /////////// =========" + discomfortResult);
+    Log.d("어디", "========= /////////// discomfortResult.trim() /////////// =========" + discomfortResult.trim());
+
+    double discomfortValue= 0.0;
+
+    if (discomfortResult != null | discomfort.equals(""))
+    {
+      discomfortValue = Double.parseDouble(discomfortResult.trim());
+    }
+
+    Log.d("어디","============ discomfortValue ===========" +discomfortValue);
+    if (discomfortValue >= 80.0){
+      discomfortIndex = "매우 높음";
+    }
+    else if(discomfortValue < 80.0 & discomfortValue >= 75.0){
+      discomfortIndex = "높음";
+    }
+    else if(discomfortValue < 75.0 & discomfortValue >= 68.0){
+      discomfortIndex = "보통";
+    }
+    else if(discomfortValue < 68.0){
+      discomfortIndex = "낮음";
+    }
+
+    carwashComment.setText(carwashResult);
+    uvComment.setText(uvResult);
+    laundryComment.setText(laundryResult);
+    discomfortComment.setText(discomfortResult+" : "+discomfortIndex);
+
   }
 
   // ==================== 주소 -> 위도 경도 변환 api =================
   //  DAUM
   //  String duamApiKey = 53e2827500534f733c75dadaccfdbaa2
   //  https://apis.daum.net/local/geo/addr2coord?apikey={apikey}&q=제주 특별자치도 제주시 첨단로 242&output=json
+  //  place picker 로 반환 된 주소 타입은 DAUM API 와 매칭 어렵다
 
   // google
   // http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=인코딩된주소
@@ -660,8 +745,8 @@ public class MainActivity extends AppCompatActivity
       Log.d("어디", "======== addressInit ========" + addressInit);
       Log.d("어디", " ============ addressInit.length() ========== / " + addressInit.length());
 
-      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address="+addressInit ;
-      Log.d("어디","///////// place picker googleAddressApi ///////" +googleAddressApi);
+      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
+      Log.d("어디", "///////// place picker googleAddressApi ///////" + googleAddressApi);
 
       if (addressInit.length() == 0)
       {
@@ -673,8 +758,8 @@ public class MainActivity extends AppCompatActivity
       else
       {
         new AddressJson().execute(googleAddressApi);
-        Log.d("어디","========= place picker addressLat ========"+addressLat);
-        Log.d("어디","========= place picker addressLon ========"+addressLon);
+        Log.d("어디", "========= place picker addressLat ========" + addressLat);
+        Log.d("어디", "========= place picker addressLon ========" + addressLon);
         lat = addressLat;
         lon = addressLon;
       }
@@ -950,6 +1035,10 @@ public class MainActivity extends AppCompatActivity
           {
             summary = "아침에 이슬비";
           }
+          else if (summary.contains("Light rain starting in the afternoon"))
+          {
+            summary = "오후부터 시작하는 가벼운 비";
+          }
         }
 
         ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
@@ -1169,7 +1258,7 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
-        Log.d("어디","============ 날씨 JSON 진입 ===========");
+        Log.d("어디", "============ 날씨 JSON 진입 ===========");
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONObject dailyObject = jsonResult.getJSONObject("daily");
         JSONArray dataArray = dailyObject.getJSONArray("data");
@@ -1245,7 +1334,7 @@ public class MainActivity extends AppCompatActivity
     {
       try
       {
-        Log.d("어디","============ 주소 JSON 진입 ===========");
+        Log.d("어디", "============ 주소 JSON 진입 ===========");
         JSONObject jsonResult = new JSONObject(result.toString());
         JSONObject locationObject = jsonResult.getJSONObject("location");
         addressLat = locationObject.getString("lat");
@@ -1253,7 +1342,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("어디", "============ addressLat ==========" + addressLat);
         Log.d("어디", "============ addressLon ==========" + addressLon);
 
-//        adapter.addAll(generateModels(dataArray));
+        //        adapter.addAll(generateModels(dataArray));
 
       } catch (JSONException e)
       {

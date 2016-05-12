@@ -20,6 +20,23 @@ public class TodayLifeItem
 
   }
 
+  public void setCarwash(String carwash){
+    this.carwash = carwash;
+  };
+
+  public void setUv(String uv){
+    this.uv = uv;
+  };
+
+  public void setLaundry(String laundry){
+    this.laundry = laundry;
+  };
+
+  public void setDiscomfort(String discomfort){
+    this.discomfort = discomfort;
+  };
+
+
   public String getCarwash()
   {
     return this.carwash;
