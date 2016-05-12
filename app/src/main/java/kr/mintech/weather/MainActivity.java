@@ -714,6 +714,7 @@ public class MainActivity extends AppCompatActivity
     laundryComment.setText(laundryResult);
     discomfortComment.setText(discomfortResult+" : "+discomfortIndex);
 
+    // commit test
   }
 
   // ==================== 주소 -> 위도 경도 변환 api =================
