@@ -51,12 +51,20 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -191,8 +199,11 @@ public class MainActivity extends AppCompatActivity
   String status;
 
   //  ============ 주소 -> 위도 경도 변환 ==========
-  String addressLat;
-  String addressLon;
+  private static String googleAddressApi;
+  private static String addressLat;
+  private static String addressLon;
+
+  boolean addressExit = false;
 
   // ============= Today Life ==============
   TextView carwashComment;
@@ -205,6 +216,8 @@ public class MainActivity extends AppCompatActivity
   String laundryResult;
   String discomfortResult;
   String discomfortIndex;
+
+  //  ================================
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -249,6 +262,17 @@ public class MainActivity extends AppCompatActivity
     double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
     double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
 
+    Log.d("어디", "pref.getBoolean / " + pref.getBoolean("addressExit", false));
+
+    String addressInit = pref.getString("addressInit", "");
+    Log.d("어디", "addressInit ///" + addressInit + "///");
+
+    if (pref.getBoolean("addressExit", false) == true)
+    {
+      Log.d("어디", "==== true 진입 =====");
+      new geoPointTask().execute(addressInit);
+    }
+
     String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
     String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
 
@@ -286,15 +310,14 @@ public class MainActivity extends AppCompatActivity
       public void onComplete(ResponseMessage result)
       {
         // 응답을 받아 메시지 핸들러에 알려준다.
-        Log.d("어디", "onComplte 진입");
         hndResult = result.getStatusCode() + "\n" + result.toString();
         test = hndResult.split("grade")[1];
         valueInit = hndResult.split("value")[1];
         value = valueInit.substring(3, 7);
         dust = test.substring(3, 5);
 
-        Log.d("어디", "=========== value ===========  " + valueInit);
-        Log.d("어디", "=========== value ===========  " + value);
+        //        Log.d("어디", "=========== value ===========  " + valueInit);
+        //        Log.d("어디", "=========== value ===========  " + value);
 
         if (language.contains("en"))
         {
@@ -427,10 +450,10 @@ public class MainActivity extends AppCompatActivity
         String uv = uv_comment.substring(3, uv_comment.indexOf(","));
         uvResult = uv.substring(0, uv.length() - 1);
 
-        Log.d("어디"," ==========hndResult_uv==========" +hndResult_uv);
-        Log.d("어디"," ==========uv_comment==========" +uv_comment);
-        Log.d("어디"," ==========uv==========" +uv);
-        Log.d("어디"," ==========uvResult==========" +uvResult);
+        //        Log.d("어디"," ==========hndResult_uv==========" +hndResult_uv);
+        //        Log.d("어디"," ==========uv_comment==========" +uv_comment);
+        //        Log.d("어디"," ==========uv==========" +uv);
+        //        Log.d("어디"," ==========uvResult==========" +uvResult);
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -484,10 +507,10 @@ public class MainActivity extends AppCompatActivity
         String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
         laundryResult = laundry.substring(0, laundry.length() - 1);
 
-        Log.d("어디"," ==========hndResult_laundry==========" +hndResult_laundry);
-        Log.d("어디"," ==========laundry_comment==========" +laundry_comment);
-        Log.d("어디"," ==========laundry==========" +laundry);
-        Log.d("어디"," ==========laundryResult==========" +laundryResult);
+        //        Log.d("어디"," ==========hndResult_laundry==========" +hndResult_laundry);
+        //        Log.d("어디"," ==========laundry_comment==========" +laundry_comment);
+        //        Log.d("어디"," ==========laundry==========" +laundry);
+        //        Log.d("어디"," ==========laundryResult==========" +laundryResult);
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -541,7 +564,7 @@ public class MainActivity extends AppCompatActivity
         String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
         String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
         discomfortResult = discomfort.substring(0, discomfort.length() - 1);
-        Log.d("어디", "=========== discomfort_result ===========" + discomfortResult);
+        //        Log.d("어디", "=========== discomfort_result ===========" + discomfortResult);
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
@@ -682,39 +705,42 @@ public class MainActivity extends AppCompatActivity
     laundryResult = pref.getString("laundryResult", "?");
     discomfortResult = pref.getString("discomfortResult", "?");
 
-    Log.d("어디", "========= ////////// carwashResult /////////// =========" + carwashResult);
-    Log.d("어디", "========= /////////// uvResult /////////// =========" + uvResult);
-    Log.d("어디", "========= /////////// laundryResult /////////// =========" + laundryResult);
-    Log.d("어디", "========= /////////// discomfortResult /////////// =========" + discomfortResult);
-    Log.d("어디", "========= /////////// discomfortResult.trim() /////////// =========" + discomfortResult.trim());
+    //    Log.d("어디", "========= ////////// carwashResult /////////// =========" + carwashResult);
+    //    Log.d("어디", "========= /////////// uvResult /////////// =========" + uvResult);
+    //    Log.d("어디", "========= /////////// laundryResult /////////// =========" + laundryResult);
+    //    Log.d("어디", "========= /////////// discomfortResult /////////// =========" + discomfortResult);
+    //    Log.d("어디", "========= /////////// discomfortResult.trim() /////////// =========" + discomfortResult.trim());
 
-    double discomfortValue= 0.0;
+    double discomfortValue = 0.0;
 
     if (discomfortResult != null | discomfort.equals(""))
     {
       discomfortValue = Double.parseDouble(discomfortResult.trim());
     }
 
-    Log.d("어디","============ discomfortValue ===========" +discomfortValue);
-    if (discomfortValue >= 80.0){
+    Log.d("어디", "============ discomfortValue ===========" + discomfortValue);
+    if (discomfortValue >= 80.0)
+    {
       discomfortIndex = "매우 높음";
     }
-    else if(discomfortValue < 80.0 & discomfortValue >= 75.0){
+    else if (discomfortValue < 80.0 & discomfortValue >= 75.0)
+    {
       discomfortIndex = "높음";
     }
-    else if(discomfortValue < 75.0 & discomfortValue >= 68.0){
+    else if (discomfortValue < 75.0 & discomfortValue >= 68.0)
+    {
       discomfortIndex = "보통";
     }
-    else if(discomfortValue < 68.0){
+    else if (discomfortValue < 68.0)
+    {
       discomfortIndex = "낮음";
     }
 
     carwashComment.setText(carwashResult);
     uvComment.setText(uvResult);
     laundryComment.setText(laundryResult);
-    discomfortComment.setText(discomfortResult+" : "+discomfortIndex);
+    discomfortComment.setText(discomfortResult + " : " + discomfortIndex);
 
-    // commit test
   }
 
   // ==================== 주소 -> 위도 경도 변환 api =================
@@ -746,7 +772,7 @@ public class MainActivity extends AppCompatActivity
       Log.d("어디", "======== addressInit ========" + addressInit);
       Log.d("어디", " ============ addressInit.length() ========== / " + addressInit.length());
 
-      String googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
+      googleAddressApi = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=ko&address=" + addressInit;
       Log.d("어디", "///////// place picker googleAddressApi ///////" + googleAddressApi);
 
       if (addressInit.length() == 0)
@@ -758,20 +784,15 @@ public class MainActivity extends AppCompatActivity
       }
       else
       {
-        new AddressJson().execute(googleAddressApi);
-        Log.d("어디", "========= place picker addressLat ========" + addressLat);
-        Log.d("어디", "========= place picker addressLon ========" + addressLon);
-        lat = addressLat;
-        lon = addressLon;
+        Log.d("어디", "onActivityResult / else 들어오니");
+        addressExit = true;
+        lat = "37";
+        lon = "127";
       }
-
-      //      str = name.toString();
-      //      Log.d("어디", "str  /  " + str);
-      //      lat = str.substring(1, str.indexOf(","));
-      //      lon = str.substring(13, str.indexOf(")"));
 
       Log.d("어디", "lat  /  " + lat);
       Log.d("어디", "lon  /  " + lon);
+      Log.d("어디", "addressExit / " + addressExit);
 
       SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
       SharedPreferences.Editor editor = pref.edit();
@@ -785,7 +806,9 @@ public class MainActivity extends AppCompatActivity
       // 저장할 값들을 입력합니다.
       editor.putLong("lat", Double.doubleToRawLongBits(latitude));
       editor.putLong("lon", Double.doubleToRawLongBits(longitude));
-
+      editor.putBoolean("addressExit", addressExit);
+      editor.putString("googleAddressApi", googleAddressApi);
+      editor.putString("addressInit", addressInit);
       editor.commit();
 
     }
@@ -1108,6 +1131,7 @@ public class MainActivity extends AppCompatActivity
     //    ====================== Line chart ===================
     LineChart lineChart = (LineChart) findViewById(R.id.chart);
     lineChart.setVisibility(View.VISIBLE);
+    lineChart.setDescription("");
 
     ArrayList<Entry> entries = new ArrayList<>();
     entries.add(new Entry(Integer.parseInt(items.get(0).getTemperature()), 0));
@@ -1317,76 +1341,174 @@ public class MainActivity extends AppCompatActivity
   }
 
   /* ========================== 주소 JSON ==========================*/
-  private class AddressJson extends AsyncTask<String, String, String>
+  //  private class AddressJson extends AsyncTask<String, String, String>
+  //  {
+  //    @Override
+  //    protected String doInBackground(String... arg0)
+  //    {
+  //      try
+  //      {
+  //        return (String) getData((String) arg0[0]);
+  //      } catch (Exception e)
+  //      {
+  //        return "Json download failed";
+  //      }
+  //    }
+  //
+  //    protected void onPostExecute(String result)
+  //    {
+  //      try
+  //      {
+  //        Log.d("어디", "============ 주소 JSON 진입 ===========");
+  //        Log.d("어디", "============ 주소 JSON result.toString() ===========" +result.toString());
+  //        JSONObject jsonResult = new JSONObject(result.toString());
+  //        JSONObject locationObject = jsonResult.getJSONObject("location");
+  //        addressLat = locationObject.getString("lat");
+  //        addressLon = locationObject.getString("lng");
+  //        Log.d("어디", "============ 주소 JSON / addressLat ==========" + addressLat);
+  //        Log.d("어디", "============ 주소 JSON /addressLon ==========" + addressLon);
+  //
+  //        SharedPreferences preference = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+  //        SharedPreferences.Editor editor = preference.edit();
+  //        // 저장할 값들을 입력합니다.
+  //        editor.putLong("lat", Long.valueOf(addressLat));
+  //        editor.putLong("lon", Long.valueOf(addressLon));
+  //
+  //        editor.commit();
+  //
+  //      } catch (JSONException e)
+  //      {
+  //        Log.e("catch", "주소 JSON catch진입");
+  //        e.printStackTrace();
+  //      }
+  //    }
+  //
+  //    private String getData(String strUrl)
+  //    {
+  //      StringBuilder sb = new StringBuilder();
+  //
+  //      try
+  //      {
+  //        BufferedInputStream bis = null;
+  //        URL url = new URL(strUrl);
+  //        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+  //        int responseCode;
+  //
+  //        con.setConnectTimeout(3000);
+  //        con.setReadTimeout(3000);
+  //
+  //        responseCode = con.getResponseCode();
+  //
+  //        if (responseCode == 200)
+  //        {
+  //          bis = new BufferedInputStream(con.getInputStream());
+  //          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
+  //          String line = null;
+  //
+  //          while ((line = reader.readLine()) != null)
+  //            sb.append(line);
+  //
+  //          bis.close();
+  //        }
+  //
+  //      } catch (Exception e)
+  //      {
+  //        e.printStackTrace();
+  //      }
+  //
+  //      return sb.toString();
+  //    }
+  //  }
+
+  private class geoPointTask extends AsyncTask<String, Void, Void>
   {
     @Override
-    protected String doInBackground(String... arg0)
+    protected void onPreExecute()
     {
-      try
-      {
-        return (String) getData((String) arg0[0]);
-      } catch (Exception e)
-      {
-        return "Json download failed";
-      }
+      super.onPreExecute();
     }
 
-    protected void onPostExecute(String result)
+    @Override
+    protected Void doInBackground(String... params)
     {
-      try
-      {
-        Log.d("어디", "============ 주소 JSON 진입 ===========");
-        JSONObject jsonResult = new JSONObject(result.toString());
-        JSONObject locationObject = jsonResult.getJSONObject("location");
-        addressLat = locationObject.getString("lat");
-        addressLon = locationObject.getString("lng");
-        Log.d("어디", "============ addressLat ==========" + addressLat);
-        Log.d("어디", "============ addressLon ==========" + addressLon);
+      getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20")));  //주소를 넘겨준다(공백이나 엔터는 제거합니다)
 
-        //        adapter.addAll(generateModels(dataArray));
-
-      } catch (JSONException e)
-      {
-        Log.e("catch", "catch진입");
-        e.printStackTrace();
-      }
+      return null;
     }
 
-    private String getData(String strUrl)
+
+    @Override
+    protected void onPostExecute(Void result)
     {
-      StringBuilder sb = new StringBuilder();
 
-      try
-      {
-        BufferedInputStream bis = null;
-        URL url = new URL(strUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        int responseCode;
-
-        con.setConnectTimeout(3000);
-        con.setReadTimeout(3000);
-
-        responseCode = con.getResponseCode();
-
-        if (responseCode == 200)
-        {
-          bis = new BufferedInputStream(con.getInputStream());
-          BufferedReader reader = new BufferedReader(new InputStreamReader(bis, "UTF-8"));
-          String line = null;
-
-          while ((line = reader.readLine()) != null)
-            sb.append(line);
-
-          bis.close();
-        }
-
-      } catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-
-      return sb.toString();
     }
+  }
+
+  public static JSONObject getLocationInfo(String address)
+  {
+
+    HttpGet httpGet = new HttpGet("http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
+    //해당 url을 인터넷창에 쳐보면 다양한 위도 경도 정보를 얻을수있다(크롬 으로실행하세요)
+    HttpClient client = new DefaultHttpClient();
+    HttpResponse response;
+    StringBuilder stringBuilder = new StringBuilder();
+
+    try
+    {
+      response = client.execute(httpGet);
+      HttpEntity entity = response.getEntity();
+      InputStream stream = entity.getContent();
+      int b;
+      while ((b = stream.read()) != -1)
+      {
+        stringBuilder.append((char) b);
+      }
+    } catch (ClientProtocolException e)
+    {
+    } catch (IOException e)
+    {
+    }
+
+    JSONObject jsonObject = new JSONObject();
+    try
+    {
+      jsonObject = new JSONObject(stringBuilder.toString());
+    } catch (JSONException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return jsonObject;
+  }
+
+
+  public static void getGeoPoint(JSONObject jsonObject)
+  {
+
+
+    Double lon = new Double(0);
+    Double lat = new Double(0);
+    Log.d("어디", "getGeoPoint /" + jsonObject.toString());
+
+    try
+    {
+      lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+      lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+
+    } catch (JSONException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+
+    Log.d("어디", "경도:" + lon); //위도/경도 결과 출력
+    Log.d("어디", "위도:" + lat);
+
+
+
   }
 
   /* ================================== Location ==========================================*/

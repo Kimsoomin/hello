@@ -75,7 +75,6 @@ public class CardViewListViewAdapter extends BaseAdapter
   {
 
     language = Locale.getDefault().getLanguage();
-    Log.d("어디", "언어확인 / " + language);
     // ============================== 기존 소스 =================================
     final ListViewItem item = listViewItemList.get(position);
 
@@ -250,7 +249,6 @@ public class CardViewListViewAdapter extends BaseAdapter
       detail_dewpoint.setText(item.getDewpoint() + "°");
       detail_humidity.setText(item.getHumidity() + "%");
       detail_pressure.setText(item.getPressure() + "hPa");
-      Log.d("어디", "어댑터 getDust : " + listViewItem.getDust());
 
       if (item.getIcon().contains("rain"))
         icon.setImageResource(R.drawable.ic_weather_rain);
