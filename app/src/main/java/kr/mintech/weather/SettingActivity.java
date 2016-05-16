@@ -24,6 +24,8 @@ public class SettingActivity extends AppCompatActivity
 {
   NotificationManager nm;
 
+  public static boolean onOff;
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -68,6 +70,8 @@ public class SettingActivity extends AppCompatActivity
         if (tb.isChecked())
         {
           Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
+
+          onOff = true;
 
           // 작은 아이콘 이미지.
           if (icon.contains("rain"))
@@ -114,6 +118,7 @@ public class SettingActivity extends AppCompatActivity
         else
         {
           Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
+          onOff = false;
           nm.cancel(111);
 
 
