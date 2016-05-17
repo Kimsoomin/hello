@@ -2,9 +2,11 @@ package kr.mintech.weather.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -15,27 +17,21 @@ import kr.mintech.weather.controllers.CardViewListViewAdapter;
 /**
  * Created by Mac on 16. 5. 17..
  */
-public class WeekFragment extends Fragment
-{
-  public static View view;
-  private static CardViewListViewAdapter adapter;
+public class WeekFragment extends Fragment {
+    public static View view;
+    private static CardViewListViewAdapter adapter;
 
-  private ArrayList<ListViewItem> items;
+    private ArrayList<ListViewItem> items;
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-  {
-    int resId = R.layout.list_view_item;
-    return inflater.inflate(resId, null);
-  }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("어디", "============= WeekFragment onCreateView 진입 ===========");
 
-  @Override
-  public void onActivityCreated(Bundle savedInstanceState)
-  {
-    super.onActivityCreated(savedInstanceState);
+        View rootView = inflater.inflate(R.layout.fragment_week, container, false);
+        ListView listview = (ListView) rootView.findViewById(R.id.card_view);
+        adapter = new CardViewListViewAdapter();
+        listview.setAdapter(adapter);
 
-//    ListView listview = (ListView) getView().findViewById(R.id.listview);
-//    adapter = new CardViewListViewAdapter();
-//    listview.setAdapter(adapter);
-  }
+        return rootView;
+    }
 }

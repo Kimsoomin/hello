@@ -17,6 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -145,7 +150,7 @@ public class TodayFragment extends Fragment {
         // Activity 데이터통신 테스트
 //    Bundle bundle = this.getArguments();
 //    String myValue = bundle.getString("test");
-        Log.d("어디","============= onCreateView 진입 ===========");
+        Log.d("어디","============= TodayFragment onCreateView 진입 ===========");
 
         language = Locale.getDefault().getLanguage();
         View rootView = inflater.inflate(R.layout.fragment_today, container, false);
@@ -440,6 +445,48 @@ public class TodayFragment extends Fragment {
         uvComment.setText(uvResult);
         laundryComment.setText(laundryResult);
         discomfortComment.setText(discomfortResult + " : " + discomfortIndex);
+
+//        ==========================================
+
+        LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        lineChart.setVisibility(View.VISIBLE);
+        lineChart.setDescription("");
+
+        ArrayList<Entry> entries = new ArrayList<>();
+//        entries.add(new Entry(Integer.parseInt(items.get(0).getTemperature()), 0));
+//        entries.add(new Entry(Integer.parseInt(items.get(1).getTemperature()), 1));
+//        entries.add(new Entry(Integer.parseInt(items.get(2).getTemperature()), 2));
+//        entries.add(new Entry(Integer.parseInt(items.get(3).getTemperature()), 3));
+//        entries.add(new Entry(Integer.parseInt(items.get(4).getTemperature()), 4));
+//        entries.add(new Entry(Integer.parseInt(items.get(5).getTemperature()), 5));
+//        entries.add(new Entry(Integer.parseInt(items.get(6).getTemperature()), 6));
+
+        entries.add(new Entry(1, 0));
+        entries.add(new Entry(13, 1));
+        entries.add(new Entry(6, 2));
+        entries.add(new Entry(11, 3));
+        entries.add(new Entry(17, 4));
+        entries.add(new Entry(8, 5));
+        entries.add(new Entry(5, 6));
+
+        LineDataSet dataset = new LineDataSet(entries, "평균 온도");
+
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("월");
+        labels.add("월");
+        labels.add("월");
+        labels.add("월");
+        labels.add("월");
+        labels.add("월");
+        labels.add("월");
+
+        LineData data = new LineData(labels, dataset);
+        //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+        dataset.setDrawCubic(true);
+        dataset.setDrawFilled(true);
+
+        lineChart.setData(data);
+        lineChart.animateY(5000);
 
         return rootView;
     }

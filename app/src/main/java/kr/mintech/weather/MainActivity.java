@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         text = (TextView) findViewById(R.id.address);
         placePicker = (LinearLayout) findViewById(R.id.place_picker);
+
         init();
     }
 
@@ -511,6 +512,11 @@ public class MainActivity extends AppCompatActivity {
 
                 ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
                 items.add(item);
+
+                TodayFragment fragment = new TodayFragment();
+                Bundle args = new Bundle();
+                args.putInt("test", 1);
+                fragment.setArguments(args);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -637,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject dailyObject = jsonResult.getJSONObject("daily");
                 JSONArray dataArray = dailyObject.getJSONArray("data");
 
-//        adapter.addAll(generateModels(dataArray));
+//                adapter.addAll(generateModels(dataArray));
             } catch (JSONException e) {
                 Log.e("catch", "catch진입");
                 e.printStackTrace();
@@ -746,10 +752,6 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("어디", "경도:" + lon); //위도/경도 결과 출력
             Log.d("어디", "위도:" + lat);
-
-            SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-
             Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lat));
             Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lon));
 
@@ -873,6 +875,14 @@ public class MainActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
+        }
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
         }
 
         @Override
