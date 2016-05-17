@@ -148,7 +148,7 @@ public class PreferenceManager extends BasePreferenceManager
 
   public String getIcon()
   {
-    return get("lon");
+    return get("icon");
   }
 
   public void setStatus(String status)

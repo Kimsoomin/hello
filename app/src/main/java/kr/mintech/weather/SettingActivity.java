@@ -19,6 +19,8 @@ import android.widget.ToggleButton;
 
 import java.util.Locale;
 
+import kr.mintech.weather.managers.PreferenceManager;
+
 /**
  * Created by Mac on 16. 5. 9..
  */
@@ -58,9 +60,9 @@ public class SettingActivity extends AppCompatActivity
     }
 
     Intent intent = getIntent();
-    final String dust = (String) intent.getStringExtra("dust");
-    final String icon = (String) intent.getStringExtra("icon");
-    final String status = (String) intent.getStringExtra("status");
+    final String dust = PreferenceManager.getInstance(SettingActivity.this).getDust();
+    final String icon = PreferenceManager.getInstance(SettingActivity.this).getIcon();
+    final String status = PreferenceManager.getInstance(SettingActivity.this).getStatus();
 
     Log.d("어디", "===== 설정 ==== /" + dust);
     Log.d("어디", "===== 설정 ==== /" + icon);
