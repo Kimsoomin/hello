@@ -145,11 +145,16 @@ public class TodayFragment extends Fragment {
         // Activity 데이터통신 테스트
 //    Bundle bundle = this.getArguments();
 //    String myValue = bundle.getString("test");
+        Log.d("어디","============= onCreateView 진입 ===========");
+
         language = Locale.getDefault().getLanguage();
         View rootView = inflater.inflate(R.layout.fragment_today, container, false);
 
         latitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLat());
         longitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLon());
+
+        Log.d("어디","onCreateView" +latitude);
+        Log.d("어디","onCreateView" +longitude);
 
         TextView carwash = (TextView) rootView.findViewById(R.id.carwash);
         TextView uv = (TextView) rootView.findViewById(R.id.uv);
@@ -198,7 +203,7 @@ public class TodayFragment extends Fragment {
                 value = valueInit.substring(3, 7);
                 dust = test.substring(3, 5);
 
-                Log.d("어디", "=========== value ===========  " + valueInit);
+                Log.d("어디", "=========== valueInit ===========  " + valueInit);
                 Log.d("어디", "=========== value ===========  " + value);
 
                 if (language.contains("en")) {
@@ -258,6 +263,7 @@ public class TodayFragment extends Fragment {
                 String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
                 carwashResult = carwash.substring(0, carwash.length() - 1);
 
+                Log.d("어디", "=========== carwashResult ===========  " + carwashResult);
                 PreferenceManager.getInstance(getActivity()).setCarwashResult(carwashResult);
             }
         };
@@ -301,6 +307,7 @@ public class TodayFragment extends Fragment {
                 String uv = uv_comment.substring(3, uv_comment.indexOf(","));
                 uvResult = uv.substring(0, uv.length() - 1);
 
+                Log.d("어디", "=========== uvResult ===========  " + uvResult);
                 PreferenceManager.getInstance(getActivity()).setUvResult(uvResult);
             }
         };
@@ -344,6 +351,7 @@ public class TodayFragment extends Fragment {
                 String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
                 laundryResult = laundry.substring(0, laundry.length() - 1);
 
+                Log.d("어디", "=========== laundryResult ===========  " + laundryResult);
                 PreferenceManager.getInstance(getActivity()).setUvResult(laundryResult);
             }
         };
@@ -387,8 +395,8 @@ public class TodayFragment extends Fragment {
                 String discomfort_4hour = discomfort_forecast.split("index4hour")[1];
                 String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
                 discomfortResult = discomfort.substring(0, discomfort.length() - 1);
-                //        Log.d("어디", "=========== discomfort_result ===========" + discomfortResult);
 
+                Log.d("어디", "=========== discomfortResult ===========  " + discomfortResult);
                 PreferenceManager.getInstance(getActivity()).setUvResult(discomfortResult);
             }
         };

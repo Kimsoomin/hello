@@ -202,6 +202,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         language = Locale.getDefault().getLanguage();
+        setContentView(R.layout.activity_main);
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        locationListener = new WeatherLocationListener();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        text = (TextView) findViewById(R.id.address);
+        placePicker = (LinearLayout) findViewById(R.id.place_picker);
         init();
     }
 
@@ -214,21 +226,11 @@ public class MainActivity extends AppCompatActivity {
 //    // set Fragmentclass Arguments
 //    TodayFragment fragobj = new TodayFragment();
 //    fragobj.setArguments(bundle);
-
-        //    =================================================
-        setContentView(R.layout.activity_main);
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        locationListener = new WeatherLocationListener();
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        text = (TextView) findViewById(R.id.address);
-        placePicker = (LinearLayout) findViewById(R.id.place_picker);
 
         double latitude = Double.longBitsToDouble(PreferenceManager.getInstance(MainActivity.this).getLat());
         double longitude = Double.longBitsToDouble(PreferenceManager.getInstance(MainActivity.this).getLon());
@@ -272,24 +274,6 @@ public class MainActivity extends AppCompatActivity {
             lvNavList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navItemsEn));
         }
         lvNavList.setOnItemClickListener(new DrawerItemClickListener());
-        //    lvNavList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        //    {
-        //      @Override
-        //      public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        //      {
-        //        switch (position)
-        //        {
-        //          case 0:
-        //            Intent intent = new Intent(MainActivity.this, OpenApiExam.class);
-        //            startActivity(intent);
-        //            break;
-        //          case 1:
-        //            Toast.makeText(MainActivity.this, "sign up click", Toast.LENGTH_SHORT).show();
-        //
-        //        }
-        //      }
-        //    });
-
 
         // DrawerLayout 정의
         mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_main_drawer);
@@ -389,7 +373,6 @@ public class MainActivity extends AppCompatActivity {
     private void selectItem(int position) {
         switch (position) {
             case 0:
-
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 intent.putExtra("dust", dust);
                 intent.putExtra("icon", icon);
@@ -398,7 +381,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 break;
-
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
@@ -575,26 +557,6 @@ public class MainActivity extends AppCompatActivity {
 
         return items;
     }
-
-    //  public void alarm_on()
-    //  {
-    //    // 알람 등록하기
-    //    Log.d("어디", " ====================== setAlarm ================ ");
-    //    AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-    //    Intent intent = new Intent(MainActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
-    //
-    //    PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
-    //
-    //    Calendar calendar = Calendar.getInstance();
-    //    //알람시간 calendar에 set해주기
-    //
-    //    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 22, 00);//시간을 10시 01분으로 일단 set했음
-    //    calendar.set(Calendar.SECOND, 0);
-    //
-    //    //알람 예약
-    //    //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-    //    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
-    //  }
 
     /* ========================== 맵 JSON ==========================*/
     private class MapJson extends AsyncTask<String, String, String> {
@@ -790,8 +752,6 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lat));
             Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lon));
-//      editor.putLong("lat", Double.doubleToRawLongBits(lat));
-//      editor.putLong("lon", Double.doubleToRawLongBits(lon));
 
             PreferenceManager.getInstance(MainActivity.this).setLat(Double.doubleToLongBits(lat));
             PreferenceManager.getInstance(MainActivity.this).setLon(Double.doubleToLongBits(lon));
@@ -889,7 +849,6 @@ public class MainActivity extends AppCompatActivity {
             init();
         }
 
-
         @Override
         public void onProviderDisabled(String provider) {
         }
@@ -914,18 +873,6 @@ public class MainActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
         }
 
         @Override
@@ -953,15 +900,12 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             Fragment fragment = null;
-            switch(position) {
+            switch (position) {
                 case 0:
                     fragment = Fragment.instantiate(MainActivity.this, TodayFragment.class.getName());
                     break;
                 case 1:
                     fragment = Fragment.instantiate(MainActivity.this, PlaceholderFragment.class.getName());
-                    break;
-                default:
-                    fragment = Fragment.instantiate(MainActivity.this, TodayFragment.class.getName());
                     break;
             }
             return fragment;
@@ -972,22 +916,7 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 2;
         }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
-        }
     }
-
-
 };
 
 
