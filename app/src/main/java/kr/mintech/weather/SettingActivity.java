@@ -1,16 +1,18 @@
 package kr.mintech.weather;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -38,7 +40,12 @@ public class SettingActivity extends AppCompatActivity
 
     TextView notification = (TextView) findViewById(R.id.notification);
     TextView notification_extend = (TextView) findViewById(R.id.notification_extend);
-    final ToggleButton tb = (ToggleButton) this.findViewById(R.id.toggleButton1);
+    final ToggleButton tb = (ToggleButton) findViewById(R.id.toggleButton1);
+
+    SharedPreferences pref = getSharedPreferences("setting", Activity.MODE_PRIVATE);
+    Log.d("어디", "Setting" + pref.getBoolean("notification", true));
+
+    tb.setChecked(pref.getBoolean("notification", true));
 
     notification_extend.setText("확장 알림");
 
@@ -55,23 +62,25 @@ public class SettingActivity extends AppCompatActivity
     final String icon = (String) intent.getStringExtra("icon");
     final String status = (String) intent.getStringExtra("status");
 
-    Log.d("어디","===== 설정 ==== /" +dust);
-    Log.d("어디","===== 설정 ==== /" +icon);
-    Log.d("어디","===== 설정 ==== /" +status);
+    Log.d("어디", "===== 설정 ==== /" + dust);
+    Log.d("어디", "===== 설정 ==== /" + icon);
+    Log.d("어디", "===== 설정 ==== /" + status);
 
     final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
     final Notification.Builder mBuilder = new Notification.Builder(SettingActivity.this);
 
-    tb.setOnClickListener(new View.OnClickListener()
+    tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
     {
-      @Override
-      public void onClick(View v)
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
       {
         if (tb.isChecked())
         {
-          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
+          SharedPreferences pref = getSharedPreferences("setting", Activity.MODE_PRIVATE);
+          SharedPreferences.Editor editor = pref.edit();
+          editor.putBoolean("notification", true);
+          editor.commit();
 
-          onOff = true;
+          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
 
           // 작은 아이콘 이미지.
           if (icon.contains("rain"))
@@ -118,53 +127,58 @@ public class SettingActivity extends AppCompatActivity
         else
         {
           Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
-          onOff = false;
-          nm.cancel(111);
 
+          SharedPreferences pref = getSharedPreferences("setting", Activity.MODE_PRIVATE);
+          SharedPreferences.Editor editor = pref.edit();
+          editor.putBoolean("notification", false);
+          editor.commit();
+
+          nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+          nm.cancelAll();
 
         }
       }
     });
 
-//    ============== AlarmManager 를 이용한 Notification ================
-//    tb.setOnClickListener(new View.OnClickListener()
-//    {
-//      @Override
-//      public void onClick(View v)
-//      {
-//        if (tb.isChecked())
-//        {
-//          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
-//
-//          tb.setTextColor(Color.BLUE);
-//
-//          AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
-//
-//          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
-//
-//          Calendar calendar = Calendar.getInstance();
-//          //알람시간 calendar에 set해주기
-//
-//          calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 10, 45);//시간을 10시 01분으로 일단 set했음
-//          calendar.set(Calendar.SECOND, 0);
-//
-//          //알람 예약
-//          //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
-//          am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
-//        }
-//        else
-//        {
-//          Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
-//          tb.setTextColor(Color.RED);
-//
-//          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);
-//          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
-//          AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//          alarmManager.cancel(sender);
-//        }
-//      }
-//    });
+    //    ============== AlarmManager 를 이용한 Notification ================
+    //    tb.setOnClickListener(new View.OnClickListener()
+    //    {
+    //      @Override
+    //      public void onClick(View v)
+    //      {
+    //        if (tb.isChecked())
+    //        {
+    //          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
+    //
+    //          tb.setTextColor(Color.BLUE);
+    //
+    //          AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    //          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
+    //
+    //          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
+    //
+    //          Calendar calendar = Calendar.getInstance();
+    //          //알람시간 calendar에 set해주기
+    //
+    //          calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 10, 45);//시간을 10시 01분으로 일단 set했음
+    //          calendar.set(Calendar.SECOND, 0);
+    //
+    //          //알람 예약
+    //          //am.set(AlarmManager.RTC, calendar.getTimeInMillis(), sender);//이건 한번 알람
+    //          am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60 * 1000, sender);//이건 여러번 알람 24*60*60*1000 이건 하루에한번 계속 알람한다는 뜻.
+    //        }
+    //        else
+    //        {
+    //          Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
+    //          tb.setTextColor(Color.RED);
+    //
+    //          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);
+    //          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
+    //          AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    //          alarmManager.cancel(sender);
+    //        }
+    //      }
+    //    });
 
   }
 
@@ -176,12 +190,16 @@ public class SettingActivity extends AppCompatActivity
     return true;
   }
 
-  public boolean onOptionsItemSelected(android.view.MenuItem item) {
-    switch (item.getItemId()) {
+  public boolean onOptionsItemSelected(android.view.MenuItem item)
+  {
+    switch (item.getItemId())
+    {
       case android.R.id.home:
         finish();
         return true;
     }
     return super.onOptionsItemSelected(item);
-  };
+  }
+
+  ;
 }

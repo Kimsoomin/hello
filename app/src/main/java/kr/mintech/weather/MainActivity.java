@@ -222,12 +222,12 @@ public class MainActivity extends AppCompatActivity
   {
     super.onCreate(savedInstanceState);
     language = Locale.getDefault().getLanguage();
-    start();
+    init();
   }
 
-  public void start()
+  public void init()
   {
-    Log.d("어디","start() 진입");
+    Log.d("어디", "init() 진입");
     //    ======================기존 리스트 뷰 ==========================
     setContentView(R.layout.activity_main);
 
@@ -237,6 +237,9 @@ public class MainActivity extends AppCompatActivity
     ListView listview = (ListView) findViewById(R.id.listview);
     adapter = new CardViewListViewAdapter(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
     listview.setAdapter(adapter);
+
+    locationListener = new WeatherLocationListener();
+    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
     TextView carwash = (TextView) findViewById(R.id.carwash);
     TextView uv = (TextView) findViewById(R.id.uv);
@@ -253,16 +256,13 @@ public class MainActivity extends AppCompatActivity
     laundry.setText("빨래 지수");
     discomfort.setText("불쾌 지수");
 
-    locationListener = new WeatherLocationListener();
-    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
     SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
 
     double latitude = Double.longBitsToDouble(pref.getLong("lat", 999999999));
     double longitude = Double.longBitsToDouble(pref.getLong("lon", 999999999));
 
-    Log.d("어디","start() latitude ///" +latitude);
-    Log.d("어디","start() longitude///" +longitude);
+    Log.d("어디", "init() latitude ///" + latitude);
+    Log.d("어디", "init() longitude///" + longitude);
 
     String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
     String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
@@ -754,6 +754,8 @@ public class MainActivity extends AppCompatActivity
       Log.d("어디", "======== addressInit ========" + addressInit);
       Log.d("어디", " ============ addressInit.length() ========== / " + addressInit.length());
 
+      String google_URL = "http://maps.google.com/maps/api/geocode/json?address=" + addressInit + "&ka&sensor=false";
+
       SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
       SharedPreferences.Editor editor = pref.edit();
 
@@ -768,23 +770,19 @@ public class MainActivity extends AppCompatActivity
         editor.putLong("lat", Double.doubleToRawLongBits(latitude));
         editor.putLong("lon", Double.doubleToRawLongBits(longitude));
         editor.commit();
+        init();
       }
       else
       {
         Log.d("어디", "onActivityResult / else 들어오니");
         new geoPointTask().execute(addressInit);
-        addressExit = true;
-//        topAddress = addressInit;
-//        text.setText(topAddress);
       }
     }
     else
     {
-      Log.d("어디","여기 들어오나");
       super.onActivityResult(requestCode, resultCode, data);
     }
 
-    start();
   }
 
   //  =============================================
@@ -1051,49 +1049,49 @@ public class MainActivity extends AppCompatActivity
     icon = items.get(0).getIcon();
     status = items.get(0).getStatus();
 
-//    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-//    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
-//
-//    // 작은 아이콘 이미지.
-//    if (items.get(0).getIcon().contains("rain"))
-//      mBuilder.setSmallIcon(R.drawable.ic_weather_rain);
-//    else if (items.get(0).getIcon().contains("cloud"))
-//      mBuilder.setSmallIcon(R.drawable.ic_weather_cloud);
-//    else
-//      mBuilder.setSmallIcon(R.drawable.ic_weather_clear);
-//
-//    // 알림이 출력될 때 상단에 나오는 문구.
-//    mBuilder.setTicker("미리 보기");
-//
-//    mBuilder.setWhen(System.currentTimeMillis());
-//
-//    // 알림 메세지 갯수
-//    //    mBuilder.setNumber(10);
-//    // 알림 제목.
-//    mBuilder.setContentTitle(items.get(0).getStatus());
-//    // 알림 내용.
-//    mBuilder.setContentText("미세먼지 : " + dust);
-//    // 프로그래스 바.
-//    //    mBuilder.setProgress(100, 50, false);
-//    // 알림시 사운드, 진동, 불빛을 설정 가능.
-//    mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-//    // 알림 터치시 반응.
-//    mBuilder.setContentIntent(pendingIntent);
-//    // 알림 터치시 반응 후 알림 삭제 여부.
-//    mBuilder.setAutoCancel(false);
-//    // 우선순위.
-//    mBuilder.setPriority(Notification.PRIORITY_MAX);
-//
-//    mBuilder.setOngoing(true);
-//
-//    // 행동 최대3개 등록 가능.
-//    //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
-//    //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
-//    //      mBuilder.addAction(R.mipmap.ic_launcher, "Remove", pendingIntent);
-//
-//    // 고유ID로 알림을 생성.
-//    nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//    nm.notify(111, mBuilder.build());
+    //    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+    //    Notification.Builder mBuilder = new Notification.Builder(MainActivity.this);
+    //
+    //    // 작은 아이콘 이미지.
+    //    if (items.get(0).getIcon().contains("rain"))
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_rain);
+    //    else if (items.get(0).getIcon().contains("cloud"))
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_cloud);
+    //    else
+    //      mBuilder.setSmallIcon(R.drawable.ic_weather_clear);
+    //
+    //    // 알림이 출력될 때 상단에 나오는 문구.
+    //    mBuilder.setTicker("미리 보기");
+    //
+    //    mBuilder.setWhen(System.currentTimeMillis());
+    //
+    //    // 알림 메세지 갯수
+    //    //    mBuilder.setNumber(10);
+    //    // 알림 제목.
+    //    mBuilder.setContentTitle(items.get(0).getStatus());
+    //    // 알림 내용.
+    //    mBuilder.setContentText("미세먼지 : " + dust);
+    //    // 프로그래스 바.
+    //    //    mBuilder.setProgress(100, 50, false);
+    //    // 알림시 사운드, 진동, 불빛을 설정 가능.
+    //    mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+    //    // 알림 터치시 반응.
+    //    mBuilder.setContentIntent(pendingIntent);
+    //    // 알림 터치시 반응 후 알림 삭제 여부.
+    //    mBuilder.setAutoCancel(false);
+    //    // 우선순위.
+    //    mBuilder.setPriority(Notification.PRIORITY_MAX);
+    //
+    //    mBuilder.setOngoing(true);
+    //
+    //    // 행동 최대3개 등록 가능.
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Show", pendingIntent);
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Hide", pendingIntent);
+    //    //      mBuilder.addAction(R.mipmap.ic_launcher, "Remove", pendingIntent);
+    //
+    //    // 고유ID로 알림을 생성.
+    //    nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    //    nm.notify(111, mBuilder.build());
 
     //    ====================== Line chart ===================
     LineChart lineChart = (LineChart) findViewById(R.id.chart);
@@ -1331,81 +1329,93 @@ public class MainActivity extends AppCompatActivity
     {
 
     }
-  }
 
-  public static JSONObject getLocationInfo(String address)
-  {
-
-    HttpGet httpGet = new HttpGet("http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-    //해당 url을 인터넷창에 쳐보면 다양한 위도 경도 정보를 얻을수있다(크롬 으로실행하세요)
-    HttpClient client = new DefaultHttpClient();
-    HttpResponse response;
-    StringBuilder stringBuilder = new StringBuilder();
-
-    try
+    public JSONObject getLocationInfo(String address)
     {
-      response = client.execute(httpGet);
-      HttpEntity entity = response.getEntity();
-      InputStream stream = entity.getContent();
-      int b;
-      while ((b = stream.read()) != -1)
+
+      HttpGet httpGet = new HttpGet("http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
+      //해당 url을 인터넷창에 쳐보면 다양한 위도 경도 정보를 얻을수있다(크롬 으로실행하세요)
+      HttpClient client = new DefaultHttpClient();
+      HttpResponse response;
+      StringBuilder stringBuilder = new StringBuilder();
+
+      try
       {
-        stringBuilder.append((char) b);
+        response = client.execute(httpGet);
+        HttpEntity entity = response.getEntity();
+        InputStream stream = entity.getContent();
+        int b;
+        while ((b = stream.read()) != -1)
+        {
+          stringBuilder.append((char) b);
+        }
+      } catch (ClientProtocolException e)
+      {
+      } catch (IOException e)
+      {
       }
-    } catch (ClientProtocolException e)
-    {
-    } catch (IOException e)
-    {
+
+      JSONObject jsonObject = new JSONObject();
+      try
+      {
+        jsonObject = new JSONObject(stringBuilder.toString());
+      } catch (JSONException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      return jsonObject;
     }
 
-    JSONObject jsonObject = new JSONObject();
-    try
+    public void getGeoPoint(JSONObject jsonObject)
     {
-      jsonObject = new JSONObject(stringBuilder.toString());
-    } catch (JSONException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+      Double lon = new Double(0);
+      Double lat = new Double(0);
+      Log.d("어디", "getGeoPoint /" + jsonObject.toString());
 
-    return jsonObject;
+      try
+      {
+        lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+        lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+
+      } catch (JSONException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      Log.d("어디", "경도:" + lon); //위도/경도 결과 출력
+      Log.d("어디", "위도:" + lat);
+
+      SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+      SharedPreferences.Editor editor = pref.edit();
+
+      Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lat));
+      Log.d("어디", "======getGeoPoint======" + Double.doubleToLongBits(lon));
+      editor.putLong("lat", Double.doubleToRawLongBits(lat));
+      editor.putLong("lon", Double.doubleToRawLongBits(lon));
+
+      editor.commit();
+
+      new Thread(new Runnable() {
+        @Override
+        public void run() {
+          runOnUiThread(new Runnable(){
+            @Override
+            public void run() {
+              init();
+            }
+          });
+        }
+      }).start();
+
+    }
   }
 
 
-  public void getGeoPoint(JSONObject jsonObject)
-  {
 
-
-    Double lon = new Double(0);
-    Double lat = new Double(0);
-    Log.d("어디", "getGeoPoint /" + jsonObject.toString());
-
-    try
-    {
-      lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-
-      lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-
-    } catch (JSONException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    Log.d("어디", "경도:" + lon); //위도/경도 결과 출력
-    Log.d("어디", "위도:" + lat);
-
-    SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-    SharedPreferences.Editor editor = pref.edit();
-
-    Log.d("어디","======getGeoPoint======"+Double.doubleToLongBits(lat));
-    Log.d("어디","======getGeoPoint======"+Double.doubleToLongBits(lon));
-    editor.putLong("lat", Double.doubleToRawLongBits(lat));
-    editor.putLong("lon", Double.doubleToRawLongBits(lon));
-
-    editor.commit();
-
-  }
 
   /* ================================== Location ==========================================*/
   @Override
@@ -1515,7 +1525,7 @@ public class MainActivity extends AppCompatActivity
       locationManager.removeUpdates(locationListener);
       //      dialog.dismiss();
       viewClear();
-      start();
+      init();
     }
 
 
