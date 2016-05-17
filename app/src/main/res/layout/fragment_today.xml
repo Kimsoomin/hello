@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="kr.mintech.weather.fragments.TodayFragment">
 
     <!--<com.github.mikephil.charting.charts.LineChart-->
-        <!--android:id="@+id/chart"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="160dp"-->
-        <!--android:layout_below="@+id/place_picker"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:visibility="invisible"/>-->
+    <!--android:id="@+id/chart"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="160dp"-->
+    <!--android:layout_below="@+id/place_picker"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:visibility="invisible"/>-->
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -46,7 +47,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -58,14 +59,14 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginLeft="@dimen/margin16"
-                            android:src="@drawable/carwash"/>
+                            android:src="@drawable/carwash" />
 
                         <TextView
                             android:id="@+id/carwash_comment"
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
                             android:layout_marginLeft="8dp"
-                            android:textSize="10sp"/>
+                            android:textSize="10sp" />
 
                     </LinearLayout>
 
@@ -85,7 +86,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -97,7 +98,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginLeft="@dimen/margin16"
-                            android:src="@drawable/uv"/>
+                            android:src="@drawable/uv" />
 
                         <TextView
                             android:id="@+id/uv_comment"
@@ -105,7 +106,7 @@
                             android:layout_height="32dp"
                             android:layout_marginLeft="8dp"
                             android:gravity="center"
-                            android:textSize="10sp"/>
+                            android:textSize="10sp" />
 
                     </LinearLayout>
 
@@ -133,7 +134,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -145,7 +146,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginLeft="@dimen/margin16"
-                            android:src="@drawable/laundry"/>
+                            android:src="@drawable/laundry" />
 
                         <TextView
                             android:id="@+id/laundry_comment"
@@ -153,7 +154,7 @@
                             android:layout_height="32dp"
                             android:layout_marginLeft="8dp"
                             android:gravity="center"
-                            android:textSize="10sp"/>
+                            android:textSize="10sp" />
 
                     </LinearLayout>
 
@@ -174,7 +175,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -186,7 +187,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginLeft="@dimen/margin16"
-                            android:src="@drawable/discomfort"/>
+                            android:src="@drawable/discomfort" />
 
                         <TextView
                             android:id="@+id/discomfort_comment"
@@ -194,7 +195,7 @@
                             android:layout_height="32dp"
                             android:layout_marginLeft="8dp"
                             android:gravity="center"
-                            android:textSize="10sp"/>
+                            android:textSize="10sp" />
 
                     </LinearLayout>
 

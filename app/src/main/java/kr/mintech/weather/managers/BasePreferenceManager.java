@@ -136,7 +136,7 @@ public class BasePreferenceManager
    * @param defaultValue 기본값
    * @return int
    */
-  protected static long get(String key, long defaultValue)
+  protected static long getLong(String key, long defaultValue)
   {
     SharedPreferences p = _preference;
     return p.getLong(key, defaultValue);
