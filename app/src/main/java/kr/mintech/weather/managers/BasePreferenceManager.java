@@ -113,4 +113,32 @@ public class BasePreferenceManager
     SharedPreferences p = _preference;
     return p.getInt(key, defaultValue);
   }
+
+  /**
+   * key 설정
+   *
+   * @param key   키 값
+   * @param value 내용
+   */
+  protected static void put(String key, long value)
+  {
+    SharedPreferences p = _preference;
+    SharedPreferences.Editor editor = p.edit();
+    editor.putLong(key, value);
+    editor.commit();
+  }
+
+
+  /**
+   * int 값 가져오기
+   *
+   * @param key          키 값
+   * @param defaultValue 기본값
+   * @return int
+   */
+  protected static long get(String key, long defaultValue)
+  {
+    SharedPreferences p = _preference;
+    return p.getLong(key, defaultValue);
+  }
 }

@@ -28,17 +28,6 @@ public class CardViewListViewAdapter extends BaseAdapter
 
   }
 
-  public ListViewItem CardViewListViewAdapterReceive()
-  {
-    return this.listViewItem;
-  }
-
-  public CardViewListViewAdapter(Context context, LayoutInflater inflater, ArrayList<ListViewItem> listViewItemList)
-  {
-    this.listViewItemList = listViewItemList;
-    this.inflater = inflater;
-  }
-
   public void addAll(ArrayList<ListViewItem> items)
   {
     this.listViewItemList.addAll(items);
