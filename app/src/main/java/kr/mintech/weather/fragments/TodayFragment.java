@@ -145,6 +145,7 @@ public class TodayFragment extends Fragment {
     public void addAll(ArrayList<ListViewItem> items)
     {
         Log.d("어디","========= addAll 진입 ==========");
+        this.listViewItemList.clear();
         this.listViewItemList.addAll(items);
         Log.d("어디","========= addAll / listViewItemList =========="+listViewItemList.get(0).getTemperature());
     }
@@ -474,7 +475,6 @@ public class TodayFragment extends Fragment {
 //        ==========================================
 
         LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-//        lineChart.setVisibility(View.VISIBLE);
         lineChart.setDescription("");
 
         ArrayList<Entry> entries = new ArrayList<>();
@@ -500,8 +500,9 @@ public class TodayFragment extends Fragment {
 
         LineData data = new LineData(labels, dataset);
         //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
-        dataset.setDrawCubic(true);
+        dataset.setDrawCubic(false);
         dataset.setDrawFilled(true);
+        dataset.setValueTextSize(10);
 
         lineChart.setData(data);
         lineChart.animateY(5000);

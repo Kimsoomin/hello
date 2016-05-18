@@ -20,6 +20,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -71,6 +72,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -214,6 +216,15 @@ public class MainActivity extends AppCompatActivity {
 
         text = (TextView) findViewById(R.id.address);
         placePicker = (LinearLayout) findViewById(R.id.place_picker);
+
+//        FragmentManager fragmentManager = getFragmentManager();
+//        TodayFragment fragment = new TodayFragment();
+//        Bundle bundle = new Bundle();
+//        fragment.setArguments(bundle);
+//
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.add(R.id.container, fragment);
+//        fragmentTransaction.commit();
 
         init();
     }
@@ -909,22 +920,26 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
         public ArrayList<String> titles = new ArrayList<>();
+        public Fragment fragment;
+
+        public ArrayList<Fragment> fragments = new ArrayList<>();
+
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            Fragment fragment = null;
+//            fragments.add(0, new TodayFragment());
+//            fragments.add(1, new WeekFragment());
 
-            switch (position) {
-                case 0:
-                    fragment = Fragment.instantiate(MainActivity.this, TodayFragment.class.getName());
-
+            switch( position) {
+                default:
+                case0: {
+                    fragment = new TodayFragment();
                     break;
-                case 1:
-                    fragment = Fragment.instantiate(MainActivity.this, WeekFragment.class.getName());
-
+                }
+                case 1: {
+                    fragment = new WeekFragment();
                     break;
+                }
             }
             return fragment;
         }

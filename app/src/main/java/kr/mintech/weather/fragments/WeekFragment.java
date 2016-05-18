@@ -30,9 +30,10 @@ public class WeekFragment extends Fragment {
 
     public void addAll(ArrayList<ListViewItem> items)
     {
-        Log.d("어디","========= addAll 진입 ==========");
+        Log.d("어디","========= week / addAll 진입 ==========");
+        this.listViewItemList.clear();
         this.listViewItemList.addAll(items);
-        Log.d("어디","========= addAll / listViewItemList =========="+listViewItemList.get(0).getTemperature());
+        Log.d("어디","========= week / listViewItemList =========="+listViewItemList.get(0).getTemperature());
     }
 
     @Override
@@ -44,6 +45,8 @@ public class WeekFragment extends Fragment {
         adapter = new CardViewListViewAdapterWeek(getActivity(), inflater, new ArrayList<ListViewItem>());
         listview.setAdapter(adapter);
         adapter.addAll(listViewItemList);
+
+//        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.listview_week)).commit();
 
         return rootView;
     }
