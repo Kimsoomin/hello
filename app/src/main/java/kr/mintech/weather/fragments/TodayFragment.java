@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ import kr.mintech.weather.common.RequestBundle;
 import kr.mintech.weather.common.RequestListener;
 import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
+import kr.mintech.weather.controllers.CardViewListViewAdapterWeek;
 import kr.mintech.weather.managers.PreferenceManager;
 
 /**
@@ -63,6 +65,7 @@ public class TodayFragment extends Fragment {
 
     public static View view;
     private static CardViewListViewAdapter adapter;
+    private static CardViewListViewAdapterWeek weekAdapter;
 
     private ArrayList<ListViewItem> items;
 
@@ -131,10 +134,19 @@ public class TodayFragment extends Fragment {
     String discomfortResult;
     String discomfortIndex;
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public static ListViewItem listViewItem = new ListViewItem();
+    public static ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
+
     // ====================================
 
     public TodayFragment() {
+    }
+
+    public void addAll(ArrayList<ListViewItem> items)
+    {
+        Log.d("어디","========= addAll 진입 ==========");
+        this.listViewItemList.addAll(items);
+        Log.d("어디","========= addAll / listViewItemList =========="+listViewItemList.get(0).getTemperature());
     }
 
     public static TodayFragment newInstance(int sectionNumber) {
@@ -154,6 +166,15 @@ public class TodayFragment extends Fragment {
 
         language = Locale.getDefault().getLanguage();
         View rootView = inflater.inflate(R.layout.fragment_today, container, false);
+
+        ListView listview = (ListView) rootView.findViewById(R.id.listview_today);
+        adapter = new CardViewListViewAdapter(getActivity(), inflater, new ArrayList<ListViewItem>());
+        weekAdapter = new CardViewListViewAdapterWeek(getActivity(), inflater, new ArrayList<ListViewItem>());
+
+        listview.setAdapter(adapter);
+        listViewItem = listViewItemList.get(0);
+        adapter.addListviewitem(listViewItem);
+        adapter.addAll(listViewItemList);
 
         latitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLat());
         longitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLon());
@@ -178,7 +199,7 @@ public class TodayFragment extends Fragment {
 
         // =========================미 세 먼 지=============================
         api = new APIRequest();
-        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+        APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
 
         // url에 삽입되는 파라미터 설정
         param = new HashMap<String, Object>();
@@ -225,7 +246,8 @@ public class TodayFragment extends Fragment {
                     }
                 }
 
-//        adapter.add(dust, value);
+                adapter.add(dust, value);
+                weekAdapter.add(dust, value);
                 PreferenceManager.getInstance(getActivity()).setDust(dust);
                 PreferenceManager.getInstance(getActivity()).setValue(value);
             }
@@ -241,7 +263,7 @@ public class TodayFragment extends Fragment {
         //    ===================세차 지수===========================
 
         api_carwash = new APIRequest();
-        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_carwash = new HashMap<String, Object>();
@@ -283,7 +305,7 @@ public class TodayFragment extends Fragment {
         //    =================== 자외선 지수 ===========================
 
         api_uv = new APIRequest();
-        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_uv = new HashMap<String, Object>();
@@ -312,6 +334,9 @@ public class TodayFragment extends Fragment {
                 String uv = uv_comment.substring(3, uv_comment.indexOf(","));
                 uvResult = uv.substring(0, uv.length() - 1);
 
+                Log.d("어디", "=========== hndResult_uv ===========  " + hndResult_uv);
+                Log.d("어디", "=========== uv_comment ===========  " + uv_comment);
+                Log.d("어디", "=========== uv ===========  " + uv);
                 Log.d("어디", "=========== uvResult ===========  " + uvResult);
                 PreferenceManager.getInstance(getActivity()).setUvResult(uvResult);
             }
@@ -327,7 +352,7 @@ public class TodayFragment extends Fragment {
         //    =================== 빨래 지수 ===========================
 
         api_laundry = new APIRequest();
-        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_laundry = new HashMap<String, Object>();
@@ -357,7 +382,7 @@ public class TodayFragment extends Fragment {
                 laundryResult = laundry.substring(0, laundry.length() - 1);
 
                 Log.d("어디", "=========== laundryResult ===========  " + laundryResult);
-                PreferenceManager.getInstance(getActivity()).setUvResult(laundryResult);
+                PreferenceManager.getInstance(getActivity()).setLaundryResult(laundryResult);
             }
         };
 
@@ -371,7 +396,7 @@ public class TodayFragment extends Fragment {
         //    =================== 불쾌 지수 ===========================
 
         api_discomfort = new APIRequest();
-        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
+//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_discomfort = new HashMap<String, Object>();
@@ -402,7 +427,7 @@ public class TodayFragment extends Fragment {
                 discomfortResult = discomfort.substring(0, discomfort.length() - 1);
 
                 Log.d("어디", "=========== discomfortResult ===========  " + discomfortResult);
-                PreferenceManager.getInstance(getActivity()).setUvResult(discomfortResult);
+                PreferenceManager.getInstance(getActivity()).setDiscomfortResult(discomfortResult);
             }
         };
 
@@ -449,36 +474,29 @@ public class TodayFragment extends Fragment {
 //        ==========================================
 
         LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-        lineChart.setVisibility(View.VISIBLE);
+//        lineChart.setVisibility(View.VISIBLE);
         lineChart.setDescription("");
 
         ArrayList<Entry> entries = new ArrayList<>();
-//        entries.add(new Entry(Integer.parseInt(items.get(0).getTemperature()), 0));
-//        entries.add(new Entry(Integer.parseInt(items.get(1).getTemperature()), 1));
-//        entries.add(new Entry(Integer.parseInt(items.get(2).getTemperature()), 2));
-//        entries.add(new Entry(Integer.parseInt(items.get(3).getTemperature()), 3));
-//        entries.add(new Entry(Integer.parseInt(items.get(4).getTemperature()), 4));
-//        entries.add(new Entry(Integer.parseInt(items.get(5).getTemperature()), 5));
-//        entries.add(new Entry(Integer.parseInt(items.get(6).getTemperature()), 6));
-
-        entries.add(new Entry(1, 0));
-        entries.add(new Entry(13, 1));
-        entries.add(new Entry(6, 2));
-        entries.add(new Entry(11, 3));
-        entries.add(new Entry(17, 4));
-        entries.add(new Entry(8, 5));
-        entries.add(new Entry(5, 6));
+        Log.d("어디","====== lineChart ====== /"+listViewItemList.get(0).getTemperature());
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(0).getTemperature()), 0));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(1).getTemperature()), 1));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(2).getTemperature()), 2));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(3).getTemperature()), 3));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(4).getTemperature()), 4));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(5).getTemperature()), 5));
+        entries.add(new Entry(Integer.parseInt(listViewItemList.get(6).getTemperature()), 6));
 
         LineDataSet dataset = new LineDataSet(entries, "평균 온도");
 
         ArrayList<String> labels = new ArrayList<String>();
-        labels.add("월");
-        labels.add("월");
-        labels.add("월");
-        labels.add("월");
-        labels.add("월");
-        labels.add("월");
-        labels.add("월");
+        labels.add(listViewItemList.get(0).getTitle());
+        labels.add(listViewItemList.get(1).getTitle());
+        labels.add(listViewItemList.get(2).getTitle());
+        labels.add(listViewItemList.get(3).getTitle());
+        labels.add(listViewItemList.get(4).getTitle());
+        labels.add(listViewItemList.get(5).getTitle());
+        labels.add(listViewItemList.get(6).getTitle());
 
         LineData data = new LineData(labels, dataset);
         //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //

@@ -127,7 +127,7 @@ public class PreferenceManager extends BasePreferenceManager
 
   public long getLat()
   {
-    return getLong("lat", 0);
+    return getLong("lat", 37);
   }
 
   public void setLon(long lon)
@@ -137,7 +137,7 @@ public class PreferenceManager extends BasePreferenceManager
 
   public long getLon()
   {
-    return getLong("lon", 0);
+    return getLong("lon", 127);
   }
 
 

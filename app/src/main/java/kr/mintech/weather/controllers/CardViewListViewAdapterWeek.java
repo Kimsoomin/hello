@@ -16,17 +16,17 @@ import java.util.Locale;
 import kr.mintech.weather.R;
 import kr.mintech.weather.beans.ListViewItem;
 
-public class CardViewListViewAdapter extends BaseAdapter {
+public class CardViewListViewAdapterWeek extends BaseAdapter {
     String language;
-    private ListViewItem listViewItem = new ListViewItem();
+    public static ListViewItem listViewItem = new ListViewItem();
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
     LayoutInflater inflater;
 
-    public CardViewListViewAdapter() {
+    public CardViewListViewAdapterWeek() {
 
     }
 
-    public CardViewListViewAdapter(Context context, LayoutInflater inflater, ArrayList<ListViewItem> listViewItemList) {
+    public CardViewListViewAdapterWeek(Context context, LayoutInflater inflater, ArrayList<ListViewItem> listViewItemList) {
         this.listViewItemList = listViewItemList;
         this.inflater = inflater;
 
@@ -38,6 +38,7 @@ public class CardViewListViewAdapter extends BaseAdapter {
     }
 
     public void add(String dust, String value) {
+
         this.listViewItem.setDust(dust);
         this.listViewItem.setDustValue(value);
     }
@@ -49,7 +50,7 @@ public class CardViewListViewAdapter extends BaseAdapter {
     //================================================
     @Override
     public int getCount() {
-        return 1;
+        return listViewItemList.size();
     }
 
     @Override
@@ -125,13 +126,11 @@ public class CardViewListViewAdapter extends BaseAdapter {
             } else {
                 day_main.setText("오늘 / " + item.getTitle() + "요일");
                 detail_windspeed_main.setText(item.getWindspeed() + "M/초");
+                Log.d("어디", "Weekadapter / " + listViewItem.getDust());
                 dust_main.setText("미세먼지 : " + listViewItem.getDust());
                 dust_value_main.setText(listViewItem.getDustValue() + " PM10");
             }
 
-            Log.d("어디","===== todayAdapter ==== /"+item.getSunriseTime());
-            Log.d("어디","===== todayAdapter ==== /"+item.getSunsetTime());
-            Log.d("어디","===== todayAdapter ==== /"+item.getHumidity());
             detail_text.setText("DETAIL");
             status_main.setText(item.getStatus());
             date_main.setText(item.getDate());
@@ -153,7 +152,7 @@ public class CardViewListViewAdapter extends BaseAdapter {
             detail_arrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                    detail_container_main.setVisibility(detail_container_main.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
                     if (down_arrow.getVisibility() == View.VISIBLE) {
                         down_arrow.setVisibility(View.GONE);
                         up_arrow.setVisibility(View.VISIBLE);
@@ -165,6 +164,94 @@ public class CardViewListViewAdapter extends BaseAdapter {
                 }
             });
         }
+/* ========== else ===========*/
+
+        else {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, parent, false);
+
+            TextView day = (TextView) convertView.findViewById(R.id.day);
+            TextView status = (TextView) convertView.findViewById(R.id.status);
+            TextView date = (TextView) convertView.findViewById(R.id.date);
+            TextView temperature = (TextView) convertView.findViewById(R.id.temperature);
+            ImageView icon = (ImageView) convertView.findViewById(R.id.weather_image);
+            LinearLayout topContainer = (LinearLayout) convertView.findViewById(R.id.top_container);
+
+            final LinearLayout detail_container = (LinearLayout) convertView.findViewById(R.id.detail_container);
+
+            TextView detail_dewpoint = (TextView) convertView.findViewById(R.id.detail_dewpoint);
+            TextView explain_dewpoint = (TextView) convertView.findViewById(R.id.explain_dewpoint);
+            TextView detail_humidity = (TextView) convertView.findViewById(R.id.detail_humidity);
+            TextView explain_humidity = (TextView) convertView.findViewById(R.id.explain_humidity);
+            TextView detail_windspeed = (TextView) convertView.findViewById(R.id.detail_windspeed);
+            TextView explain_windspeed = (TextView) convertView.findViewById(R.id.explain_windspeed);
+            TextView detail_pressure = (TextView) convertView.findViewById(R.id.detail_pressure);
+            TextView explain_pressure = (TextView) convertView.findViewById(R.id.explain_pressure);
+
+            final LinearLayout detail_arrow = (LinearLayout) convertView.findViewById(R.id.detail_arrow);
+
+            final ImageView down_arrow = (ImageView) convertView.findViewById(R.id.down_arrow);
+            final ImageView up_arrow = (ImageView) convertView.findViewById(R.id.up_arrow);
+
+            ImageView img_dewpoint = (ImageView) convertView.findViewById(R.id.img_dewpoint);
+            ImageView img_humidity = (ImageView) convertView.findViewById(R.id.img_humidity);
+            ImageView img_windspeed = (ImageView) convertView.findViewById(R.id.img_windspeed);
+            ImageView img_pressure = (ImageView) convertView.findViewById(R.id.img_pressure);
+
+            TextView detail_sunrise = (TextView) convertView.findViewById(R.id.detail_sunrise);
+            TextView detail_sunset = (TextView) convertView.findViewById(R.id.detail_sunset);
+            TextView explain_sunrise = (TextView) convertView.findViewById(R.id.explain_sunrise);
+            TextView explain_sunset = (TextView) convertView.findViewById(R.id.explain_sunset);
+
+            TextView detail_text = (TextView) convertView.findViewById(R.id.detail_button);
+
+            if (language.contains("en")) {
+                day.setText(item.getTitle());
+                detail_windspeed.setText(item.getWindspeed() + "M/second");
+                explain_dewpoint.setText(R.string.dewpoint);
+                explain_windspeed.setText(R.string.windspeed);
+                explain_pressure.setText(R.string.pressure);
+                explain_humidity.setText(R.string.humidity);
+                explain_humidity.setText(R.string.humidity);
+                explain_sunrise.setText(R.string.sunrise);
+                explain_sunset.setText(R.string.sunset);
+            } else {
+                day.setText(item.getTitle() + "요일");
+                detail_windspeed.setText(item.getWindspeed() + "M/초");
+            }
+
+            detail_text.setText("DETAIL");
+            status.setText(item.getStatus());
+            date.setText(item.getDate());
+            detail_sunrise.setText(item.getSunriseTime());
+            detail_sunset.setText(item.getSunsetTime());
+            temperature.setText(item.getTemperature());
+            detail_dewpoint.setText(item.getDewpoint() + "°");
+            detail_humidity.setText(item.getHumidity() + "%");
+            detail_pressure.setText(item.getPressure() + "hPa");
+
+            if (item.getIcon().contains("rain"))
+                icon.setImageResource(R.drawable.ic_weather_rain);
+            else if (item.getIcon().contains("cloud"))
+                icon.setImageResource(R.drawable.ic_weather_cloud);
+            else
+                icon.setImageResource(R.drawable.ic_weather_clear);
+
+            detail_arrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    detail_container.setVisibility(detail_container.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                    if (down_arrow.getVisibility() == View.VISIBLE) {
+                        down_arrow.setVisibility(View.GONE);
+                        up_arrow.setVisibility(View.VISIBLE);
+                    } else {
+                        down_arrow.setVisibility(View.VISIBLE);
+                        up_arrow.setVisibility(View.GONE);
+                    }
+                    Log.d("어디", "버튼클릭");
+                }
+            });
+        }
+
         return convertView;
     }
 }

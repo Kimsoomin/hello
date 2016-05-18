@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -78,6 +79,7 @@ import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.common.RequestBundle;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
 import kr.mintech.weather.fragments.TodayFragment;
+import kr.mintech.weather.fragments.WeekFragment;
 import kr.mintech.weather.managers.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     //  Locale systemLocale = getResources().getConfiguration().locale;
     //  String strLanguage = systemLocale.getLanguage();
     private int viewpagerPosition = 0;
+
+    private TodayFragment todayFragment = new TodayFragment();
+    private WeekFragment weekFragment = new WeekFragment();
 
     // =============== navi draw ==================
 
@@ -204,11 +209,6 @@ public class MainActivity extends AppCompatActivity {
         language = Locale.getDefault().getLanguage();
         setContentView(R.layout.activity_main);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
         locationListener = new WeatherLocationListener();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -220,18 +220,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void init() {
         Log.d("어디", "init() 진입");
-
-//    ========= fragment 와 데이터 통신 ==============
-//    Bundle bundle = new Bundle();
-//    bundle.putString("test", "From Activity");
-//    // set Fragmentclass Arguments
-//    TodayFragment fragobj = new TodayFragment();
-//    fragobj.setArguments(bundle);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
 
         double latitude = Double.longBitsToDouble(PreferenceManager.getInstance(MainActivity.this).getLat());
         double longitude = Double.longBitsToDouble(PreferenceManager.getInstance(MainActivity.this).getLon());
@@ -472,13 +460,13 @@ public class MainActivity extends AppCompatActivity {
                     } else if (summary.contains("Rain in the morning")) {
                         summary = "아침부터 내리는 비 그리고 오후부터 시작 된 미풍은 저녁까지";
                     } else if (summary.contains("Partly cloudy until afternoon")) {
-                        summary = "오후까지 구름 종종";
+                        summary = "오후까지 가끔 구름";
                     } else if (summary.contains("Heavy rain until evening")) {
                         summary = "저녁까지 강한 비";
                     } else if (summary.contains("Windy until evening")) {
                         summary = "저녁까지 바람";
                     } else if (summary.contains("Partly cloudy")) {
-                        summary = "구름 종종";
+                        summary = "가끔 구름";
                     } else if (summary.contains("Overcast throughout the day")) {
                         summary = "하루 종일 흐림";
                     } else if (summary.contains("Rain and windy throughout the day")) {
@@ -500,13 +488,15 @@ public class MainActivity extends AppCompatActivity {
                     } else if (summary.contains("Rain throughout the day")) {
                         summary = "하루종일 비";
                     } else if (summary.contains("Partly cloudy overnight")) {
-                        summary = "밤새 종종 구름";
+                        summary = "밤새 가끔 구름";
                     } else if (summary.contains("Light rain throughout the day")) {
                         summary = "종일 가벼운 비";
                     } else if (summary.contains("Drizzle in the morning")) {
                         summary = "아침에 이슬비";
                     } else if (summary.contains("Light rain starting in the afternoon")) {
                         summary = "오후부터 시작하는 가벼운 비";
+                    } else if (summary.contains("Drizzle starting in the evening")) {
+                        summary = "저녁부터 시작하는 이슬비";
                     }
                 }
 
@@ -643,7 +633,20 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject dailyObject = jsonResult.getJSONObject("daily");
                 JSONArray dataArray = dailyObject.getJSONArray("data");
 
-//                adapter.addAll(generateModels(dataArray));
+                todayFragment.addAll(generateModels(dataArray));
+                weekFragment.addAll(generateModels(dataArray));
+
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+                // Set up the ViewPager with the sections adapter.
+                mViewPager = (ViewPager) findViewById(R.id.container);
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+                tabLayout.setupWithViewPager(mViewPager);
+//                setTitle(mSectionsPagerAdapter.getPageTitle(0));
+
+
             } catch (JSONException e) {
                 Log.e("catch", "catch진입");
                 e.printStackTrace();
@@ -847,6 +850,7 @@ public class MainActivity extends AppCompatActivity {
 
             handler.removeCallbacks(timeOutFindStationCallBack);
             locationManager.removeUpdates(locationListener);
+
             //      dialog.dismiss();
             init();
         }
@@ -904,18 +908,22 @@ public class MainActivity extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+        public ArrayList<String> titles = new ArrayList<>();
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             Fragment fragment = null;
+
             switch (position) {
                 case 0:
                     fragment = Fragment.instantiate(MainActivity.this, TodayFragment.class.getName());
+
                     break;
                 case 1:
-                    fragment = Fragment.instantiate(MainActivity.this, PlaceholderFragment.class.getName());
+                    fragment = Fragment.instantiate(MainActivity.this, WeekFragment.class.getName());
+
                     break;
             }
             return fragment;
@@ -925,6 +933,15 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             // Show 3 total pages.
             return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position)
+        {
+            titles.add(0,"Today");
+            titles.add(1,"Week");
+
+            return titles.get(position);
         }
     }
 };
