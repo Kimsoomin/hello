@@ -125,8 +125,8 @@ public class CardViewListViewAdapter extends BaseAdapter {
             } else {
                 day_main.setText("오늘 / " + item.getTitle() + "요일");
                 detail_windspeed_main.setText(item.getWindspeed() + "M/초");
-                dust_main.setText("미세먼지 : " + listViewItemList.get(0).getDust());
-                dust_value_main.setText(listViewItemList.get(0).getDustValue() + " PM10");
+                dust_main.setText("미세먼지 : " + listViewItem.getDust());
+                dust_value_main.setText(listViewItem.getDustValue() + " PM10");
             }
 
             Log.d("어디","===== todayAdapter ==== /"+item.getSunriseTime());

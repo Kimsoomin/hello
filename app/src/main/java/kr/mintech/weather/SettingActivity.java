@@ -7,17 +7,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.CompoundButton;
@@ -32,94 +24,9 @@ import kr.mintech.weather.managers.PreferenceManager;
 /**
  * Created by Mac on 16. 5. 9..
  */
-public class SettingsActivity extends AppCompatActivity
+public class SettingActivity extends AppCompatActivity
 {
-  private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object value) {
-      String stringValue = value.toString();
-      Log.d("어디","========== onPreferenceChange ==========");
-
-      if (preference instanceof ListPreference) {
-        // For list preferences, look up the correct display value in
-        // the preference's 'entries' list.
-        ListPreference listPreference = (ListPreference) preference;
-        int index = listPreference.findIndexOfValue(stringValue);
-
-        // Set the summary to reflect the new value.
-        preference.setSummary(
-                index >= 0
-                        ? listPreference.getEntries()[index]
-                        : null);
-
-      } else if (preference instanceof RingtonePreference) {
-        // For ringtone preferences, look up the correct display value
-        // using RingtoneManager.
-        if (TextUtils.isEmpty(stringValue)) {
-          // Empty values correspond to 'silent' (no ringtone).
-          preference.setSummary(R.string.pref_ringtone_silent);
-
-        } else {
-          Ringtone ringtone = RingtoneManager.getRingtone(
-                  preference.getContext(), Uri.parse(stringValue));
-
-          if (ringtone == null) {
-            // Clear the summary if there was a lookup error.
-            preference.setSummary(null);
-          } else {
-            // Set the summary to reflect the new ringtone display
-            // name.
-            String name = ringtone.getTitle(preference.getContext());
-            preference.setSummary(name);
-          }
-        }
-
-      } else {
-        // For all other preferences, set the summary to the value's
-        // simple string representation.
-        preference.setSummary(stringValue);
-      }
-      return true;
-    }
-  };
-
-  /**
-   * Helper method to determine if the device has an extra-large screen. For
-   * example, 10" tablets are extra-large.
-   */
-  private static boolean isXLargeTablet(Context context) {
-    Log.d("어디","========== isXLargeTablet ==========");
-    return (context.getResources().getConfiguration().screenLayout
-            & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-  }
-
-  /**
-   * Binds a preference's summary to its value. More specifically, when the
-   * preference's value is changed, its summary (line of text below the
-   * preference title) is updated to reflect the value. The summary is also
-   * immediately updated upon calling this method. The exact display format is
-   * dependent on the type of preference.
-   *
-   * @see #sBindPreferenceSummaryToValueListener
-   */
-  private static void bindPreferenceSummaryToValue(Preference preference) {
-    // Set the listener to watch for value changes.
-    Log.d("어디","========== bindPreferenceSummaryToValue ==========");
-    preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-    // Trigger the listener immediately with the preference's
-    // current value.
-    sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-            android.preference.PreferenceManager
-                    .getDefaultSharedPreferences(preference.getContext())
-                    .getString(preference.getKey(), ""));
-  }
-
-  /* ============================================================ */
-
   NotificationManager nm;
-
-  public static boolean onOff;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -129,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity
 
     ActionBar actionBar = getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
-
 
     TextView notification = (TextView) findViewById(R.id.notification);
     TextView notification_extend = (TextView) findViewById(R.id.notification_extend);
@@ -151,16 +57,16 @@ public class SettingsActivity extends AppCompatActivity
     }
 
     Intent intent = getIntent();
-    final String dust = PreferenceManager.getInstance(SettingsActivity.this).getDust();
-    final String icon = PreferenceManager.getInstance(SettingsActivity.this).getIcon();
-    final String status = PreferenceManager.getInstance(SettingsActivity.this).getStatus();
+    final String dust = PreferenceManager.getInstance(SettingActivity.this).getDust();
+    final String icon = PreferenceManager.getInstance(SettingActivity.this).getIcon();
+    final String status = PreferenceManager.getInstance(SettingActivity.this).getStatus();
 
     Log.d("어디", "===== 설정 ==== /" + dust);
     Log.d("어디", "===== 설정 ==== /" + icon);
     Log.d("어디", "===== 설정 ==== /" + status);
 
     final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-    final Notification.Builder mBuilder = new Notification.Builder(SettingsActivity.this);
+    final Notification.Builder mBuilder = new Notification.Builder(SettingActivity.this);
 
     tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
     {
@@ -173,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity
           editor.putBoolean("notification", true);
           editor.commit();
 
-          Toast.makeText(SettingsActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
+          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
 
           // 작은 아이콘 이미지.
           if (icon.contains("rain"))
@@ -219,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity
         }
         else
         {
-          Toast.makeText(SettingsActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
+          Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
 
           SharedPreferences pref = getSharedPreferences("setting", Activity.MODE_PRIVATE);
           SharedPreferences.Editor editor = pref.edit();
@@ -241,14 +147,14 @@ public class SettingsActivity extends AppCompatActivity
     //      {
     //        if (tb.isChecked())
     //        {
-    //          Toast.makeText(SettingsActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
+    //          Toast.makeText(SettingActivity.this, "알림 On", Toast.LENGTH_SHORT).show();
     //
     //          tb.setTextColor(Color.BLUE);
     //
     //          AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-    //          Intent intent = new Intent(SettingsActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
+    //          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);   //AlarmReceive.class이클레스는 따로 만들꺼임 알람이 발동될때 동작하는 클레이스임
     //
-    //          PendingIntent sender = PendingIntent.getBroadcast(SettingsActivity.this, 0, intent, 0);
+    //          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
     //
     //          Calendar calendar = Calendar.getInstance();
     //          //알람시간 calendar에 set해주기
@@ -262,11 +168,11 @@ public class SettingsActivity extends AppCompatActivity
     //        }
     //        else
     //        {
-    //          Toast.makeText(SettingsActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
+    //          Toast.makeText(SettingActivity.this, "알림 Off", Toast.LENGTH_SHORT).show();
     //          tb.setTextColor(Color.RED);
     //
-    //          Intent intent = new Intent(SettingsActivity.this, AlarmReceive.class);
-    //          PendingIntent sender = PendingIntent.getBroadcast(SettingsActivity.this, 0, intent, 0);
+    //          Intent intent = new Intent(SettingActivity.this, AlarmReceive.class);
+    //          PendingIntent sender = PendingIntent.getBroadcast(SettingActivity.this, 0, intent, 0);
     //          AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
     //          alarmManager.cancel(sender);
     //        }
@@ -293,6 +199,4 @@ public class SettingsActivity extends AppCompatActivity
     }
     return super.onOptionsItemSelected(item);
   }
-
-  ;
 }

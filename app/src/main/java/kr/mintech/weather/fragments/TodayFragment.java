@@ -3,6 +3,7 @@ package kr.mintech.weather.fragments;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObservable;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import kr.mintech.weather.R;
+import kr.mintech.weather.SettingTest;
 import kr.mintech.weather.api.APIRequest;
 import kr.mintech.weather.beans.ListViewItem;
 import kr.mintech.weather.common.PlanetXSDKConstants;
@@ -202,7 +205,7 @@ public class TodayFragment extends Fragment {
 
         // =========================미 세 먼 지=============================
         api = new APIRequest();
-        APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param = new HashMap<String, Object>();
@@ -480,7 +483,6 @@ public class TodayFragment extends Fragment {
         lineChart.setDescription("");
 
         ArrayList<Entry> entries = new ArrayList<>();
-        Log.d("어디","====== lineChart ====== /"+listViewItemList.get(0).getTemperature());
         entries.add(new Entry(Integer.parseInt(listViewItemList.get(0).getTemperature()), 0));
         entries.add(new Entry(Integer.parseInt(listViewItemList.get(1).getTemperature()), 1));
         entries.add(new Entry(Integer.parseInt(listViewItemList.get(2).getTemperature()), 2));

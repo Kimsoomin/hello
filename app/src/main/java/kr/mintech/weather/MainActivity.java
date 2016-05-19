@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     // =============== navi draw ==================
 
-    private String[] navItemsKo = {"설정"};
-    private String[] navItemsEn = {"Setting"};
+    private String[] navItemsKo = {"설정", "TEST", "TEST2"};
+    private String[] navItemsEn = {"Setting", "TEST", "TEST2"};
 
     private NativeAd.Image image;
 
@@ -372,13 +372,24 @@ public class MainActivity extends AppCompatActivity {
     private void selectItem(int position) {
         switch (position) {
             case 0:
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Log.d("어디"," selectItem position=1");
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 intent.putExtra("dust", dust);
                 intent.putExtra("icon", icon);
                 intent.putExtra("status", status);
 
                 startActivity(intent);
+                break;
+            case 1:
+                Log.d("어디"," selectItem position=2");
+                Intent testIntent = new Intent(MainActivity.this, SettingTest.class);
+                startActivity(testIntent);
+                break;
 
+            case 2:
+                Log.d("어디"," selectItem position=3");
+                Intent testIntent2 = new Intent(MainActivity.this, SettingTest2.class);
+                startActivity(testIntent2);
                 break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
