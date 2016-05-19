@@ -21,10 +21,10 @@ import kr.mintech.weather.controllers.CardViewListViewAdapterWeek;
 /**
  * Created by SM on 2016-05-19.
  */
-public class FragmentSettingGeneral extends android.support.v4.app.Fragment {
+public class AnalogClockFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("어디", "============= FragmentSettingGeneral onCreateView 진입 ===========");
+        Log.d("어디", "============= AnalogClockFragment onCreateView 진입 ===========");
 
         View rootView = inflater.inflate(R.layout.fragment_setting1, container, false);
         return rootView;

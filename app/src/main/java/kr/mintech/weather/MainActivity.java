@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     // =============== navi draw ==================
 
-    private String[] navItemsKo = {"설정", "TEST", "TEST2"};
-    private String[] navItemsEn = {"Setting", "TEST", "TEST2"};
+    private String[] navItemsKo = {"설정", "Fragment", "PreferenceFragment"};
+    private String[] navItemsEn = {"Setting", "Fragment", "PreferenceFragment"};
 
     private NativeAd.Image image;
 
@@ -965,6 +965,16 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Toast.makeText(this, "onResume", Toast.LENGTH_LONG).show();
+//
+//        SharedPreferences setRefer = PreferenceManager
+//                .getDefaultSharedPreferences(this);
+//        checkBox.setChecked(setRefer.getBoolean("checkbox", true));
+//    }
 };
 
 

@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin16"
-                android:text="AnalogClock" />
+                android:text="Genaral" />
         </LinearLayout>
 
         <LinearLayout
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin16"
-                android:text="DigitalClock" />
+                android:text="Notification" />
         </LinearLayout>
 
         <LinearLayout
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin16"
-                android:text="Calendar" />
+                android:text="Data ＆ Sync" />
         </LinearLayout>
     </LinearLayout>
 
