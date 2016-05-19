@@ -84,10 +84,6 @@ import kr.mintech.weather.managers.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    //  Locale systemLocale = getResources().getConfiguration().locale;
-    //  String strLanguage = systemLocale.getLanguage();
-    private int viewpagerPosition = 0;
-
     private TodayFragment todayFragment = new TodayFragment();
     private WeekFragment weekFragment = new WeekFragment();
 
@@ -95,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String[] navItemsKo = {"설정", "Fragment", "PreferenceFragment"};
     private String[] navItemsEn = {"Setting", "Fragment", "PreferenceFragment"};
-
-    private NativeAd.Image image;
 
     private ListView lvNavList;
     private DrawerLayout mDrawerLayout; // 주 기능
