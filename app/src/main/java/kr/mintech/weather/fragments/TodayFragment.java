@@ -11,11 +11,13 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -137,6 +139,8 @@ public class TodayFragment extends Fragment {
     public static ListViewItem listViewItem = new ListViewItem();
     public static ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
 
+    ScrollView scrollView;
+
     // ====================================
 
     public TodayFragment() {
@@ -160,9 +164,7 @@ public class TodayFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Activity 데이터통신 테스트
-//    Bundle bundle = this.getArguments();
-//    String myValue = bundle.getString("test");
+
         Log.d("어디","============= TodayFragment onCreateView 진입 ===========");
 
         language = Locale.getDefault().getLanguage();
@@ -230,7 +232,7 @@ public class TodayFragment extends Fragment {
                 value = valueInit.substring(3, 7);
                 dust = test.substring(3, 5);
 
-                Log.d("어디", "=========== valueInit ===========  " + valueInit);
+                Log.d("어디", "=========== valueInit ===========  " + hndResult);
                 Log.d("어디", "=========== value ===========  " + value);
 
                 if (language.contains("en")) {
@@ -291,7 +293,7 @@ public class TodayFragment extends Fragment {
                 String carwash = carwash_comment.substring(3, carwash_comment.indexOf("}"));
                 carwashResult = carwash.substring(0, carwash.length() - 1);
 
-                Log.d("어디", "=========== carwashResult ===========  " + carwashResult);
+                Log.d("어디", "=========== hndResult_carwash ===========  " + hndResult_carwash);
                 PreferenceManager.getInstance(getActivity()).setCarwashResult(carwashResult);
             }
         };
@@ -382,7 +384,7 @@ public class TodayFragment extends Fragment {
                 String laundry = laundry_comment.substring(3, laundry_comment.indexOf(","));
                 laundryResult = laundry.substring(0, laundry.length() - 1);
 
-                Log.d("어디", "=========== laundryResult ===========  " + laundryResult);
+                Log.d("어디", "=========== laundryResult ===========  " + hndResult_laundry);
                 PreferenceManager.getInstance(getActivity()).setLaundryResult(laundryResult);
             }
         };
@@ -427,7 +429,7 @@ public class TodayFragment extends Fragment {
                 String discomfort = discomfort_4hour.substring(3, discomfort_4hour.indexOf(","));
                 discomfortResult = discomfort.substring(0, discomfort.length() - 1);
 
-                Log.d("어디", "=========== discomfortResult ===========  " + discomfortResult);
+                Log.d("어디", "=========== hndResult_discomfort ===========  " + hndResult_discomfort);
                 PreferenceManager.getInstance(getActivity()).setDiscomfortResult(discomfortResult);
             }
         };

@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name="kr.mintech.weather.SettingActivity"
+            android:name=".SettingsActivity"
             android:label="Setting">
         </activity>
 

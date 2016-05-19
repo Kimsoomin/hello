@@ -7,84 +7,79 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="5dp">
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/location"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingRight="5px">
 
-            <RelativeLayout
-                android:id="@+id/location"
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                style="@style/CustomTabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabs"
-                    style="@style/CustomTabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabGravity="fill"
-                    app:tabMode="fixed" />
-
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.3dip"
-                    android:layout_below="@+id/tabs"
-                    android:background="#FF909090"/>
-
-                <LinearLayout
-                    android:id="@+id/place_picker"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1"
-                    android:layout_below="@+id/line">
-
-                    <TextView
-                        android:id="@+id/address"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_weight="0.8"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/margin32"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/margin16"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="0.2"
-                        android:paddingRight="32dp"
-                        android:src="@drawable/click2" />
-
-
-                </LinearLayout>
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/place_picker" />
-
-            </RelativeLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone" />
-        </RelativeLayout>
-    </FrameLayout>
+                app:tabGravity="fill"
+                app:tabMode="fixed" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="0.3dip"
+                android:layout_below="@+id/tabs"
+                android:background="#FF909090" />
+
+            <LinearLayout
+                android:id="@+id/place_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/line"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0.8"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/margin32"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin16"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.2"
+                    android:paddingRight="32dp"
+                    android:src="@drawable/click2" />
+
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/lv_activity_main_nav_list"
