@@ -38,9 +38,9 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
     }
 
     public void add(String dust, String value) {
-
         this.listViewItem.setDust(dust);
         this.listViewItem.setDustValue(value);
+        Log.d("어디","========== 미세먼지 weekAdapter add ==========" +listViewItem.getDust());
     }
 
     public void addListviewitem(ListViewItem listviewitem) {
@@ -126,7 +126,11 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
             } else {
                 day_main.setText("오늘 / " + item.getTitle() + "요일");
                 detail_windspeed_main.setText(item.getWindspeed() + "M/초");
-                Log.d("어디", "Weekadapter / " + listViewItem.getDust());
+                Log.d("어디", "미세먼지 Weekadapter / " + listViewItem.getDust());
+                if (listViewItem.getDust() == null | listViewItem.getDustValue() ==null){
+                    listViewItem.setDust("지원되는 않는 위치입니다");
+                    listViewItem.setDustValue("지원되는 않는 위치입니다");
+                }
                 dust_main.setText("미세먼지 : " + listViewItem.getDust());
                 dust_value_main.setText(listViewItem.getDustValue() + " PM10");
             }

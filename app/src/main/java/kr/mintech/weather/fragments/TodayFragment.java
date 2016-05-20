@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -86,6 +87,7 @@ public class TodayFragment extends Fragment {
     String hndResult = "";
     String test;
     String dust;
+    String dust_value;
     String valueInit;
     String value;
 
@@ -157,6 +159,13 @@ public class TodayFragment extends Fragment {
         Log.d("어디","========= addAll / listViewItemList =========="+listViewItemList.get(0).getTemperature());
     }
 
+    public void add(String dust, String value) {
+        this.listViewItem.setDust(dust);
+        this.listViewItem.setDustValue(value);
+        Log.d("어디","========== 미세먼지 todayFrag add ==========" +listViewItem.getDust());
+    }
+
+
     public static TodayFragment newInstance(int sectionNumber) {
         TodayFragment fragment = new TodayFragment();
 //    Bundle args = new Bundle();
@@ -173,14 +182,14 @@ public class TodayFragment extends Fragment {
         language = Locale.getDefault().getLanguage();
         View rootView = inflater.inflate(R.layout.fragment_today, container, false);
 
-        ListView listview = (ListView) rootView.findViewById(R.id.listview_today);
-        adapter = new CardViewListViewAdapter(getActivity(), inflater, new ArrayList<ListViewItem>());
+//        ListView listview = (ListView) rootView.findViewById(R.id.listview_today);
+//        adapter = new CardViewListViewAdapter(getActivity(), inflater, new ArrayList<ListViewItem>());
         weekAdapter = new CardViewListViewAdapterWeek(getActivity(), inflater, new ArrayList<ListViewItem>());
 
-        listview.setAdapter(adapter);
-        listViewItem = listViewItemList.get(0);
-        adapter.addListviewitem(listViewItem);
-        adapter.addAll(listViewItemList);
+//        listview.setAdapter(adapter);
+        ListViewItem item = listViewItemList.get(0);
+//        adapter.addListviewitem(listViewItem);
+//        adapter.addAll(listViewItemList);
 
         latitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLat());
         longitude = Double.longBitsToDouble(PreferenceManager.getInstance(getActivity()).getLon());
@@ -203,6 +212,98 @@ public class TodayFragment extends Fragment {
         laundry.setText("빨래 지수");
         discomfort.setText("불쾌 지수");
 
+//        ===========================================================
+
+        TextView day_main = (TextView) rootView.findViewById(R.id.day_main);
+        TextView status_main = (TextView) rootView.findViewById(R.id.status_main);
+        TextView date_main = (TextView) rootView.findViewById(R.id.date_main);
+        TextView temperature_main = (TextView) rootView.findViewById(R.id.temperature_main);
+        TextView dust_main = (TextView) rootView.findViewById(R.id.dust_main);
+        TextView dust_value_main = (TextView) rootView.findViewById(R.id.dust_value_main);
+        ImageView icon_main = (ImageView) rootView.findViewById(R.id.weather_image_main);
+        LinearLayout topContainer_main = (LinearLayout) rootView.findViewById(R.id.top_container_main);
+        TextView detail_text = (TextView) rootView.findViewById(R.id.detail_button_main);
+        final ImageView down_arrow = (ImageView) rootView.findViewById(R.id.down_arrow);
+        final ImageView up_arrow = (ImageView) rootView.findViewById(R.id.up_arrow);
+
+        final LinearLayout detail_container_main = (LinearLayout) rootView.findViewById(R.id.detail_container_main);
+        final LinearLayout detail_arrow = (LinearLayout) rootView.findViewById(R.id.detail_arrow);
+
+        TextView detail_dewpoint_main = (TextView) rootView.findViewById(R.id.detail_dewpoint_main);
+        TextView explain_dewpoint_main = (TextView) rootView.findViewById(R.id.explain_dewpoint_main);
+        TextView detail_humidity_main = (TextView) rootView.findViewById(R.id.detail_humidity_main);
+        TextView explain_humidity_main = (TextView) rootView.findViewById(R.id.explain_humidity_main);
+        TextView detail_windspeed_main = (TextView) rootView.findViewById(R.id.detail_windspeed_main);
+        TextView explain_windspeed_main = (TextView) rootView.findViewById(R.id.explain_windspeed_main);
+        TextView detail_pressure_main = (TextView) rootView.findViewById(R.id.detail_pressure_main);
+        TextView explain_pressure_main = (TextView) rootView.findViewById(R.id.explain_pressure_main);
+
+        TextView detail_sunriseTime_main = (TextView) rootView.findViewById(R.id.detail_sunrise_main);
+        TextView detail_sunsetTime_main = (TextView) rootView.findViewById(R.id.detail_sunset_main);
+        TextView explain_sunriseTime_main = (TextView) rootView.findViewById(R.id.explain_sunrise_main);
+        TextView explain_sunsetTime_main = (TextView) rootView.findViewById(R.id.explain_sunset_main);
+
+        ImageView img_dewpoint_main = (ImageView) rootView.findViewById(R.id.img_dewpoint_main);
+        ImageView img_humidity_main = (ImageView) rootView.findViewById(R.id.img_humidity_main);
+        ImageView img_windspeed_main = (ImageView) rootView.findViewById(R.id.img_windspeed_main);
+        ImageView img_pressure_main = (ImageView) rootView.findViewById(R.id.img_pressure_main);
+
+        TextView explain_sunrise_main = (TextView) rootView.findViewById(R.id.explain_sunrise_main);
+        TextView explain_sunset_main = (TextView) rootView.findViewById(R.id.explain_sunset_main);
+
+        // =====================================
+        if (language.contains("en")) {
+            day_main.setText("Today / " + item.getTitle());
+            detail_windspeed_main.setText(item.getWindspeed() + "M/second");
+            explain_dewpoint_main.setText(R.string.dewpoint);
+            explain_windspeed_main.setText(R.string.windspeed);
+            explain_pressure_main.setText(R.string.pressure);
+            explain_humidity_main.setText(R.string.humidity);
+            explain_humidity_main.setText(R.string.humidity);
+            explain_sunrise_main.setText(R.string.sunrise);
+            explain_sunset_main.setText(R.string.sunset);
+        } else {
+            day_main.setText("오늘 / " + item.getTitle() + "요일");
+            detail_windspeed_main.setText(item.getWindspeed() + "M/초");
+        }
+
+        Log.d("어디","===== todayAdapter ==== /"+item.getSunriseTime());
+        Log.d("어디","===== todayAdapter ==== /"+item.getSunsetTime());
+        Log.d("어디","===== todayAdapter ==== /"+item.getHumidity());
+        detail_text.setText("DETAIL");
+        status_main.setText(item.getStatus());
+        date_main.setText(item.getDate());
+        detail_sunriseTime_main.setText(item.getSunriseTime());
+        detail_sunsetTime_main.setText(item.getSunsetTime());
+        temperature_main.setText(item.getTemperature());
+        detail_dewpoint_main.setText(item.getDewpoint() + "°");
+        detail_humidity_main.setText(item.getHumidity() + "%");
+
+        detail_pressure_main.setText(item.getPressure() + "hPa");
+
+        if (item.getIcon().contains("rain"))
+            icon_main.setImageResource(R.drawable.ic_weather_rain);
+        else if (item.getIcon().contains("cloud"))
+            icon_main.setImageResource(R.drawable.ic_weather_cloud);
+        else
+            icon_main.setImageResource(R.drawable.ic_weather_clear);
+
+        detail_arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                if (down_arrow.getVisibility() == View.VISIBLE) {
+                    down_arrow.setVisibility(View.GONE);
+                    up_arrow.setVisibility(View.VISIBLE);
+                } else {
+                    down_arrow.setVisibility(View.VISIBLE);
+                    up_arrow.setVisibility(View.GONE);
+                }
+                Log.d("어디", "버튼클릭");
+            }
+        });
+        
+        
         // =========================미 세 먼 지=============================
         api = new APIRequest();
         APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
@@ -252,7 +353,7 @@ public class TodayFragment extends Fragment {
                     }
                 }
 
-                adapter.add(dust, value);
+//                adapter.add(dust, value);
                 weekAdapter.add(dust, value);
                 PreferenceManager.getInstance(getActivity()).setDust(dust);
                 PreferenceManager.getInstance(getActivity()).setValue(value);
@@ -453,7 +554,8 @@ public class TodayFragment extends Fragment {
         uvResult = PreferenceManager.getInstance(getActivity()).getUvResult();
         laundryResult = PreferenceManager.getInstance(getActivity()).getLaundryResult();
         discomfortResult = PreferenceManager.getInstance(getActivity()).getDiscomfortResult();
-
+        dust = PreferenceManager.getInstance(getActivity()).getDust();
+        dust_value = PreferenceManager.getInstance(getActivity()).getValue();
 
         double discomfortValue = 0.0;
 
@@ -476,6 +578,8 @@ public class TodayFragment extends Fragment {
         uvComment.setText(uvResult);
         laundryComment.setText(laundryResult);
         discomfortComment.setText(discomfortResult + " : " + discomfortIndex);
+        dust_main.setText("미세먼지 : " + dust);
+        dust_value_main.setText(dust_value + " PM10");
 
 //        ==========================================
 

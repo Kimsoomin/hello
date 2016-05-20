@@ -71,13 +71,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import kr.mintech.weather.api.APIRequest;
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.common.PlanetXSDKConstants;
+import kr.mintech.weather.common.PlanetXSDKException;
 import kr.mintech.weather.common.RequestBundle;
+import kr.mintech.weather.common.RequestListener;
+import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
+import kr.mintech.weather.controllers.CardViewListViewAdapterWeek;
 import kr.mintech.weather.fragments.TodayFragment;
 import kr.mintech.weather.fragments.WeekFragment;
 import kr.mintech.weather.managers.PreferenceManager;
@@ -183,10 +189,6 @@ public class MainActivity extends AppCompatActivity {
     String status;
 
     // ============= Today Life ==============
-    TextView carwashComment;
-    TextView uvComment;
-    TextView laundryComment;
-    TextView discomfortComment;
 
     String carwashResult;
     String uvResult;
@@ -196,7 +198,8 @@ public class MainActivity extends AppCompatActivity {
     //  ============= View Pager ===============
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    ScrollView scrollView;
+
+    private static CardViewListViewAdapterWeek weekAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,21 +207,13 @@ public class MainActivity extends AppCompatActivity {
         language = Locale.getDefault().getLanguage();
         setContentView(R.layout.activity_main);
 
+        weekAdapter = new CardViewListViewAdapterWeek(MainActivity.this, getLayoutInflater(), new ArrayList<ListViewItem>());
+
         locationListener = new WeatherLocationListener();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         text = (TextView) findViewById(R.id.address);
         placePicker = (LinearLayout) findViewById(R.id.place_picker);
-
-//        FragmentManager fragmentManager = getFragmentManager();
-//        TodayFragment fragment = new TodayFragment();
-//        Bundle bundle = new Bundle();
-//        fragment.setArguments(bundle);
-//
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.container, fragment);
-//        fragmentTransaction.commit();
-
         init();
     }
 
@@ -290,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         //    alarm_on();
 
+        /* ================= 미세먼지 =====================*/
     }
 
     //  =================== place picker result =========================
@@ -366,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
     private void selectItem(int position) {
         switch (position) {
             case 0:
-                Log.d("어디"," selectItem position=1");
+                Log.d("어디", " selectItem position=1");
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 intent.putExtra("dust", dust);
                 intent.putExtra("icon", icon);
@@ -375,13 +371,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case 1:
-                Log.d("어디"," selectItem position=2");
+                Log.d("어디", " selectItem position=2");
                 Intent testIntent = new Intent(MainActivity.this, SettingTest.class);
                 startActivity(testIntent);
                 break;
 
             case 2:
-                Log.d("어디"," selectItem position=3");
+                Log.d("어디", " selectItem position=3");
                 Intent testIntent2 = new Intent(MainActivity.this, SettingTest2.class);
                 startActivity(testIntent2);
                 break;
@@ -532,39 +528,6 @@ public class MainActivity extends AppCompatActivity {
 
         PreferenceManager.getInstance(MainActivity.this).setIcon(icon);
         PreferenceManager.getInstance(MainActivity.this).setStatus(status);
-
-        //    ====================== Line chart ===================
-//    LineChart lineChart = (LineChart) findViewById(R.id.chart);
-//    lineChart.setVisibility(View.VISIBLE);
-//    lineChart.setDescription("");
-//
-//    ArrayList<Entry> entries = new ArrayList<>();
-//    entries.add(new Entry(Integer.parseInt(items.get(0).getTemperature()), 0));
-//    entries.add(new Entry(Integer.parseInt(items.get(1).getTemperature()), 1));
-//    entries.add(new Entry(Integer.parseInt(items.get(2).getTemperature()), 2));
-//    entries.add(new Entry(Integer.parseInt(items.get(3).getTemperature()), 3));
-//    entries.add(new Entry(Integer.parseInt(items.get(4).getTemperature()), 4));
-//    entries.add(new Entry(Integer.parseInt(items.get(5).getTemperature()), 5));
-//    entries.add(new Entry(Integer.parseInt(items.get(6).getTemperature()), 6));
-//
-//    LineDataSet dataset = new LineDataSet(entries, "평균 온도");
-//
-//    ArrayList<String> labels = new ArrayList<String>();
-//    labels.add(items.get(0).getTitle());
-//    labels.add(items.get(1).getTitle());
-//    labels.add(items.get(2).getTitle());
-//    labels.add(items.get(3).getTitle());
-//    labels.add(items.get(4).getTitle());
-//    labels.add(items.get(5).getTitle());
-//    labels.add(items.get(6).getTitle());
-//
-//    LineData data = new LineData(labels, dataset);
-//    //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
-//    dataset.setDrawCubic(true);
-//    dataset.setDrawFilled(true);
-//
-//    lineChart.setData(data);
-//    lineChart.animateY(5000);
 
         return items;
     }
@@ -919,6 +882,7 @@ public class MainActivity extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
         public ArrayList<String> titles = new ArrayList<>();
         public Fragment fragment;
 
@@ -930,12 +894,13 @@ public class MainActivity extends AppCompatActivity {
 //            fragments.add(0, new TodayFragment());
 //            fragments.add(1, new WeekFragment());
 
-            switch( position) {
+            switch (position) {
                 default:
-                case0: {
-                    fragment = new TodayFragment();
-                    break;
-                }
+                    case0:
+                    {
+                        fragment = new TodayFragment();
+                        break;
+                    }
                 case 1: {
                     fragment = new WeekFragment();
                     break;
@@ -951,10 +916,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public CharSequence getPageTitle(int position)
-        {
-            titles.add(0,"Today");
-            titles.add(1,"Week");
+        public CharSequence getPageTitle(int position) {
+            titles.add(0, "Today");
+            titles.add(1, "Week");
 
             return titles.get(position);
         }

@@ -13,10 +13,6 @@ import kr.mintech.weather.fragments.NotificationPreferenceFragment;
 
 
 public class SettingTest2 extends AppCompatActivity {
-    int mCurrentFragmentIndex;
-    public final static int FRAGMENT_ONE = 0;
-    public final static int FRAGMENT_TWO = 1;
-    public final static int FRAGMENT_THREE = 2;
     LinearLayout settingContainer;
 
     @Override
