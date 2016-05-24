@@ -46,8 +46,6 @@ public class WeekFragment extends Fragment {
         listview.setAdapter(adapter);
         adapter.addAll(listViewItemList);
 
-//        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.listview_week)).commit();
-
         return rootView;
     }
 }

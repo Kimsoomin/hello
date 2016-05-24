@@ -13,11 +13,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import kr.mintech.weather.MainActivity;
 import kr.mintech.weather.R;
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.managers.PreferenceManager;
 
 public class CardViewListViewAdapterWeek extends BaseAdapter {
+    Context context;
     String language;
+    public static String dust;
+    public static String value;
     public static ListViewItem listViewItem = new ListViewItem();
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
     LayoutInflater inflater;
@@ -38,8 +43,10 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
     }
 
     public void add(String dust, String value) {
-        this.listViewItem.setDust(dust);
-        this.listViewItem.setDustValue(value);
+        PreferenceManager.getInstance(context).setDust(dust);
+        PreferenceManager.getInstance(context).setValue(value);
+        this.dust = dust;
+        this.value = value;
         Log.d("어디","========== 미세먼지 weekAdapter add ==========" +listViewItem.getDust());
     }
 
@@ -86,7 +93,8 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
             final ImageView up_arrow = (ImageView) convertView.findViewById(R.id.up_arrow);
 
             final LinearLayout detail_container_main = (LinearLayout) convertView.findViewById(R.id.detail_container_main);
-            final LinearLayout detail_arrow = (LinearLayout) convertView.findViewById(R.id.detail_arrow);
+            final LinearLayout detail_arrow_main = (LinearLayout) convertView.findViewById(R.id.detail_arrow_main);
+            detail_arrow_main.setVisibility(View.VISIBLE);
 
             TextView detail_dewpoint_main = (TextView) convertView.findViewById(R.id.detail_dewpoint_main);
             TextView explain_dewpoint_main = (TextView) convertView.findViewById(R.id.explain_dewpoint_main);
@@ -126,13 +134,14 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
             } else {
                 day_main.setText("오늘 / " + item.getTitle() + "요일");
                 detail_windspeed_main.setText(item.getWindspeed() + "M/초");
-                Log.d("어디", "미세먼지 Weekadapter / " + listViewItem.getDust());
-                if (listViewItem.getDust() == null | listViewItem.getDustValue() ==null){
-                    listViewItem.setDust("지원되는 않는 위치입니다");
-                    listViewItem.setDustValue("지원되는 않는 위치입니다");
+                if (PreferenceManager.getInstance(context).getDust() == null) {
+                    PreferenceManager.getInstance(context).setDust("지원되는 않는 위치입니다");
                 }
-                dust_main.setText("미세먼지 : " + listViewItem.getDust());
-                dust_value_main.setText(listViewItem.getDustValue() + " PM10");
+                if (PreferenceManager.getInstance(context).getValue() == null) {
+                    PreferenceManager.getInstance(context).setValue("지원되는 않는 위치입니다");
+                }
+                dust_main.setText("미세먼지 : " + PreferenceManager.getInstance(context).getDust());
+                dust_value_main.setText(PreferenceManager.getInstance(context).getValue()+ " PM10");
             }
 
             detail_text.setText("DETAIL");

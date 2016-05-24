@@ -8,7 +8,9 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
         card_view:cardBackgroundColor="@color/green300"
         card_view:cardCornerRadius="12dp">
 
@@ -131,7 +133,7 @@
                     android:textColor="@color/caldroid_white" />
 
                 <LinearLayout
-                    android:id="@+id/detail_arrow"
+                    android:id="@+id/detail_arrow_main"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="8dp"

@@ -2,6 +2,7 @@ package kr.mintech.weather;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -68,9 +69,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import kr.mintech.weather.api.APIRequest;
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.common.PlanetXSDKConstants;
+import kr.mintech.weather.common.PlanetXSDKException;
+import kr.mintech.weather.common.RequestBundle;
+import kr.mintech.weather.common.RequestListener;
+import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
 import kr.mintech.weather.controllers.CardViewListViewAdapterWeek;
 import kr.mintech.weather.fragments.TodayFragment;
@@ -78,6 +87,18 @@ import kr.mintech.weather.fragments.WeekFragment;
 import kr.mintech.weather.managers.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
+    APIRequest api;
+    RequestBundle requestBundle;
+    // http://apis.skplanetx.com/melon/newreleases/songs?version={version}&page={page}&count={count}
+    // String URL = "http://apis.skplanetx.com/melon/newreleases/songs";
+    String URL = "http://apis.skplanetx.com/weather/dust";
+    Map<String, Object> param;
+    String hndResult = "";
+    String test;
+    String dust_value;
+    String valueInit;
+    String value;
+    /* ================= */
 
     private TodayFragment todayFragment = new TodayFragment();
     private WeekFragment weekFragment = new WeekFragment();
@@ -142,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static CardViewListViewAdapterWeek weekAdapter;
 
+    String API_URL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,12 +191,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("어디", "init() latitude ///" + latitude);
         Log.d("어디", "init() longitude///" + longitude);
 
-        String API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
+        API_URL = "https://api.forecast.io/forecast/7cb42b713cdf319a3ae7717a03f36e41/" + latitude + "," + longitude;
         String MAP_API = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&language=ko";
 
         new MapJson().execute(MAP_API);
+        new DustAsync().execute("");
         new DownloadJson().execute(API_URL);
-
         progressbar = (ProgressBar) findViewById(R.id.progress_bar);
 
         //  =================== place picker ======================
@@ -434,8 +457,6 @@ public class MainActivity extends AppCompatActivity {
                         summary = "하루 종일 비 바람";
                     } else if (summary.contains("Light rain in the morning")) {
                         summary = "아침에 가벼운 비";
-                    } else if (summary.contains("Light rain in the morning")) {
-                        summary = "아침에 가벼운 비";
                     } else if (summary.contains("Light rain overnight")) {
                         summary = "밤새 가벼운 비";
                     } else if (summary.contains("Light rain until afternoon")) {
@@ -443,6 +464,8 @@ public class MainActivity extends AppCompatActivity {
                     } else if (summary.contains("Light rain starting in the evening")) {
                         summary = "저녁부터 시작되 가벼운 비";
                     } else if (summary.contains("Light rain until evening")) {
+                        summary = "저녁까지 가벼운 비";
+                    } else if (summary.contains("Light rain in the afternoon and evening")) {
                         summary = "저녁까지 가벼운 비";
                     } else if (summary.contains("Drizzle overnight")) {
                         summary = "새벽에 이슬비";
@@ -458,7 +481,12 @@ public class MainActivity extends AppCompatActivity {
                         summary = "오후부터 시작하는 가벼운 비";
                     } else if (summary.contains("Drizzle starting in the evening")) {
                         summary = "저녁부터 시작하는 이슬비";
+                    } else if (summary.contains("Drizzle until afternoon")) {
+                        summary = "오후까지 이슬비";
+                    } else if (summary.contains("Drizzle until afternoon")) {
+                        summary = "오후까지 이슬비";
                     }
+
                 }
 
                 ListViewItem item = new ListViewItem(day, date, summary, icon, temperature, sunriseTime, sunsetTime, dewPoint, humidity, windSpeed, pressure);
@@ -473,8 +501,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        icon = items.get(0).getIcon();
-        status = items.get(0).getStatus();
+        if (items.get(0) == null) {
+            icon = "";
+            status = "";
+        } else {
+            icon = items.get(0).getIcon();
+            status = items.get(0).getStatus();
+        }
+
 
         PreferenceManager.getInstance(MainActivity.this).setIcon(icon);
         PreferenceManager.getInstance(MainActivity.this).setStatus(status);
@@ -587,7 +621,6 @@ public class MainActivity extends AppCompatActivity {
 
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
                 tabLayout.setupWithViewPager(mViewPager);
-//                setTitle(mSectionsPagerAdapter.getPageTitle(0));
 
 
             } catch (JSONException e) {
@@ -873,6 +906,106 @@ public class MainActivity extends AppCompatActivity {
 
             return titles.get(position);
         }
+    }
+
+    public class DustAsync extends AsyncTask<String, String, String> {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            Log.d("어디", "DustJson doInBackground 진입");
+            api = new APIRequest();
+            APIRequest.setAppKey("2fa79986-1dd0-3a04-b767-43e6b86138fe");
+
+            // url에 삽입되는 파라미터 설정
+            param = new HashMap<String, Object>();
+            param.put("version", "1");
+            param.put("lat", latitude);
+            param.put("lon", longitude);
+
+            // 호출시 사용될 값 설정
+            requestBundle = new RequestBundle();
+            requestBundle.setUrl(URL);
+            requestBundle.setParameters(param);
+            requestBundle.setHttpMethod(PlanetXSDKConstants.HttpMethod.GET);
+            requestBundle.setResponseType(PlanetXSDKConstants.CONTENT_TYPE.JSON);
+
+            RequestListener reqListener = new RequestListener() {
+                @Override
+                public void onPlanetSDKException(PlanetXSDKException e) {
+                    hndResult = e.toString();
+                }
+
+                @Override
+                public void onComplete(ResponseMessage result) {
+                    // 응답을 받아 메시지 핸들러에 알려준다.
+                    try {
+                        hndResult = result.getStatusCode() + "\n" + result.toString();
+                        test = hndResult.split("grade")[1];
+                        valueInit = hndResult.split("value")[1];
+                        value = valueInit.substring(3, 7);
+                        dust = test.substring(3, 5);
+
+                        Log.d("어디", "=========== DustJson valueInit ===========  " + hndResult);
+                        Log.d("어디", "=========== DustJson value ===========  " + value);
+                        Log.d("어디", "=========== DustJson dust ===========  " + dust);
+
+                        if (language.contains("en")) {
+                            if (dust.contains("매우 높음")) {
+                                dust = "Very High";
+                            } else if (dust.equals("높음")) {
+                                dust = "High";
+                            } else if (dust.contains("보통")) {
+                                dust = "Middle";
+                            } else if (dust.equals("낮음")) {
+                                dust = "Low";
+                            } else if (dust.contains("매우 낮음")) {
+                                dust = "Very Low";
+                            }
+                        }
+
+                        PreferenceManager.getInstance(MainActivity.this).setDust(dust);
+                        PreferenceManager.getInstance(MainActivity.this).setValue(value);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();     //닫기
+                            }
+                        });
+                        alert.setMessage("금일 서비스가 중지 되었습니다. 내일 이용하실 수 있습니다.");
+                        alert.show();
+                    }
+                }
+            };
+
+            try {
+                // 비동기 호출
+                api.request(requestBundle, reqListener);
+            } catch (PlanetXSDKException e) {
+                e.printStackTrace();
+            }
+            return dust;
+        }
+
+        @Override
+        protected void onPostExecute(String dustValue) {
+            super.onPostExecute(dustValue);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+
     }
 }
 

@@ -15,8 +15,10 @@ import java.util.Locale;
 
 import kr.mintech.weather.R;
 import kr.mintech.weather.beans.ListViewItem;
+import kr.mintech.weather.managers.PreferenceManager;
 
 public class CardViewListViewAdapter extends BaseAdapter {
+    Context context;
     String language;
     public static ListViewItem listViewItem = new ListViewItem();
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
@@ -40,7 +42,7 @@ public class CardViewListViewAdapter extends BaseAdapter {
     public void add(String dust, String value) {
         this.listViewItem.setDust(dust);
         this.listViewItem.setDustValue(value);
-        Log.d("어디","========== 미세먼지 todayAdapter add ==========" +listViewItem.getDust());
+        Log.d("어디", "========== 미세먼지 todayAdapter add ==========" + listViewItem.getDust());
     }
 
     public void addListviewitem(ListViewItem listviewitem) {
@@ -85,8 +87,8 @@ public class CardViewListViewAdapter extends BaseAdapter {
             final ImageView down_arrow = (ImageView) convertView.findViewById(R.id.down_arrow);
             final ImageView up_arrow = (ImageView) convertView.findViewById(R.id.up_arrow);
 
-            final LinearLayout detail_container_main = (LinearLayout) convertView.findViewById(R.id.detail_container_main);
-            final LinearLayout detail_arrow = (LinearLayout) convertView.findViewById(R.id.detail_arrow);
+            final LinearLayout detail_arrow_main = (LinearLayout) convertView.findViewById(R.id.detail_arrow_main);
+            detail_arrow_main.setVisibility(View.INVISIBLE);
 
             TextView detail_dewpoint_main = (TextView) convertView.findViewById(R.id.detail_dewpoint_main);
             TextView explain_dewpoint_main = (TextView) convertView.findViewById(R.id.explain_dewpoint_main);
@@ -99,23 +101,17 @@ public class CardViewListViewAdapter extends BaseAdapter {
 
             TextView detail_sunriseTime_main = (TextView) convertView.findViewById(R.id.detail_sunrise_main);
             TextView detail_sunsetTime_main = (TextView) convertView.findViewById(R.id.detail_sunset_main);
-            TextView explain_sunriseTime_main = (TextView) convertView.findViewById(R.id.explain_sunrise_main);
-            TextView explain_sunsetTime_main = (TextView) convertView.findViewById(R.id.explain_sunset_main);
-
-            ImageView img_dewpoint_main = (ImageView) convertView.findViewById(R.id.img_dewpoint_main);
-            ImageView img_humidity_main = (ImageView) convertView.findViewById(R.id.img_humidity_main);
-            ImageView img_windspeed_main = (ImageView) convertView.findViewById(R.id.img_windspeed_main);
-            ImageView img_pressure_main = (ImageView) convertView.findViewById(R.id.img_pressure_main);
 
             TextView explain_sunrise_main = (TextView) convertView.findViewById(R.id.explain_sunrise_main);
             TextView explain_sunset_main = (TextView) convertView.findViewById(R.id.explain_sunset_main);
+
 
             // =====================================
             if (language.contains("en")) {
                 day_main.setText("Today / " + item.getTitle());
                 detail_windspeed_main.setText(item.getWindspeed() + "M/second");
-                dust_main.setText("Dust : " + listViewItem.getDust());
-                dust_main.setText("DustValue : " + listViewItem.getDustValue());
+                dust_main.setText("Dust : " + PreferenceManager.getInstance(context).getDust());
+                dust_main.setText("DustValue : " + PreferenceManager.getInstance(context).getValue());
                 explain_dewpoint_main.setText(R.string.dewpoint);
                 explain_windspeed_main.setText(R.string.windspeed);
                 explain_pressure_main.setText(R.string.pressure);
@@ -126,18 +122,17 @@ public class CardViewListViewAdapter extends BaseAdapter {
             } else {
                 day_main.setText("오늘 / " + item.getTitle() + "요일");
                 detail_windspeed_main.setText(item.getWindspeed() + "M/초");
-                Log.d("어디", "미세먼지 Todayadapter / " + listViewItem.getDust());
-                if (listViewItem.getDust() == null | listViewItem.getDustValue() ==null){
-                    listViewItem.setDust("지원되는 않는 위치입니다");
-                    listViewItem.setDustValue("지원되는 않는 위치입니다");
+                if (PreferenceManager.getInstance(context).getDust() == null | PreferenceManager.getInstance(context).getValue() == null) {
+                    PreferenceManager.getInstance(context).setDust("지원되는 않는 위치입니다");
+                    PreferenceManager.getInstance(context).setValue("지원되는 않는 위치입니다");
                 }
-                dust_main.setText("미세먼지 : " + listViewItem.getDust());
-                dust_value_main.setText(listViewItem.getDustValue() + " PM10");
+                dust_main.setText("미세먼지 : " + PreferenceManager.getInstance(context).getDust());
+                dust_value_main.setText(PreferenceManager.getInstance(context).getValue() + " PM10");
             }
 
-            Log.d("어디","===== todayAdapter ==== /"+item.getSunriseTime());
-            Log.d("어디","===== todayAdapter ==== /"+item.getSunsetTime());
-            Log.d("어디","===== todayAdapter ==== /"+item.getHumidity());
+            Log.d("어디", "===== todayAdapter ==== /" + item.getSunriseTime());
+            Log.d("어디", "===== todayAdapter ==== /" + item.getSunsetTime());
+            Log.d("어디", "===== todayAdapter ==== /" + item.getHumidity());
             detail_text.setText("DETAIL");
             status_main.setText(item.getStatus());
             date_main.setText(item.getDate());
@@ -156,20 +151,6 @@ public class CardViewListViewAdapter extends BaseAdapter {
             else
                 icon_main.setImageResource(R.drawable.ic_weather_clear);
 
-//            detail_arrow.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-//                    if (down_arrow.getVisibility() == View.VISIBLE) {
-//                        down_arrow.setVisibility(View.GONE);
-//                        up_arrow.setVisibility(View.VISIBLE);
-//                    } else {
-//                        down_arrow.setVisibility(View.VISIBLE);
-//                        up_arrow.setVisibility(View.GONE);
-//                    }
-//                    Log.d("어디", "버튼클릭");
-//                }
-//            });
         }
         return convertView;
     }
