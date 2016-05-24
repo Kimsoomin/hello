@@ -47,7 +47,7 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
 
-    <!-- SettingActivity -->
+    <!-- SettingActivityAgo -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>

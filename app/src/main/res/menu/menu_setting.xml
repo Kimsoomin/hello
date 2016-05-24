@@ -1,8 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools" tools:context=".SettingActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SettingActivityAgo">
 
-    <item android:id="@+id/empty"
-          android:title=""
-          app:showAsAction="always"/>
+    <item
+        android:id="@+id/empty"
+        android:title=""
+        app:showAsAction="always"/>
+
 </menu>

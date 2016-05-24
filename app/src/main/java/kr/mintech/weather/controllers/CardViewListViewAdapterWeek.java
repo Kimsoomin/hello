@@ -153,7 +153,7 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
             else
                 icon_main.setImageResource(R.drawable.ic_weather_clear);
 
-            detail_arrow.setOnClickListener(new View.OnClickListener() {
+            topContainer_main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     detail_container_main.setVisibility(detail_container_main.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
@@ -240,7 +240,7 @@ public class CardViewListViewAdapterWeek extends BaseAdapter {
             else
                 icon.setImageResource(R.drawable.ic_weather_clear);
 
-            detail_arrow.setOnClickListener(new View.OnClickListener() {
+            topContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     detail_container.setVisibility(detail_container.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);

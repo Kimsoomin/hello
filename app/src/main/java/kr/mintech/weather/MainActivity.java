@@ -2,7 +2,6 @@ package kr.mintech.weather;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,11 +37,9 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -71,17 +68,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
-import kr.mintech.weather.api.APIRequest;
 import kr.mintech.weather.beans.ListViewItem;
-import kr.mintech.weather.common.PlanetXSDKConstants;
-import kr.mintech.weather.common.PlanetXSDKException;
-import kr.mintech.weather.common.RequestBundle;
-import kr.mintech.weather.common.RequestListener;
-import kr.mintech.weather.common.ResponseMessage;
 import kr.mintech.weather.controllers.CardViewListViewAdapter;
 import kr.mintech.weather.controllers.CardViewListViewAdapterWeek;
 import kr.mintech.weather.fragments.TodayFragment;
@@ -95,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
     // =============== navi draw ==================
 
-    private String[] navItemsKo = {"설정", "Fragment", "PreferenceFragment"};
-    private String[] navItemsEn = {"Setting", "Fragment", "PreferenceFragment"};
+    private String[] navItemsKo = {"설정"};
+    private String[] navItemsEn = {"Setting"};
 
     private ListView lvNavList;
     private DrawerLayout mDrawerLayout; // 주 기능
@@ -106,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     // ============ placePicker =============
 
     private static final int PLACE_PICKER_REQUEST = 1;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, 127.0303081), new LatLng(37.430610, -121.972090));
+    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, 127.0303081), new LatLng(37.430610, 121.972090));
     private String str;
     private String lat;
     private String lon;
@@ -128,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView text;
     private LinearLayout placePicker;
 
+    public static String addressInit;
+
     //  ============== card view ==================
 
     public static View view;
@@ -135,51 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<ListViewItem> items;
 
-
     // ============ 미세먼지 sk planet ============
-    APIRequest api;
-    RequestBundle requestBundle;
-    // http://apis.skplanetx.com/melon/newreleases/songs?version={version}&page={page}&count={count}
-    // String URL = "http://apis.skplanetx.com/melon/newreleases/songs";
-    String URL = "http://apis.skplanetx.com/weather/dust";
-    Map<String, Object> param;
-
-    String hndResult = "";
-    String test;
     String dust;
-    String valueInit;
-    String value;
-
-    // ============ 세차 지수 sk planet ============
-    APIRequest api_carwash;
-    RequestBundle requestBundle_carwash;
-    String URL_carwash = "http://apis.skplanetx.com/weather/windex/carwash";
-    Map<String, Object> param_carwash;
-    String hndResult_carwash = "";
-
-    // ============ 자외선 지수 sk planet ============
-    APIRequest api_uv;
-    RequestBundle requestBundle_uv;
-    String URL_uv = "http://apis.skplanetx.com/weather/windex/uvindex";
-    Map<String, Object> param_uv;
-    String hndResult_uv = "";
-
-    // ============ 빨래 지수 sk planet ============
-    APIRequest api_laundry;
-    RequestBundle requestBundle_laundry;
-    String URL_laundry = "http://apis.skplanetx.com/weather/windex/laundry";
-    Map<String, Object> param_laundry;
-    String hndResult_laundry = "";
-
-    // ============ 불쾌 지수 sk planet ============
-    APIRequest api_discomfort;
-    RequestBundle requestBundle_discomfort;
-    String URL_discomfort = "http://apis.skplanetx.com/weather/windex/thindex";
-    Map<String, Object> param_discomfort;
-    String hndResult_discomfort = "";
-
-    // ============ 알림바 ============
-    NotificationManager nm;
 
     // =========== 언어설정 ==============
     String language;
@@ -188,13 +136,6 @@ public class MainActivity extends AppCompatActivity {
     String icon;
     String status;
 
-    // ============= Today Life ==============
-
-    String carwashResult;
-    String uvResult;
-    String laundryResult;
-    String discomfortResult;
-    String discomfortIndex;
     //  ============= View Pager ===============
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -214,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         text = (TextView) findViewById(R.id.address);
         placePicker = (LinearLayout) findViewById(R.id.place_picker);
+
         init();
     }
 
@@ -252,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //    ======================= 네비게이션 드로워 ==========================
 
         lvNavList = (ListView) findViewById(R.id.lv_activity_main_nav_list);
@@ -283,9 +224,6 @@ public class MainActivity extends AppCompatActivity {
 
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //    alarm_on();
-
-        /* ================= 미세먼지 =====================*/
     }
 
     //  =================== place picker result =========================
@@ -301,13 +239,15 @@ public class MainActivity extends AppCompatActivity {
                 attributions = "";
             }
 
-            String addressInit = address.toString();
+            addressInit = address.toString();
             Log.d("어디", "======== addressInit ========" + addressInit);
             Log.d("어디", " ============ addressInit.length() ========== / " + addressInit.length());
 
             String google_URL = "http://maps.google.com/maps/api/geocode/json?address=" + addressInit + "&ka&sensor=false";
 
             if (addressInit.length() == 0) {
+                PreferenceManager.getInstance(MainActivity.this).setAddressInit(addressInit);
+                Log.d("어디", "place picker" + name);
                 str = name.toString();
                 Log.d("어디", "str  /  " + str);
                 lat = str.substring(1, str.indexOf(","));
@@ -326,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     //  =============================================
@@ -341,6 +280,12 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("onDestroy", "MainActivity");
+        super.onDestroy();
     }
 
     @Override
@@ -361,24 +306,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectItem(int position) {
         switch (position) {
+//            case 0:
+//                Log.d("어디", " selectItem position=1");
+//                Intent intent = new Intent(MainActivity.this, SettingActivityAgo.class);
+//                intent.putExtra("dust", dust);
+//                intent.putExtra("icon", icon);
+//                intent.putExtra("status", status);
+//
+//                startActivity(intent);
+//                break;
+//            case 1:
+//                Log.d("어디", " selectItem position=2");
+//                Intent testIntent = new Intent(MainActivity.this, SettingTest.class);
+//                startActivity(testIntent);
+//                break;
+//
+//            case 2:
+//                Log.d("어디", " selectItem position=3");
+//                Intent testIntent2 = new Intent(MainActivity.this, SettingActivity.class);
+//                startActivity(testIntent2);
+//                break;
+
             case 0:
-                Log.d("어디", " selectItem position=1");
-                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-                intent.putExtra("dust", dust);
-                intent.putExtra("icon", icon);
-                intent.putExtra("status", status);
-
-                startActivity(intent);
-                break;
-            case 1:
-                Log.d("어디", " selectItem position=2");
-                Intent testIntent = new Intent(MainActivity.this, SettingTest.class);
-                startActivity(testIntent);
-                break;
-
-            case 2:
-                Log.d("어디", " selectItem position=3");
-                Intent testIntent2 = new Intent(MainActivity.this, SettingTest2.class);
+                Log.d("어디", " selectItem position=0");
+                Intent testIntent2 = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(testIntent2);
                 break;
         }
@@ -395,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //ActionBar 메뉴 클릭에 대한 이벤트 처리
-
         switch (item.getItemId()) {
             case R.id.btn_my_location:
                 findNearByStation();
@@ -532,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
         return items;
     }
 
-    /* ========================== 맵 JSON ==========================*/
+    /* ========================== 위경도로 주소 찾기 JSON ==========================*/
     private class MapJson extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... arg0) {
@@ -551,9 +501,24 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < max; i++) {
                     JSONObject obj = resultArray.getJSONObject(2);
                     topAddress = obj.getString("formatted_address");
+
+                }
+                Log.d("어디", "onPostEx resultArray.length() / " + resultArray.length());
+
+                Log.d("어디", "MapJSON addressInit/ " + PreferenceManager.getInstance(MainActivity.this).getAddressInit());
+
+                if (resultArray.length() == 0) {
+                    if (PreferenceManager.getInstance(MainActivity.this).getAddressInit().length() > 2) {
+                        text.setText(PreferenceManager.getInstance(MainActivity.this).getAddressInit());
+                    } else {
+                        text.setText("확인되지 않는 주소입니다");
+                    }
+                }
+                if (resultArray.length() != 0) {
+                    text.setText(topAddress);
                 }
 
-                text.setText(topAddress);
+
             } catch (JSONException e) {
                 Log.e("catch", "catch진입");
                 e.printStackTrace();
@@ -664,7 +629,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-  /* ========================== 주소 JSON ==========================*/
+  /* ========================== 주소로 위경도 찾기 JSON ==========================*/
 
     private class geoPointTask extends AsyncTask<String, Void, Void> {
         @Override
@@ -679,10 +644,8 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void result) {
-
         }
 
         public JSONObject getLocationInfo(String address) {
@@ -750,10 +713,8 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             }).start();
-
         }
     }
-
 
     /* ================================== Location ==========================================*/
     @Override
@@ -846,14 +807,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // ================ Fragment ===================
 
     public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -891,16 +847,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-//            fragments.add(0, new TodayFragment());
-//            fragments.add(1, new WeekFragment());
-
             switch (position) {
                 default:
-                    case0:
-                    {
-                        fragment = new TodayFragment();
-                        break;
-                    }
+                case 0: {
+                    fragment = new TodayFragment();
+                    break;
+                }
                 case 1: {
                     fragment = new WeekFragment();
                     break;
@@ -911,7 +863,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 
@@ -923,17 +874,7 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Toast.makeText(this, "onResume", Toast.LENGTH_LONG).show();
-//
-//        SharedPreferences setRefer = PreferenceManager
-//                .getDefaultSharedPreferences(this);
-//        checkBox.setChecked(setRefer.getBoolean("checkbox", true));
-//    }
-};
+}
 
 
 

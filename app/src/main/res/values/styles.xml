@@ -4,6 +4,14 @@
         <item name="colorPrimary">@color/green200</item>
         <item name="colorPrimaryDark">@color/green100</item>
         <item name="colorAccent">@color/dark_gray</item>
+        <!--<item name="android:homeAsUpIndicator">@drawable/ic_weather_sun</item>-->
+    </style>
+
+    <style name="SettingTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/green200</item>
+        <item name="colorPrimaryDark">@color/green100</item>
+        <item name="colorAccent">@color/dark_gray</item>
     </style>
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">

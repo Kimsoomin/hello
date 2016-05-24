@@ -1,24 +1,12 @@
 package kr.mintech.weather;
 
-import android.annotation.TargetApi;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -26,8 +14,7 @@ import kr.mintech.weather.fragments.CalendarFragment;
 import kr.mintech.weather.fragments.AnalogClockFragment;
 import kr.mintech.weather.fragments.DigitalClockFragment;
 
-
-public class SettingTest extends AppCompatActivity{
+public class SettingTest extends AppCompatActivity {
     int mCurrentFragmentIndex;
     public final static int FRAGMENT_ONE = 0;
     public final static int FRAGMENT_TWO = 1;
@@ -35,8 +22,7 @@ public class SettingTest extends AppCompatActivity{
     LinearLayout settingContainer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_test);
 
@@ -45,12 +31,13 @@ public class SettingTest extends AppCompatActivity{
         LinearLayout sync_container = (LinearLayout) findViewById(R.id.sync_container);
         settingContainer = (LinearLayout) findViewById(R.id.setting_container);
 
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         general_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                actionBar.setDisplayHomeAsUpEnabled(false);
                 mCurrentFragmentIndex = FRAGMENT_ONE;
                 fragmentReplace(mCurrentFragmentIndex);
             }
@@ -71,6 +58,7 @@ public class SettingTest extends AppCompatActivity{
                 fragmentReplace(mCurrentFragmentIndex);
             }
         });
+
     }
 
     public void fragmentReplace(int reqNewFragmentIndex) {
@@ -83,6 +71,7 @@ public class SettingTest extends AppCompatActivity{
                 .beginTransaction();
 
         settingContainer.removeAllViews();
+
         transaction.replace(R.id.setting_container, newFragment);
         transaction.commit();
 
@@ -111,21 +100,46 @@ public class SettingTest extends AppCompatActivity{
 
     /* ============================= */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_setting, menu);
         return true;
     }
 
-    public boolean onOptionsItemSelected(android.view.MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        final Fragment fragment;
+        switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                Log.d("어디", "====== SettingTest 에서 ActionBar ======");
+//                finish();
+//                Intent testIntent = new Intent(SettingTest.this, MainActivity.class);
+//                startActivity(testIntent);
+
+                if (mCurrentFragmentIndex == 0 | mCurrentFragmentIndex == 1 | mCurrentFragmentIndex == 2) {
+                    Log.d("어디", "onOption if");
+                    switch (mCurrentFragmentIndex) {
+                        case 0:
+                            fragment = new AnalogClockFragment();
+                            break;
+                        case 1:
+                            fragment = new DigitalClockFragment();
+                            break;
+                        case 2:
+                            fragment = new CalendarFragment();
+                            break;
+                    }
+
+                } else {
+                    Log.d("어디", "onOption else");
+                    finish();
+                    Intent testIntent = new Intent(SettingTest.this, MainActivity.class);
+                    startActivity(testIntent);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /* =========== Back Button TEST ===============*/
+
 }

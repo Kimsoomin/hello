@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import kr.mintech.weather.R;
-import kr.mintech.weather.SettingTest2;
+import kr.mintech.weather.SettingActivity;
 
 /**
  * Created by SM on 2016-05-19.
@@ -27,7 +27,7 @@ public class AsyncPreferenceFragment extends PreferenceFragment {
         int id = item.getItemId();
         Log.d("어디","========== DataSyncPreferenceFragment / onOptionsItemSelected ==========");
         if (id == android.R.id.home) {
-            startActivity(new Intent(getActivity(), SettingTest2.class));
+            startActivity(new Intent(getActivity(), SettingActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

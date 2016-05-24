@@ -288,22 +288,7 @@ public class TodayFragment extends Fragment {
         else
             icon_main.setImageResource(R.drawable.ic_weather_clear);
 
-        detail_arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-                if (down_arrow.getVisibility() == View.VISIBLE) {
-                    down_arrow.setVisibility(View.GONE);
-                    up_arrow.setVisibility(View.VISIBLE);
-                } else {
-                    down_arrow.setVisibility(View.VISIBLE);
-                    up_arrow.setVisibility(View.GONE);
-                }
-                Log.d("어디", "버튼클릭");
-            }
-        });
-        
-        
+
         // =========================미 세 먼 지=============================
         api = new APIRequest();
         APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
@@ -370,7 +355,6 @@ public class TodayFragment extends Fragment {
         //    ===================세차 지수===========================
 
         api_carwash = new APIRequest();
-//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_carwash = new HashMap<String, Object>();
@@ -412,7 +396,6 @@ public class TodayFragment extends Fragment {
         //    =================== 자외선 지수 ===========================
 
         api_uv = new APIRequest();
-//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_uv = new HashMap<String, Object>();
@@ -459,7 +442,6 @@ public class TodayFragment extends Fragment {
         //    =================== 빨래 지수 ===========================
 
         api_laundry = new APIRequest();
-//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_laundry = new HashMap<String, Object>();
@@ -503,7 +485,6 @@ public class TodayFragment extends Fragment {
         //    =================== 불쾌 지수 ===========================
 
         api_discomfort = new APIRequest();
-//        APIRequest.setAppKey("8aa2f9e4-0120-333f-add1-a714d569a1e9");
 
         // url에 삽입되는 파라미터 설정
         param_discomfort = new HashMap<String, Object>();
@@ -551,6 +532,7 @@ public class TodayFragment extends Fragment {
         //    discomfortResult = pref.getString("discomfortResult", "?");
 
         carwashResult = PreferenceManager.getInstance(getActivity()).getCarwashResult();
+        Log.d("어디","UV만?" +PreferenceManager.getInstance(getActivity()).getUvResult());
         uvResult = PreferenceManager.getInstance(getActivity()).getUvResult();
         laundryResult = PreferenceManager.getInstance(getActivity()).getLaundryResult();
         discomfortResult = PreferenceManager.getInstance(getActivity()).getDiscomfortResult();
@@ -607,8 +589,7 @@ public class TodayFragment extends Fragment {
         labels.add(listViewItemList.get(6).getTitle());
 
         LineData data = new LineData(labels, dataset);
-        //    dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
-        dataset.setDrawCubic(false);
+        dataset.setDrawCubic(true);
         dataset.setDrawFilled(true);
         dataset.setValueTextSize(10);
 

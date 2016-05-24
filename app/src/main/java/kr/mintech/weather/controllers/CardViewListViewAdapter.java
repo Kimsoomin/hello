@@ -156,20 +156,20 @@ public class CardViewListViewAdapter extends BaseAdapter {
             else
                 icon_main.setImageResource(R.drawable.ic_weather_clear);
 
-            detail_arrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-                    if (down_arrow.getVisibility() == View.VISIBLE) {
-                        down_arrow.setVisibility(View.GONE);
-                        up_arrow.setVisibility(View.VISIBLE);
-                    } else {
-                        down_arrow.setVisibility(View.VISIBLE);
-                        up_arrow.setVisibility(View.GONE);
-                    }
-                    Log.d("어디", "버튼클릭");
-                }
-            });
+//            detail_arrow.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    detail_container_main.setVisibility(detail_container_main.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+//                    if (down_arrow.getVisibility() == View.VISIBLE) {
+//                        down_arrow.setVisibility(View.GONE);
+//                        up_arrow.setVisibility(View.VISIBLE);
+//                    } else {
+//                        down_arrow.setVisibility(View.VISIBLE);
+//                        up_arrow.setVisibility(View.GONE);
+//                    }
+//                    Log.d("어디", "버튼클릭");
+//                }
+//            });
         }
         return convertView;
     }

@@ -161,6 +161,26 @@ public class PreferenceManager extends BasePreferenceManager
     return get("status");
   }
 
+  public void setAddressInit(String addressInit)
+  {
+    put("addressInit", addressInit);
+  }
+
+  public String getAddressInit()
+  {
+    return get("addressInit");
+  }
+
+  public void setVibrate(boolean vibrate)
+  {
+    put("vibrate", vibrate);
+  }
+
+  public boolean getVibrate()
+  {
+    return get("vibrate", false);
+  }
+
   //  PreferenceManager.getInstance(getApplicationContext()).setUserId(String.valueOf(user.getId()));
   //  PreferenceManager.getInstance(LoginActivity.this).getUserLoginId())
 }

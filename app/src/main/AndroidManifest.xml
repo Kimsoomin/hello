@@ -31,15 +31,7 @@
 
         <activity
             android:name=".SettingActivity"
-            android:label="Setting"></activity>
-
-        <activity
-            android:name=".SettingTest"
-            android:label="test"></activity>
-
-        <activity
-            android:name=".SettingTest2"
-            android:label="SettingTest2">
+            android:label="Settings">
         </activity>
 
         <!--<receiver android:name=".AlarmReceive" android:process=":remote" />-->

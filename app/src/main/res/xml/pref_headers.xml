@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="kr.mintech.weather.SettingActivity$GeneralPreferenceFragment"
+        android:fragment="kr.mintech.weather.SettingActivityAgo$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="kr.mintech.weather.SettingActivity$NotificationPreferenceFragment"
+        android:fragment="kr.mintech.weather.SettingActivityAgo$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="kr.mintech.weather.SettingActivity$DataSyncPreferenceFragment"
+        android:fragment="kr.mintech.weather.SettingActivityAgo$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/pref_header_data_sync" />
 
